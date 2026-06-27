@@ -51,6 +51,8 @@
       
     
     
+      <link rel="stylesheet" href="../stylesheets/extra.css">
+    
     <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
@@ -847,41 +849,41 @@ see <a href="../architecture/database-schema/"><code>architecture/database-schem
   phase.</li>
 </ul>
 <h2 id="phase-0-project-foundation">Phase 0: Project Foundation ✅</h2>
-<ul>
-<li>[x] Monorepo scaffold (FastAPI + Next.js + Postgres + MkDocs)</li>
-<li>[x] Docker Compose dev environment</li>
-<li>[x] Initial landing page (Spanish)</li>
-<li>[x] Requirements specification (<a href="../requirements/">requirements.md</a>)</li>
-<li>[x] Database schema design
+<ul class="task-list">
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled checked/><span class="task-list-indicator"></span></label> Monorepo scaffold (FastAPI + Next.js + Postgres + MkDocs)</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled checked/><span class="task-list-indicator"></span></label> Docker Compose dev environment</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled checked/><span class="task-list-indicator"></span></label> Initial landing page (Spanish)</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled checked/><span class="task-list-indicator"></span></label> Requirements specification (<a href="../requirements/">requirements.md</a>)</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled checked/><span class="task-list-indicator"></span></label> Database schema design
       (<a href="../architecture/database-schema/">architecture/database-schema.md</a>)</li>
-<li>[x] Backend architecture documentation
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled checked/><span class="task-list-indicator"></span></label> Backend architecture documentation
       (<a href="../architecture/backend/">architecture/backend.md</a>)</li>
-<li>[x] API specification draft
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled checked/><span class="task-list-indicator"></span></label> API specification draft
       (<a href="../architecture/api-specification/">architecture/api-specification.md</a>)</li>
 </ul>
 <h2 id="phase-1-authentication-admin-provisioned-users">Phase 1: Authentication &amp; Admin-Provisioned Users 🚧</h2>
 <p>Goal: an admin can log in and create accounts for trusted contributors.
 Self-registration stays disabled.</p>
 <h3 id="backend">Backend</h3>
-<ul>
-<li>[ ] Alembic initialization + first migration (<code>users</code>, <code>audit_log</code>)</li>
-<li>[ ] Bootstrap default admin from <code>DEFAULT_ADMIN_USERNAME</code> /
+<ul class="task-list">
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Alembic initialization + first migration (<code>users</code>, <code>audit_log</code>)</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Bootstrap default admin from <code>DEFAULT_ADMIN_USERNAME</code> /
       <code>DEFAULT_ADMIN_PASSWORD</code> env vars (FR-007)</li>
-<li>[ ] <code>POST /auth/login</code> — JWT issuance with Argon2ID password hashing</li>
-<li>[ ] <code>GET /auth/me</code> + <code>PUT /auth/me/password</code></li>
-<li>[ ] Admin-only: <code>POST /users</code> to create an account</li>
-<li>[ ] Admin-only: <code>GET /users</code>, <code>PUT /users/{id}/role</code>,
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> <code>POST /auth/login</code> — JWT issuance with Argon2ID password hashing</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> <code>GET /auth/me</code> + <code>PUT /auth/me/password</code></li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Admin-only: <code>POST /users</code> to create an account</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Admin-only: <code>GET /users</code>, <code>PUT /users/{id}/role</code>,
       <code>POST /users/{id}/deactivate</code></li>
-<li>[ ] Last-admin lockout-protection guard (FR-014)</li>
-<li>[ ] CI: Pyright + Ruff + pytest pipeline green</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Last-admin lockout-protection guard (FR-014)</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> CI: Pyright + Ruff + pytest pipeline green</li>
 </ul>
 <h3 id="frontend">Frontend</h3>
-<ul>
-<li>[ ] <code>/login</code> page wired to <code>POST /auth/login</code></li>
-<li>[ ] JWT stored in httpOnly cookie</li>
-<li>[ ] Logged-in header state on the landing page (username + logout)</li>
-<li>[ ] <code>/logout</code> clears the cookie and redirects to the landing page</li>
-<li>[ ] Auth middleware: protect any future <code>/admin/*</code> paths</li>
+<ul class="task-list">
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> <code>/login</code> page wired to <code>POST /auth/login</code></li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> JWT stored in httpOnly cookie</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Logged-in header state on the landing page (username + logout)</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> <code>/logout</code> clears the cookie and redirects to the landing page</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Auth middleware: protect any future <code>/admin/*</code> paths</li>
 </ul>
 <h2 id="phase-2-organizations-collection-centers-backend">Phase 2: Organizations &amp; Collection Centers — Backend 📅</h2>
 <p>Goal: ship the data model and APIs that back the public directory.
@@ -889,102 +891,102 @@ After this phase, an admin-provisioned user can register their
 organization and one or more drop-off centers, and a guest can read
 them from the API.</p>
 <h3 id="migrations-shared-layer">Migrations &amp; shared layer</h3>
-<ul>
-<li>[ ] Migration for <code>organizations</code>, <code>organization_memberships</code>,
+<ul class="task-list">
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Migration for <code>organizations</code>, <code>organization_memberships</code>,
       <code>collection_centers</code>, <code>collection_center_memberships</code></li>
-<li>[ ] <code>app/permissions.py</code> with <code>effective_owner_user_ids</code>,
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> <code>app/permissions.py</code> with <code>effective_owner_user_ids</code>,
       <code>effective_cc_member_user_ids</code>, <code>has_global_override</code>,
       <code>assert_caller_can_own_on_behalf_of</code></li>
-<li>[ ] <code>app/audit_log/service.write_audit()</code> infrastructure</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> <code>app/audit_log/service.write_audit()</code> infrastructure</li>
 </ul>
 <h3 id="organizations">Organizations</h3>
-<ul>
-<li>[ ] CRUD: create / list / get / edit / archive</li>
-<li>[ ] Maintainer/admin verification:
+<ul class="task-list">
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> CRUD: create / list / get / edit / archive</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Maintainer/admin verification:
       <code>POST /organizations/{id}/verify</code> and <code>revoke-verification</code></li>
-<li>[ ] Membership: add / remove / leave; ownership transfer within org</li>
-<li>[ ] Public read: verified orgs visible without auth (FR-105)</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Membership: add / remove / leave; ownership transfer within org</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Public read: verified orgs visible without auth (FR-105)</li>
 </ul>
 <h3 id="collection-centers">Collection Centers</h3>
-<ul>
-<li>[ ] CRUD: create / list / get / edit / archive
+<ul class="task-list">
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> CRUD: create / list / get / edit / archive
       (owner-archive guard + maintainer force-archive)</li>
-<li>[ ] Maintainer/admin verification:
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Maintainer/admin verification:
       <code>POST /collection-centers/{id}/verify</code> and <code>revoke-verification</code></li>
-<li>[ ] Per-center contributors: add / remove / leave</li>
-<li>[ ] <code>POST /collection-centers/{id}/toggle-status</code> for members</li>
-<li>[ ] Public read: verified active centers visible without auth
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Per-center contributors: add / remove / leave</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> <code>POST /collection-centers/{id}/toggle-status</code> for members</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Public read: verified active centers visible without auth
       (FR-072), filterable by country and city</li>
 </ul>
 <h2 id="phase-3-public-collection-centers-tab-frontend">Phase 3: Public Collection Centers Tab — Frontend 📅</h2>
 <p>Goal: a guest opens the page and immediately finds the Collection
 Centers near them, with full contact info — no login required.</p>
-<ul>
-<li>[ ] <code>/centers</code> tab — public list with country/city filters</li>
-<li>[ ] <code>/centers/{id}</code> detail — address, hours, contact, owning
+<ul class="task-list">
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> <code>/centers</code> tab — public list with country/city filters</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> <code>/centers/{id}</code> detail — address, hours, contact, owning
       organization (with Unverified badge when applicable, FR-105)</li>
-<li>[ ] <code>/organizations</code> tab — public list of verified orgs</li>
-<li>[ ] <code>/organizations/{id}</code> detail — owned centers + contact info</li>
-<li>[ ] Logged-in flows (member-side):</li>
-<li>[ ] Create a Collection Center on behalf of self or owning Org</li>
-<li>[ ] Edit Center details / toggle <code>active</code></li>
-<li>[ ] Add / remove per-center contributors</li>
-<li>[ ] Logged-in flows (maintainer/admin side):</li>
-<li>[ ] Verify or revoke verification on a Center / Org</li>
-<li>[ ] Create user accounts (Phase 1 backend, admin UI lands here)</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> <code>/organizations</code> tab — public list of verified orgs</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> <code>/organizations/{id}</code> detail — owned centers + contact info</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Logged-in flows (member-side):</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Create a Collection Center on behalf of self or owning Org</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Edit Center details / toggle <code>active</code></li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Add / remove per-center contributors</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Logged-in flows (maintainer/admin side):</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Verify or revoke verification on a Center / Org</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Create user accounts (Phase 1 backend, admin UI lands here)</li>
 </ul>
 <h2 id="phase-4-parts-requests-contributions">Phase 4: Parts, Requests, Contributions 🔮</h2>
 <p>Goal: the full maker-coordination loop. Builds on the Phase 2/3
 foundation.</p>
 <h3 id="backend_1">Backend</h3>
-<ul>
-<li>[ ] Migration for <code>parts</code>, <code>requests</code>, <code>request_items</code>,
+<ul class="task-list">
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Migration for <code>parts</code>, <code>requests</code>, <code>request_items</code>,
       <code>contributions</code></li>
-<li>[ ] Parts catalog CRUD + <code>featured</code> + discontinue/archive
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Parts catalog CRUD + <code>featured</code> + discontinue/archive
       (owner) + force-archive (maintainer, FR-077)</li>
-<li>[ ] Requests with items (FR-119 – FR-124): create, add/remove items,
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Requests with items (FR-119 – FR-124): create, add/remove items,
       close</li>
-<li>[ ] Contributions lifecycle endpoints
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Contributions lifecycle endpoints
       (<code>mark-printed</code>, <code>mark-delivered</code>, <code>confirm-received</code>, <code>release</code>)</li>
-<li>[ ] FR-126 auto-receive when the maker is an effective CC member</li>
-<li>[ ] FR-055 auto-expire stale <code>claimed</code> Contributions via
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> FR-126 auto-receive when the maker is an effective CC member</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> FR-055 auto-expire stale <code>claimed</code> Contributions via
       APScheduler</li>
-<li>[ ] Discovery: <code>GET /discovery/next</code>, <code>/dashboard</code>,
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Discovery: <code>GET /discovery/next</code>, <code>/dashboard</code>,
       <code>/parts/{id}/chart</code></li>
 </ul>
 <h3 id="frontend_1">Frontend</h3>
-<ul>
-<li>[ ] Parts tab (public read; create for logged-in users)</li>
-<li>[ ] Requests tab — public read; create for logged-in users</li>
-<li>[ ] Request detail page with item-level progress breakdown</li>
-<li>[ ] My Prints tab (authenticated only)</li>
-<li>[ ] "What to print next" dashboard (FR-065)</li>
+<ul class="task-list">
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Parts tab (public read; create for logged-in users)</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Requests tab — public read; create for logged-in users</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Request detail page with item-level progress breakdown</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> My Prints tab (authenticated only)</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> "What to print next" dashboard (FR-065)</li>
 </ul>
 <h2 id="phase-5-ownership-transfers">Phase 5: Ownership Transfers 🔮</h2>
 <p>Goal: enable the "creator joins later" handoff that the polymorphic
 ownership model was designed for.</p>
-<ul>
-<li>[ ] Migration for <code>ownership_transfers</code></li>
-<li>[ ] <code>POST /{parts|collection-centers|requests}/{id}/transfers</code></li>
-<li>[ ] <code>POST /transfers/{id}/accept | decline | cancel</code></li>
-<li>[ ] FR-114 auto-expire pending transfers via APScheduler</li>
-<li>[ ] Maintainer/admin force-transfer endpoints (FR-116)</li>
-<li>[ ] Frontend: incoming/outgoing transfers view + accept/decline UI</li>
+<ul class="task-list">
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Migration for <code>ownership_transfers</code></li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> <code>POST /{parts|collection-centers|requests}/{id}/transfers</code></li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> <code>POST /transfers/{id}/accept | decline | cancel</code></li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> FR-114 auto-expire pending transfers via APScheduler</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Maintainer/admin force-transfer endpoints (FR-116)</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Frontend: incoming/outgoing transfers view + accept/decline UI</li>
 </ul>
 <h2 id="phase-6-polish-integrations">Phase 6: Polish &amp; Integrations 💫</h2>
-<ul>
-<li>[ ] Open up public self-registration (<code>POST /auth/register</code>, FR-001)</li>
-<li>[ ] Bilingual ES/EN UI (NFR-015): locale toggle in the navigation,
+<ul class="task-list">
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Open up public self-registration (<code>POST /auth/register</code>, FR-001)</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Bilingual ES/EN UI (NFR-015): locale toggle in the navigation,
       full string extraction into the i18n layer</li>
-<li>[ ] Google OAuth (IR-001) — eventual primary signup path</li>
-<li>[ ] Email notifications (IR-002, IR-003)</li>
-<li>[ ] Per-center "accepted Parts" filter (FR-093)</li>
-<li>[ ] Audit log viewer UI (maintainer/admin only)</li>
-<li>[ ] Personal Access Tokens UI</li>
-<li>[ ] Helm chart + production deployment + scheduled-job worker pod</li>
-<li>[ ] Performance pass (Redis cache layer for <code>/discovery/next</code> if
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Google OAuth (IR-001) — eventual primary signup path</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Email notifications (IR-002, IR-003)</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Per-center "accepted Parts" filter (FR-093)</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Audit log viewer UI (maintainer/admin only)</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Personal Access Tokens UI</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Helm chart + production deployment + scheduled-job worker pod</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Performance pass (Redis cache layer for <code>/discovery/next</code> if
       load demands it)</li>
-<li>[ ] Security audit before opening self-registration</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Security audit before opening self-registration</li>
 </ul>
 <hr />
 <p><strong>Legend:</strong></p>

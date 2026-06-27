@@ -1,0 +1,2914 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Coordination platform for community-driven 3D-printed humanitarian aid">
+      
+      
+      
+      
+        <link rel="prev" href="../database-schema/">
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>API - PrintForHelp Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="teal" data-md-color-accent="teal">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#printforhelp-api-specification" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="PrintForHelp Documentation" class="md-header__button md-logo" aria-label="PrintForHelp Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            PrintForHelp Documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              API
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="teal" data-md-color-accent="teal"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="teal" data-md-color-accent="teal"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Share" aria-label="Share" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/jcarranz97/printforhelp" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    jcarranz97/printforhelp
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../roadmap/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Roadmap
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../requirements/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Requirements
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../backend/" class="md-tabs__link">
+          
+  
+  
+  Architecture
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+  
+
+<nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="PrintForHelp Documentation" class="md-nav__button md-logo" aria-label="PrintForHelp Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    PrintForHelp Documentation
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/jcarranz97/printforhelp" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    jcarranz97/printforhelp
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../roadmap/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Roadmap
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../requirements/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Requirements
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Architecture
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../backend/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Backend
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../database-schema/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Database
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#api-overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        API Overview
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#authentication" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Authentication
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#response-format" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Response Format
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Response Format">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#success" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Success
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#errors" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Errors
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#polymorphic-owner-field-convention" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Polymorphic Owner Field Convention
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#api-endpoints" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        API Endpoints
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="API Endpoints">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-authentication-users" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Authentication &amp; Users
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. Authentication &amp; Users">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#post-authregister" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        POST /auth/register
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#post-authlogin" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        POST /auth/login
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#get-authme" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GET /auth/me
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#put-authme" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PUT /auth/me
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#put-authmepassword" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PUT /auth/me/password
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#delete-authme" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DELETE /auth/me
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#admin-user-management" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Admin user-management
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-organizations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Organizations
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Organizations">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#post-organizations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        POST /organizations
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#get-organizations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GET /organizations
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#get-organizationsid" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GET /organizations/{id}
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#put-organizationsid" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PUT /organizations/{id}
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#post-organizationsidverify" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        POST /organizations/{id}/verify
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#post-organizationsidrevoke-verification" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        POST /organizations/{id}/revoke-verification
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#post-organizationsidarchive" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        POST /organizations/{id}/archive
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="POST /organizations/{id}/archive">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#membership" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Membership
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-parts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Parts
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Parts">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#post-parts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        POST /parts
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#get-parts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GET /parts
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#get-partsid" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GET /parts/{id}
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#put-partsid" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PUT /parts/{id}
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#post-partsiddiscontinue" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        POST /parts/{id}/discontinue
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#post-partsidreactivate" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        POST /parts/{id}/reactivate
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#post-partsidfeature" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        POST /parts/{id}/feature
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#post-partsidarchive" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        POST /parts/{id}/archive
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#post-partsidforce-archive" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        POST /parts/{id}/force-archive
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-collection-centers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Collection Centers
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Collection Centers">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#post-collection-centers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        POST /collection-centers
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#get-collection-centers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GET /collection-centers
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#get-collection-centersid" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GET /collection-centers/{id}
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#put-collection-centersid" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PUT /collection-centers/{id}
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#post-collection-centersidverify" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        POST /collection-centers/{id}/verify
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#post-collection-centersidrevoke-verification" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        POST /collection-centers/{id}/revoke-verification
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#post-collection-centersidtoggle-status" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        POST /collection-centers/{id}/toggle-status
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#post-collection-centersidarchive" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        POST /collection-centers/{id}/archive
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#post-collection-centersidforce-archive" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        POST /collection-centers/{id}/force-archive
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="POST /collection-centers/{id}/force-archive">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#per-center-membership" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Per-center membership
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-requests-request-items" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Requests &amp; Request Items
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. Requests &amp; Request Items">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#post-requests" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        POST /requests
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#get-requests" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GET /requests
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#get-requestsid" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GET /requests/{id}
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#put-requestsid" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PUT /requests/{id}
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#post-requestsidclose" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        POST /requests/{id}/close
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="POST /requests/{id}/close">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#request-items" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Request items
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#6-contributions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Contributions
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. Contributions">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#post-contributions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        POST /contributions
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#get-contributionsme" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GET /contributions/me
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#get-contributionsid" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GET /contributions/{id}
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#post-contributionsidmark-printed" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        POST /contributions/{id}/mark-printed
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#post-contributionsidmark-delivered" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        POST /contributions/{id}/mark-delivered
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#post-contributionsidconfirm-received" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        POST /contributions/{id}/confirm-received
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#post-contributionsidrelease" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        POST /contributions/{id}/release
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#7-ownership-transfers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Ownership Transfers
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="7. Ownership Transfers">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#post-partsidtransfers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        POST /parts/{id}/transfers
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#post-collection-centersidtransfers-same-shape" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        POST /collection-centers/{id}/transfers — same shape
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#post-requestsidtransfers-same-shape" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        POST /requests/{id}/transfers — same shape
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#get-transfersme" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GET /transfers/me
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#get-transfersid" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GET /transfers/{id}
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#post-transfersidaccept" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        POST /transfers/{id}/accept
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#post-transfersiddecline" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        POST /transfers/{id}/decline
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#post-transfersidcancel" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        POST /transfers/{id}/cancel
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#post-partsidforce-transfer-similar-paths-for-ccs-requests" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        POST /parts/{id}/force-transfer | similar paths for CCs &amp; Requests
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#8-discovery-prioritization" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Discovery &amp; Prioritization
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="8. Discovery &amp; Prioritization">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#get-discoverynext" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GET /discovery/next
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#get-discoverydashboard" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GET /discovery/dashboard
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#get-discoverypartspart_idchart" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GET /discovery/parts/{part_id}/chart
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#9-audit-log" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. Audit Log
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="9. Audit Log">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#get-audit-log" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GET /audit-log
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#10-personal-access-tokens" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. Personal Access Tokens
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#11-system-endpoints" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11. System Endpoints
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="11. System Endpoints">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#get-enums" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GET /enums
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#get-health" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GET /health
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#error-codes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Error Codes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#http-status-codes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        HTTP Status Codes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#rate-limiting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Rate Limiting
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#data-validation-rules" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Data Validation Rules
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Data Validation Rules">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#identifiers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Identifiers
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#quantities" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Quantities
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dates-times" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Dates &amp; Times
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#text-fields" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Text Fields
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#api-usage-examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        API Usage Examples
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="API Usage Examples">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#end-to-end-ferulas-for-venezuela" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        End-to-End: "Ferulas for Venezuela"
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#inviting-an-organization-to-take-over-a-part" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Inviting an Organization to Take Over a Part
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="printforhelp-api-specification">PrintForHelp API Specification</h1>
+<div class="admonition warning">
+<p class="admonition-title"><strong>DOCUMENTATION STATUS</strong></p>
+<p>This document defines the REST surface during <strong>initial design and
+planning</strong>. Once the FastAPI implementation begins, the canonical
+reference is the auto-generated OpenAPI / Swagger docs:</p>
+<ul>
+<li><strong>Development</strong>: <code>http://localhost:8100/docs</code> (Swagger UI)</li>
+<li><strong>Development</strong>: <code>http://localhost:8100/redoc</code> (ReDoc)</li>
+</ul>
+<p>The purpose of this document is to define endpoints, payloads, and
+error codes against the requirements in
+<a href="../../requirements/"><code>../requirements.md</code></a> and the schema in
+<a href="../database-schema/"><code>database-schema.md</code></a>, and to drive the
+initial backend implementation.</p>
+</div>
+<h2 id="api-overview">API Overview</h2>
+<ul>
+<li><strong>Base URL</strong> (dev): <code>http://localhost:8100/api/v1</code></li>
+<li><strong>Authentication</strong>: Bearer token (JWT) or Personal Access Token
+  (prefix <code>pforh_pat_…</code>)</li>
+<li><strong>Content-Type</strong>: <code>application/json</code></li>
+<li><strong>API Version</strong>: v1</li>
+</ul>
+<h2 id="authentication">Authentication</h2>
+<p>All endpoints require authentication except:</p>
+<ul>
+<li><code>POST /auth/register</code></li>
+<li><code>POST /auth/login</code></li>
+<li><code>GET /health</code></li>
+<li>Public read endpoints on Parts (<code>GET /parts</code>, <code>GET /parts/{id}</code>)</li>
+<li>Public read endpoints on Requests (<code>GET /requests</code>,
+  <code>GET /requests/{id}</code>, <code>GET /requests/{id}/items</code>)</li>
+<li>Public read endpoints on verified Collection Centers and
+  Organizations</li>
+</ul>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="err">Authorization: Bearer &lt;jwt_or_pat&gt;</span>
+</code></pre></div>
+<h2 id="response-format">Response Format</h2>
+<h3 id="success">Success</h3>
+<p>Data is returned directly without a wrapper. List endpoints either
+return arrays or <code>{ items, pagination }</code> for paginated lists.</p>
+<h3 id="errors">Errors</h3>
+<p>Consistent envelope (matches Colony's contract):</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="p">{</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">  </span><span class="nt">&quot;success&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">  </span><span class="nt">&quot;error&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">    </span><span class="nt">&quot;code&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ERROR_CODE&quot;</span><span class="p">,</span>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">    </span><span class="nt">&quot;message&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Human-readable error message.&quot;</span><span class="p">,</span>
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">    </span><span class="nt">&quot;details&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">}</span>
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">  </span><span class="p">}</span>
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="p">}</span>
+</code></pre></div>
+<h2 id="polymorphic-owner-field-convention">Polymorphic Owner Field Convention</h2>
+<p>Several create/update payloads accept a polymorphic owner. The
+convention across the API:</p>
+<ul>
+<li>Send <strong>either</strong> <code>owner_user_id</code> <strong>or</strong> <code>owner_organization_id</code>,
+  never both.</li>
+<li>On creation, both may be omitted — the server defaults to "caller
+  owns the asset personally."</li>
+<li>The caller must be an active member of the Organization they pass
+  in <code>owner_organization_id</code>, else <code>403 ORG_MEMBERSHIP_REQUIRED</code>.</li>
+</ul>
+<p>Requests use the same convention with the field names
+<code>requester_user_id</code> / <code>requester_organization_id</code>.</p>
+<hr />
+<h2 id="api-endpoints">API Endpoints</h2>
+<h3 id="1-authentication-users">1. Authentication &amp; Users</h3>
+<h4 id="post-authregister">POST /auth/register</h4>
+<p>Self-register. <strong>Public.</strong></p>
+<p><strong>Request Body:</strong></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="p">{</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">  </span><span class="nt">&quot;username&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;alice&quot;</span><span class="p">,</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">  </span><span class="nt">&quot;password&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;securePassword123&quot;</span><span class="p">,</span>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">  </span><span class="nt">&quot;preferred_locale&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;es&quot;</span>
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="p">}</span>
+</code></pre></div>
+<p><strong>Response:</strong> <code>201 Created</code></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="p">{</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="w">  </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;123e4567-e89b-12d3-a456-426614174000&quot;</span><span class="p">,</span>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="w">  </span><span class="nt">&quot;username&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;alice&quot;</span><span class="p">,</span>
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="w">  </span><span class="nt">&quot;role&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;user&quot;</span><span class="p">,</span>
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="w">  </span><span class="nt">&quot;preferred_locale&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;es&quot;</span><span class="p">,</span>
+<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="w">  </span><span class="nt">&quot;active&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="w">  </span><span class="nt">&quot;created_at&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2026-06-27T00:00:00Z&quot;</span><span class="p">,</span>
+<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="w">  </span><span class="nt">&quot;updated_at&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2026-06-27T00:00:00Z&quot;</span>
+<a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="p">}</span>
+</code></pre></div>
+<p><strong>Errors:</strong> <code>409 USERNAME_TAKEN</code>, <code>400 WEAK_PASSWORD</code></p>
+<h4 id="post-authlogin">POST /auth/login</h4>
+<p>Exchange username/password for a JWT.</p>
+<p><strong>Request Body (Form Data):</strong></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>username=alice
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>password=securePassword123
+</code></pre></div>
+<p><strong>Response:</strong> <code>200 OK</code></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="p">{</span>
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="w">  </span><span class="nt">&quot;access_token&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;eyJhbGciOiJIUzI1NiIs…&quot;</span><span class="p">,</span>
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="w">  </span><span class="nt">&quot;token_type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;bearer&quot;</span><span class="p">,</span>
+<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="w">  </span><span class="nt">&quot;expires_in&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1800</span>
+<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="p">}</span>
+</code></pre></div>
+<p><strong>Errors:</strong> <code>401 INVALID_CREDENTIALS</code>, <code>403 INACTIVE_USER</code></p>
+<h4 id="get-authme">GET /auth/me</h4>
+<p>Current user info.</p>
+<p><strong>Response:</strong> <code>200 OK</code> — same shape as the register response.</p>
+<h4 id="put-authme">PUT /auth/me</h4>
+<p>Update own profile (currently just <code>preferred_locale</code>).</p>
+<p><strong>Request Body:</strong></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="p">{</span><span class="w"> </span><span class="nt">&quot;preferred_locale&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;en&quot;</span><span class="w"> </span><span class="p">}</span>
+</code></pre></div>
+<h4 id="put-authmepassword">PUT /auth/me/password</h4>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="p">{</span>
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="w">  </span><span class="nt">&quot;current_password&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;oldPassword123&quot;</span><span class="p">,</span>
+<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="w">  </span><span class="nt">&quot;new_password&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;newSecurePassword456&quot;</span>
+<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="p">}</span>
+</code></pre></div>
+<p><strong>Response:</strong> <code>200 OK</code> — <code>{ "message": "Password updated." }</code>
+<strong>Errors:</strong> <code>400 INCORRECT_PASSWORD</code>, <code>400 WEAK_PASSWORD</code></p>
+<h4 id="delete-authme">DELETE /auth/me</h4>
+<p>Self-deactivate (soft delete). <strong>FR-008.</strong></p>
+<p><strong>Response:</strong> <code>204 No Content</code></p>
+<h4 id="admin-user-management">Admin user-management</h4>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Path</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>GET</code></td>
+<td><code>/users</code></td>
+<td>List all users. <strong>Admin.</strong></td>
+</tr>
+<tr>
+<td><code>GET</code></td>
+<td><code>/users/{user_id}</code></td>
+<td>Get a user. <strong>Admin.</strong></td>
+</tr>
+<tr>
+<td><code>PUT</code></td>
+<td><code>/users/{user_id}/role</code></td>
+<td><code>{ "role": "maintainer" }</code>. <strong>Admin.</strong> Rejected if would demote the last active admin (FR-014).</td>
+</tr>
+<tr>
+<td><code>POST</code></td>
+<td><code>/users/{user_id}/deactivate</code></td>
+<td><strong>Admin.</strong> Same lockout guard.</td>
+</tr>
+<tr>
+<td><code>POST</code></td>
+<td><code>/users/{user_id}/reactivate</code></td>
+<td><strong>Admin.</strong></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3 id="2-organizations">2. Organizations</h3>
+<h4 id="post-organizations">POST /organizations</h4>
+<p>Create an Organization. <strong>Any authenticated user.</strong> Creator
+auto-receives the <code>owner</code> membership (FR-095).</p>
+<p><strong>Request Body:</strong></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="p">{</span>
+<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="w">  </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;UCAB Lab 3D&quot;</span><span class="p">,</span>
+<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="w">  </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Lab oficial de impresión 3D en UCAB Caracas.&quot;</span><span class="p">,</span>
+<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="w">  </span><span class="nt">&quot;contact&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;fablab@ucab.edu.ve&quot;</span><span class="p">,</span>
+<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="w">  </span><span class="nt">&quot;website&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://lab.ucab.edu.ve&quot;</span><span class="p">,</span>
+<a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a><span class="w">  </span><span class="nt">&quot;country&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;VE&quot;</span>
+<a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a><span class="p">}</span>
+</code></pre></div>
+<p><strong>Response:</strong> <code>201 Created</code></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="p">{</span>
+<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="w">  </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;cccc1111-e89b-12d3-a456-426614174000&quot;</span><span class="p">,</span>
+<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="w">  </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;UCAB Lab 3D&quot;</span><span class="p">,</span>
+<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="w">  </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Lab oficial de impresión 3D en UCAB Caracas.&quot;</span><span class="p">,</span>
+<a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="w">  </span><span class="nt">&quot;contact&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;fablab@ucab.edu.ve&quot;</span><span class="p">,</span>
+<a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a><span class="w">  </span><span class="nt">&quot;website&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://lab.ucab.edu.ve&quot;</span><span class="p">,</span>
+<a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a><span class="w">  </span><span class="nt">&quot;country&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;VE&quot;</span><span class="p">,</span>
+<a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a><span class="w">  </span><span class="nt">&quot;verified&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<a id="__codelineno-9-9" name="__codelineno-9-9" href="#__codelineno-9-9"></a><span class="w">  </span><span class="nt">&quot;registered_by_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&lt;user uuid&gt;&quot;</span><span class="p">,</span>
+<a id="__codelineno-9-10" name="__codelineno-9-10" href="#__codelineno-9-10"></a><span class="w">  </span><span class="nt">&quot;verified_by_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<a id="__codelineno-9-11" name="__codelineno-9-11" href="#__codelineno-9-11"></a><span class="w">  </span><span class="nt">&quot;status&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;active&quot;</span><span class="p">,</span>
+<a id="__codelineno-9-12" name="__codelineno-9-12" href="#__codelineno-9-12"></a><span class="w">  </span><span class="nt">&quot;active&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<a id="__codelineno-9-13" name="__codelineno-9-13" href="#__codelineno-9-13"></a><span class="w">  </span><span class="nt">&quot;created_at&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2026-06-27T00:00:00Z&quot;</span><span class="p">,</span>
+<a id="__codelineno-9-14" name="__codelineno-9-14" href="#__codelineno-9-14"></a><span class="w">  </span><span class="nt">&quot;updated_at&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2026-06-27T00:00:00Z&quot;</span>
+<a id="__codelineno-9-15" name="__codelineno-9-15" href="#__codelineno-9-15"></a><span class="p">}</span>
+</code></pre></div>
+<p><strong>Errors:</strong> <code>409 ORG_NAME_TAKEN</code></p>
+<h4 id="get-organizations">GET /organizations</h4>
+<p>List verified Organizations. <strong>Public.</strong> Unverified Orgs are visible
+only to their own members and to maintainers/admins.</p>
+<p>Query params: <code>verified</code> (bool), <code>country</code> (string), <code>q</code> (text search
+on name and description).</p>
+<h4 id="get-organizationsid">GET /organizations/{id}</h4>
+<p>Full Organization detail. Public users see only public attributes
+plus public-asset counts (FR-106). Members get the member list and
+owned-asset lists.</p>
+<h4 id="put-organizationsid">PUT /organizations/{id}</h4>
+<p>Edit. <strong>Owner / maintainer / admin.</strong></p>
+<h4 id="post-organizationsidverify">POST /organizations/{id}/verify</h4>
+<p>Flip <code>verified=true</code>. <strong>Maintainer / admin.</strong> Records
+<code>verify_organization</code> in the audit log.</p>
+<h4 id="post-organizationsidrevoke-verification">POST /organizations/{id}/revoke-verification</h4>
+<p><strong>Maintainer / admin.</strong> <code>{ "reason": "..." }</code>.</p>
+<h4 id="post-organizationsidarchive">POST /organizations/{id}/archive</h4>
+<p><strong>Owner / maintainer / admin.</strong> Rejected with <code>409</code> if the Org owns
+any active Parts or Collection Centers (FR-104).</p>
+<h5 id="membership">Membership</h5>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Path</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>GET</code></td>
+<td><code>/organizations/{id}/members</code></td>
+<td>List members. <strong>Members + mod/admin.</strong></td>
+</tr>
+<tr>
+<td><code>POST</code></td>
+<td><code>/organizations/{id}/members</code></td>
+<td><code>{ "username": "bob" }</code>. Immediate, no accept (FR-098). <strong>Owner.</strong></td>
+</tr>
+<tr>
+<td><code>DELETE</code></td>
+<td><code>/organizations/{id}/members/{user_id}</code></td>
+<td>Remove a member. <strong>Owner</strong> removing others; <strong>member</strong> removing self. Owners can't self-remove (FR-100).</td>
+</tr>
+<tr>
+<td><code>POST</code></td>
+<td><code>/organizations/{id}/transfer-ownership</code></td>
+<td><code>{ "target_user_id": "..." }</code>. Atomic owner-swap to an existing member (FR-101). <strong>Owner.</strong></td>
+</tr>
+<tr>
+<td><code>POST</code></td>
+<td><code>/organizations/{id}/force-transfer-ownership</code></td>
+<td><strong>Maintainer / admin</strong> rescue for orphaned orgs (FR-102).</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3 id="3-parts">3. Parts</h3>
+<h4 id="post-parts">POST /parts</h4>
+<p>Register a Part. <strong>Authenticated.</strong> Owner defaults to caller.</p>
+<p><strong>Request Body:</strong></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="p">{</span>
+<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="w">  </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Forearm splint v3&quot;</span><span class="p">,</span>
+<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="w">  </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Adjustable forearm splint, 200 mm length.&quot;</span><span class="p">,</span>
+<a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="w">  </span><span class="nt">&quot;source_url&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://www.thingiverse.com/thing:9999&quot;</span><span class="p">,</span>
+<a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a><span class="w">  </span><span class="nt">&quot;suggested_settings&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;PLA, 30% infill, 0.2 layer&quot;</span><span class="p">,</span>
+<a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a><span class="w">  </span><span class="nt">&quot;tags&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;splint&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;forearm&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;venezuela2026&quot;</span><span class="p">],</span>
+<a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a><span class="w">  </span><span class="nt">&quot;owner_organization_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;cccc1111-e89b-12d3-a456-426614174000&quot;</span>
+<a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a><span class="p">}</span>
+</code></pre></div>
+<p><strong>Response:</strong> <code>201 Created</code> — full <code>PartResponse</code>.</p>
+<p><strong>Errors:</strong> <code>403 ORG_MEMBERSHIP_REQUIRED</code>, <code>400 VALIDATION_ERROR</code></p>
+<h4 id="get-parts">GET /parts</h4>
+<p>Public catalog. Query params: <code>tag</code>, <code>status</code>, <code>featured</code>, <code>q</code>
+(free-text search on name + description), <code>page</code>, <code>per_page</code>.</p>
+<p>Each item carries an <code>open_requests_count</code> (FR-022) so the catalog
+list reflects demand.</p>
+<h4 id="get-partsid">GET /parts/{id}</h4>
+<p>Public. Adds <code>open_requests</code> — a list of open <code>RequestItem</code>s that
+reference the Part (FR-023):</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="p">{</span>
+<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="w">  </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;...&quot;</span><span class="p">,</span>
+<a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="w">  </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Forearm splint v3&quot;</span><span class="p">,</span>
+<a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a><span class="w">  </span><span class="nt">&quot;...&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;...&quot;</span><span class="p">,</span>
+<a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a><span class="w">  </span><span class="nt">&quot;open_requests&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a><span class="w">    </span><span class="p">{</span>
+<a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a><span class="w">      </span><span class="nt">&quot;request_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;...&quot;</span><span class="p">,</span>
+<a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a><span class="w">      </span><span class="nt">&quot;request_item_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;...&quot;</span><span class="p">,</span>
+<a id="__codelineno-11-9" name="__codelineno-11-9" href="#__codelineno-11-9"></a><span class="w">      </span><span class="nt">&quot;request_title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Ferulas for Venezuela&quot;</span><span class="p">,</span>
+<a id="__codelineno-11-10" name="__codelineno-11-10" href="#__codelineno-11-10"></a><span class="w">      </span><span class="nt">&quot;quantity&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">8</span><span class="p">,</span>
+<a id="__codelineno-11-11" name="__codelineno-11-11" href="#__codelineno-11-11"></a><span class="w">      </span><span class="nt">&quot;remaining&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span>
+<a id="__codelineno-11-12" name="__codelineno-11-12" href="#__codelineno-11-12"></a><span class="w">      </span><span class="nt">&quot;deadline&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2026-08-15&quot;</span>
+<a id="__codelineno-11-13" name="__codelineno-11-13" href="#__codelineno-11-13"></a><span class="w">    </span><span class="p">}</span>
+<a id="__codelineno-11-14" name="__codelineno-11-14" href="#__codelineno-11-14"></a><span class="w">  </span><span class="p">]</span>
+<a id="__codelineno-11-15" name="__codelineno-11-15" href="#__codelineno-11-15"></a><span class="p">}</span>
+</code></pre></div>
+<h4 id="put-partsid">PUT /parts/{id}</h4>
+<p>Edit. <strong>Effective owner</strong> (FR-017) <strong>or maintainer/admin</strong> (FR-018).</p>
+<h4 id="post-partsiddiscontinue">POST /parts/{id}/discontinue</h4>
+<p><strong>Effective owner.</strong> Sets <code>status=discontinued</code> (FR-075). Idempotent
+on a Part already discontinued.</p>
+<h4 id="post-partsidreactivate">POST /parts/{id}/reactivate</h4>
+<p>Reverse of discontinue. <strong>Effective owner / maintainer / admin.</strong></p>
+<h4 id="post-partsidfeature">POST /parts/{id}/feature</h4>
+<p>Flip <code>featured=true</code>. <strong>Maintainer / admin</strong> only (FR-019).</p>
+<h4 id="post-partsidarchive">POST /parts/{id}/archive</h4>
+<p>Owner-side archive (FR-076). <strong>Effective owner.</strong> Rejected with
+<code>409 PART_ARCHIVE_BLOCKED</code> if any open Requests reference the Part.
+The error response details include <code>open_request_count</code>.</p>
+<h4 id="post-partsidforce-archive">POST /parts/{id}/force-archive</h4>
+<p><strong>Maintainer / admin</strong> (FR-077). Cascades: every open RequestItem
+referencing the Part is auto-closed with reason <code>part_archived</code>.</p>
+<hr />
+<h3 id="4-collection-centers">4. Collection Centers</h3>
+<h4 id="post-collection-centers">POST /collection-centers</h4>
+<p><strong>Authenticated.</strong> Owner defaults to caller. Starts <code>verified=false</code>.</p>
+<p><strong>Request Body:</strong></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="p">{</span>
+<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="w">  </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;UCAB Lab — Caracas&quot;</span><span class="p">,</span>
+<a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a><span class="w">  </span><span class="nt">&quot;address&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Av. Teherán, Montalbán, Caracas&quot;</span><span class="p">,</span>
+<a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a><span class="w">  </span><span class="nt">&quot;country&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;VE&quot;</span><span class="p">,</span>
+<a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a><span class="w">  </span><span class="nt">&quot;city&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Caracas&quot;</span><span class="p">,</span>
+<a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a><span class="w">  </span><span class="nt">&quot;contact&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;+58-212-407-4400 / fablab@ucab.edu.ve&quot;</span><span class="p">,</span>
+<a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a><span class="w">  </span><span class="nt">&quot;opening_hours&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Lun-Vie 9-17&quot;</span><span class="p">,</span>
+<a id="__codelineno-12-8" name="__codelineno-12-8" href="#__codelineno-12-8"></a><span class="w">  </span><span class="nt">&quot;notes&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Entrega por puerta principal del edificio Mendoza.&quot;</span><span class="p">,</span>
+<a id="__codelineno-12-9" name="__codelineno-12-9" href="#__codelineno-12-9"></a><span class="w">  </span><span class="nt">&quot;owner_organization_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;cccc1111-…&quot;</span>
+<a id="__codelineno-12-10" name="__codelineno-12-10" href="#__codelineno-12-10"></a><span class="p">}</span>
+</code></pre></div>
+<p><strong>Response:</strong> <code>201 Created</code> — full <code>CollectionCenterResponse</code>.</p>
+<h4 id="get-collection-centers">GET /collection-centers</h4>
+<p>Public. By default lists <code>verified=true AND status=active</code>. Query
+params: <code>country</code>, <code>city</code>, <code>verified</code> (admin-only override),
+<code>include_pending=true</code> (member's own pending centers).</p>
+<h4 id="get-collection-centersid">GET /collection-centers/{id}</h4>
+<p>Public for verified active centers. Members and mods see pending ones
+too. The response adds a <code>pending_deliveries</code> count (FR-035).</p>
+<h4 id="put-collection-centersid">PUT /collection-centers/{id}</h4>
+<p><strong>Effective member</strong> (any contributor or org member, FR-031) or
+<strong>mod/admin</strong>.</p>
+<h4 id="post-collection-centersidverify">POST /collection-centers/{id}/verify</h4>
+<p><strong>Maintainer / admin.</strong> Records <code>verify_collection_center</code>.</p>
+<h4 id="post-collection-centersidrevoke-verification">POST /collection-centers/{id}/revoke-verification</h4>
+<p><strong>Maintainer / admin.</strong> <code>{ "reason": "..." }</code>.</p>
+<h4 id="post-collection-centersidtoggle-status">POST /collection-centers/{id}/toggle-status</h4>
+<p><code>{ "status": "inactive" }</code>. <strong>Effective member</strong> (FR-078).</p>
+<h4 id="post-collection-centersidarchive">POST /collection-centers/{id}/archive</h4>
+<p><strong>Effective owner.</strong> Rejected <code>409</code> if any open Contributions are
+routed to it (FR-079).</p>
+<h4 id="post-collection-centersidforce-archive">POST /collection-centers/{id}/force-archive</h4>
+<p><strong>Maintainer / admin</strong> (FR-080). Auto-releases routed Contributions.</p>
+<h5 id="per-center-membership">Per-center membership</h5>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Path</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>GET</code></td>
+<td><code>/collection-centers/{id}/contributors</code></td>
+<td>List per-center contributors. <strong>Effective members + mod/admin.</strong></td>
+</tr>
+<tr>
+<td><code>POST</code></td>
+<td><code>/collection-centers/{id}/contributors</code></td>
+<td><code>{ "username": "bob" }</code>. <strong>Effective owner</strong> (FR-084).</td>
+</tr>
+<tr>
+<td><code>DELETE</code></td>
+<td><code>/collection-centers/{id}/contributors/{user_id}</code></td>
+<td>Effective owner removes; contributor self-removes.</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3 id="5-requests-request-items">5. Requests &amp; Request Items</h3>
+<h4 id="post-requests">POST /requests</h4>
+<p>Create a Request. <strong>Authenticated.</strong> Must include at least one item
+(FR-119).</p>
+<p><strong>Request Body:</strong></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="p">{</span>
+<a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="w">  </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Ferulas for Venezuela&quot;</span><span class="p">,</span>
+<a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="w">  </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Campaña de férulas para el terremoto de junio 2026.&quot;</span><span class="p">,</span>
+<a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a><span class="w">  </span><span class="nt">&quot;deadline&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2026-08-15&quot;</span><span class="p">,</span>
+<a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a><span class="w">  </span><span class="nt">&quot;preferred_collection_center_ids&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;&lt;cc-uuid-caracas&gt;&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;&lt;cc-uuid-mexico&gt;&quot;</span><span class="p">],</span>
+<a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a><span class="w">  </span><span class="nt">&quot;requester_organization_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;cccc1111-…&quot;</span><span class="p">,</span>
+<a id="__codelineno-13-7" name="__codelineno-13-7" href="#__codelineno-13-7"></a><span class="w">  </span><span class="nt">&quot;items&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<a id="__codelineno-13-8" name="__codelineno-13-8" href="#__codelineno-13-8"></a><span class="w">    </span><span class="p">{</span>
+<a id="__codelineno-13-9" name="__codelineno-13-9" href="#__codelineno-13-9"></a><span class="w">      </span><span class="nt">&quot;part_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&lt;part-uuid-forearm&gt;&quot;</span><span class="p">,</span>
+<a id="__codelineno-13-10" name="__codelineno-13-10" href="#__codelineno-13-10"></a><span class="w">      </span><span class="nt">&quot;quantity&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">50</span><span class="p">,</span>
+<a id="__codelineno-13-11" name="__codelineno-13-11" href="#__codelineno-13-11"></a><span class="w">      </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Tamaño adulto preferido&quot;</span>
+<a id="__codelineno-13-12" name="__codelineno-13-12" href="#__codelineno-13-12"></a><span class="w">    </span><span class="p">},</span>
+<a id="__codelineno-13-13" name="__codelineno-13-13" href="#__codelineno-13-13"></a><span class="w">    </span><span class="p">{</span>
+<a id="__codelineno-13-14" name="__codelineno-13-14" href="#__codelineno-13-14"></a><span class="w">      </span><span class="nt">&quot;part_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&lt;part-uuid-finger&gt;&quot;</span><span class="p">,</span>
+<a id="__codelineno-13-15" name="__codelineno-13-15" href="#__codelineno-13-15"></a><span class="w">      </span><span class="nt">&quot;quantity&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">100</span>
+<a id="__codelineno-13-16" name="__codelineno-13-16" href="#__codelineno-13-16"></a><span class="w">    </span><span class="p">},</span>
+<a id="__codelineno-13-17" name="__codelineno-13-17" href="#__codelineno-13-17"></a><span class="w">    </span><span class="p">{</span>
+<a id="__codelineno-13-18" name="__codelineno-13-18" href="#__codelineno-13-18"></a><span class="w">      </span><span class="nt">&quot;part_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&lt;part-uuid-hand&gt;&quot;</span><span class="p">,</span>
+<a id="__codelineno-13-19" name="__codelineno-13-19" href="#__codelineno-13-19"></a><span class="w">      </span><span class="nt">&quot;quantity&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<a id="__codelineno-13-20" name="__codelineno-13-20" href="#__codelineno-13-20"></a><span class="w">      </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Cualquier cantidad bienvenida&quot;</span>
+<a id="__codelineno-13-21" name="__codelineno-13-21" href="#__codelineno-13-21"></a><span class="w">    </span><span class="p">}</span>
+<a id="__codelineno-13-22" name="__codelineno-13-22" href="#__codelineno-13-22"></a><span class="w">  </span><span class="p">]</span>
+<a id="__codelineno-13-23" name="__codelineno-13-23" href="#__codelineno-13-23"></a><span class="p">}</span>
+</code></pre></div>
+<p><strong>Response:</strong> <code>201 Created</code></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="p">{</span>
+<a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="w">  </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;rrrr1111-…&quot;</span><span class="p">,</span>
+<a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a><span class="w">  </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Ferulas for Venezuela&quot;</span><span class="p">,</span>
+<a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a><span class="w">  </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Campaña de férulas …&quot;</span><span class="p">,</span>
+<a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a><span class="w">  </span><span class="nt">&quot;deadline&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2026-08-15&quot;</span><span class="p">,</span>
+<a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a><span class="w">  </span><span class="nt">&quot;requester_user_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<a id="__codelineno-14-7" name="__codelineno-14-7" href="#__codelineno-14-7"></a><span class="w">  </span><span class="nt">&quot;requester_organization_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;cccc1111-…&quot;</span><span class="p">,</span>
+<a id="__codelineno-14-8" name="__codelineno-14-8" href="#__codelineno-14-8"></a><span class="w">  </span><span class="nt">&quot;created_by_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&lt;user-uuid&gt;&quot;</span><span class="p">,</span>
+<a id="__codelineno-14-9" name="__codelineno-14-9" href="#__codelineno-14-9"></a><span class="w">  </span><span class="nt">&quot;preferred_collection_center_ids&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;…&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;…&quot;</span><span class="p">],</span>
+<a id="__codelineno-14-10" name="__codelineno-14-10" href="#__codelineno-14-10"></a><span class="w">  </span><span class="nt">&quot;status&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;open&quot;</span><span class="p">,</span>
+<a id="__codelineno-14-11" name="__codelineno-14-11" href="#__codelineno-14-11"></a><span class="w">  </span><span class="nt">&quot;active&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<a id="__codelineno-14-12" name="__codelineno-14-12" href="#__codelineno-14-12"></a><span class="w">  </span><span class="nt">&quot;items&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<a id="__codelineno-14-13" name="__codelineno-14-13" href="#__codelineno-14-13"></a><span class="w">    </span><span class="p">{</span>
+<a id="__codelineno-14-14" name="__codelineno-14-14" href="#__codelineno-14-14"></a><span class="w">      </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ii1-…&quot;</span><span class="p">,</span>
+<a id="__codelineno-14-15" name="__codelineno-14-15" href="#__codelineno-14-15"></a><span class="w">      </span><span class="nt">&quot;part_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&lt;part-uuid-forearm&gt;&quot;</span><span class="p">,</span>
+<a id="__codelineno-14-16" name="__codelineno-14-16" href="#__codelineno-14-16"></a><span class="w">      </span><span class="nt">&quot;quantity&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">50</span><span class="p">,</span>
+<a id="__codelineno-14-17" name="__codelineno-14-17" href="#__codelineno-14-17"></a><span class="w">      </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Tamaño adulto preferido&quot;</span><span class="p">,</span>
+<a id="__codelineno-14-18" name="__codelineno-14-18" href="#__codelineno-14-18"></a><span class="w">      </span><span class="nt">&quot;deadline&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<a id="__codelineno-14-19" name="__codelineno-14-19" href="#__codelineno-14-19"></a><span class="w">      </span><span class="nt">&quot;status&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;open&quot;</span><span class="p">,</span>
+<a id="__codelineno-14-20" name="__codelineno-14-20" href="#__codelineno-14-20"></a><span class="w">      </span><span class="nt">&quot;committed&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<a id="__codelineno-14-21" name="__codelineno-14-21" href="#__codelineno-14-21"></a><span class="w">      </span><span class="nt">&quot;delivered&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<a id="__codelineno-14-22" name="__codelineno-14-22" href="#__codelineno-14-22"></a><span class="w">      </span><span class="nt">&quot;remaining&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">50</span>
+<a id="__codelineno-14-23" name="__codelineno-14-23" href="#__codelineno-14-23"></a><span class="w">    </span><span class="p">},</span>
+<a id="__codelineno-14-24" name="__codelineno-14-24" href="#__codelineno-14-24"></a><span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ii2-…&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;part_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&lt;part-uuid-finger&gt;&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;quantity&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">100</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;...&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;...&quot;</span><span class="w"> </span><span class="p">},</span>
+<a id="__codelineno-14-25" name="__codelineno-14-25" href="#__codelineno-14-25"></a><span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ii3-…&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;part_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&lt;part-uuid-hand&gt;&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;quantity&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;...&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;...&quot;</span><span class="w"> </span><span class="p">}</span>
+<a id="__codelineno-14-26" name="__codelineno-14-26" href="#__codelineno-14-26"></a><span class="w">  </span><span class="p">],</span>
+<a id="__codelineno-14-27" name="__codelineno-14-27" href="#__codelineno-14-27"></a><span class="w">  </span><span class="nt">&quot;created_at&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;...&quot;</span><span class="p">,</span>
+<a id="__codelineno-14-28" name="__codelineno-14-28" href="#__codelineno-14-28"></a><span class="w">  </span><span class="nt">&quot;updated_at&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;...&quot;</span>
+<a id="__codelineno-14-29" name="__codelineno-14-29" href="#__codelineno-14-29"></a><span class="p">}</span>
+</code></pre></div>
+<p><strong>Errors:</strong> <code>400 REQUEST_REQUIRES_ITEMS</code>, <code>404 PART_NOT_FOUND</code>,
+<code>403 ORG_MEMBERSHIP_REQUIRED</code></p>
+<h4 id="get-requests">GET /requests</h4>
+<p>Public. Query params: <code>status</code>, <code>country</code> (resolves through preferred
+centers), <code>q</code>, <code>page</code>, <code>per_page</code>. Returns paginated <code>{ items,
+pagination }</code> where each item is a Request summary.</p>
+<h4 id="get-requestsid">GET /requests/{id}</h4>
+<p>Public. Includes the items array with per-item progress.</p>
+<h4 id="put-requestsid">PUT /requests/{id}</h4>
+<p>Edit campaign-level fields (title, description, deadline, preferred
+centers). <strong>Effective requester</strong> (FR-042) or mod/admin.</p>
+<h4 id="post-requestsidclose">POST /requests/{id}/close</h4>
+<p><code>{ "reason": "..." }</code>. <strong>Effective requester / mod / admin</strong> (FR-043
+/ FR-044). Cascades: every open item is closed; every <code>claimed</code>
+Contribution on those items is released with reason <code>request_closed</code>
+(FR-049).</p>
+<h5 id="request-items">Request items</h5>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Path</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>GET</code></td>
+<td><code>/requests/{id}/items</code></td>
+<td>List items. Public.</td>
+</tr>
+<tr>
+<td><code>POST</code></td>
+<td><code>/requests/{id}/items</code></td>
+<td>Add a new item. <strong>Effective requester</strong> (FR-122).</td>
+</tr>
+<tr>
+<td><code>GET</code></td>
+<td><code>/requests/{id}/items/{item_id}</code></td>
+<td>Item detail with contribution breakdown.</td>
+</tr>
+<tr>
+<td><code>PUT</code></td>
+<td><code>/requests/{id}/items/{item_id}</code></td>
+<td>Edit item-level fields. <strong>Effective requester.</strong></td>
+</tr>
+<tr>
+<td><code>DELETE</code></td>
+<td><code>/requests/{id}/items/{item_id}</code></td>
+<td>Remove. <strong>Effective requester</strong> (FR-123). Rejected <code>409 ITEM_HAS_CONTRIBUTIONS</code> if any active Contribution references it; rejected <code>409 LAST_ITEM_CANNOT_BE_REMOVED</code> if it is the only remaining item.</td>
+</tr>
+<tr>
+<td><code>POST</code></td>
+<td><code>/requests/{id}/items/{item_id}/close</code></td>
+<td>Close one item without closing the parent Request. <strong>Effective requester / mod / admin</strong> (FR-124).</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3 id="6-contributions">6. Contributions</h3>
+<h4 id="post-contributions">POST /contributions</h4>
+<p>Create a new Contribution. <strong>Authenticated.</strong></p>
+<p><strong>Request Body:</strong></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="p">{</span>
+<a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a><span class="w">  </span><span class="nt">&quot;request_item_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ii1-…&quot;</span><span class="p">,</span>
+<a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a><span class="w">  </span><span class="nt">&quot;quantity&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span>
+<a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a><span class="w">  </span><span class="nt">&quot;collection_center_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&lt;cc-uuid-caracas&gt;&quot;</span><span class="p">,</span>
+<a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a><span class="w">  </span><span class="nt">&quot;notes&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Batch 1 of 5 — printing this weekend&quot;</span>
+<a id="__codelineno-15-6" name="__codelineno-15-6" href="#__codelineno-15-6"></a><span class="p">}</span>
+</code></pre></div>
+<p><strong>Response:</strong> <code>201 Created</code></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="p">{</span>
+<a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a><span class="w">  </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;co1-…&quot;</span><span class="p">,</span>
+<a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a><span class="w">  </span><span class="nt">&quot;request_item_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ii1-…&quot;</span><span class="p">,</span>
+<a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a><span class="w">  </span><span class="nt">&quot;request_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;rrrr1111-…&quot;</span><span class="p">,</span>
+<a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a><span class="w">  </span><span class="nt">&quot;request_title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Ferulas for Venezuela&quot;</span><span class="p">,</span>
+<a id="__codelineno-16-6" name="__codelineno-16-6" href="#__codelineno-16-6"></a><span class="w">  </span><span class="nt">&quot;part_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&lt;part-uuid-forearm&gt;&quot;</span><span class="p">,</span>
+<a id="__codelineno-16-7" name="__codelineno-16-7" href="#__codelineno-16-7"></a><span class="w">  </span><span class="nt">&quot;part_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Forearm splint v3&quot;</span><span class="p">,</span>
+<a id="__codelineno-16-8" name="__codelineno-16-8" href="#__codelineno-16-8"></a><span class="w">  </span><span class="nt">&quot;maker_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&lt;user-uuid&gt;&quot;</span><span class="p">,</span>
+<a id="__codelineno-16-9" name="__codelineno-16-9" href="#__codelineno-16-9"></a><span class="w">  </span><span class="nt">&quot;collection_center_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&lt;cc-uuid-caracas&gt;&quot;</span><span class="p">,</span>
+<a id="__codelineno-16-10" name="__codelineno-16-10" href="#__codelineno-16-10"></a><span class="w">  </span><span class="nt">&quot;quantity&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span>
+<a id="__codelineno-16-11" name="__codelineno-16-11" href="#__codelineno-16-11"></a><span class="w">  </span><span class="nt">&quot;notes&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Batch 1 of 5 — printing this weekend&quot;</span><span class="p">,</span>
+<a id="__codelineno-16-12" name="__codelineno-16-12" href="#__codelineno-16-12"></a><span class="w">  </span><span class="nt">&quot;status&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;claimed&quot;</span><span class="p">,</span>
+<a id="__codelineno-16-13" name="__codelineno-16-13" href="#__codelineno-16-13"></a><span class="w">  </span><span class="nt">&quot;claimed_at&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2026-06-27T01:00:00Z&quot;</span><span class="p">,</span>
+<a id="__codelineno-16-14" name="__codelineno-16-14" href="#__codelineno-16-14"></a><span class="w">  </span><span class="nt">&quot;printed_at&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<a id="__codelineno-16-15" name="__codelineno-16-15" href="#__codelineno-16-15"></a><span class="w">  </span><span class="nt">&quot;delivered_at&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<a id="__codelineno-16-16" name="__codelineno-16-16" href="#__codelineno-16-16"></a><span class="w">  </span><span class="nt">&quot;received_at&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<a id="__codelineno-16-17" name="__codelineno-16-17" href="#__codelineno-16-17"></a><span class="w">  </span><span class="nt">&quot;received_by_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<a id="__codelineno-16-18" name="__codelineno-16-18" href="#__codelineno-16-18"></a><span class="w">  </span><span class="nt">&quot;auto_received&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<a id="__codelineno-16-19" name="__codelineno-16-19" href="#__codelineno-16-19"></a><span class="w">  </span><span class="nt">&quot;released_at&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<a id="__codelineno-16-20" name="__codelineno-16-20" href="#__codelineno-16-20"></a><span class="w">  </span><span class="nt">&quot;released_reason&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<a id="__codelineno-16-21" name="__codelineno-16-21" href="#__codelineno-16-21"></a><span class="w">  </span><span class="nt">&quot;active&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<a id="__codelineno-16-22" name="__codelineno-16-22" href="#__codelineno-16-22"></a><span class="w">  </span><span class="nt">&quot;created_at&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2026-06-27T01:00:00Z&quot;</span><span class="p">,</span>
+<a id="__codelineno-16-23" name="__codelineno-16-23" href="#__codelineno-16-23"></a><span class="w">  </span><span class="nt">&quot;updated_at&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2026-06-27T01:00:00Z&quot;</span>
+<a id="__codelineno-16-24" name="__codelineno-16-24" href="#__codelineno-16-24"></a><span class="p">}</span>
+</code></pre></div>
+<p><strong>Errors:</strong></p>
+<ul>
+<li><code>404 REQUEST_ITEM_NOT_FOUND</code></li>
+<li><code>409 REQUEST_NOT_OPEN</code> — parent Request is closed or fulfilled</li>
+<li><code>409 COLLECTION_CENTER_NOT_VERIFIED_OR_ACTIVE</code></li>
+</ul>
+<h4 id="get-contributionsme">GET /contributions/me</h4>
+<p>Authenticated user's own contributions. Query params: <code>status</code>,
+<code>request_id</code>, <code>collection_center_id</code>, <code>page</code>, <code>per_page</code>. Backs the
+"My Prints" tab (FR-060).</p>
+<h4 id="get-contributionsid">GET /contributions/{id}</h4>
+<p>Visible to: maker, effective members of the target Centro, effective
+requesters of the parent Request, mod/admin.</p>
+<h4 id="post-contributionsidmark-printed">POST /contributions/{id}/mark-printed</h4>
+<p>Transitions <code>claimed → printed</code>. <strong>Maker only.</strong></p>
+<h4 id="post-contributionsidmark-delivered">POST /contributions/{id}/mark-delivered</h4>
+<p>Transitions <code>printed → delivered</code>. <strong>Maker only.</strong></p>
+<blockquote>
+<p>When the maker is also an effective member of the target Centro
+(FR-126), this call also auto-advances the status to <code>received</code>
+in the same transaction. The response contains <code>status="received"</code>
+and <code>auto_received=true</code>. An <code>auto_receive_contribution</code> audit
+entry is written.</p>
+</blockquote>
+<h4 id="post-contributionsidconfirm-received">POST /contributions/{id}/confirm-received</h4>
+<p>Transitions <code>delivered → received</code>. <strong>Effective member of the target
+Centro / mod / admin</strong> (FR-056). Sets <code>received_by_id</code> to the caller.</p>
+<h4 id="post-contributionsidrelease">POST /contributions/{id}/release</h4>
+<p><code>{ "reason": "..." }</code>. <strong>Maker only</strong>, while status is <code>claimed</code> or
+<code>printed</code> (FR-054). Sets status to <code>released</code> with reason <code>manual</code>.</p>
+<hr />
+<h3 id="7-ownership-transfers">7. Ownership Transfers</h3>
+<p>The polymorphic transfer flow applies to <strong>Parts, Collection Centers,
+and Requests</strong> (FR-118).</p>
+<h4 id="post-partsidtransfers">POST /parts/{id}/transfers</h4>
+<p>Initiate a transfer.</p>
+<p><strong>Request Body:</strong></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="p">{</span>
+<a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a><span class="w">  </span><span class="nt">&quot;target_user_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&lt;user-uuid&gt;&quot;</span>
+<a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a><span class="p">}</span>
+</code></pre></div>
+<p>Either <code>target_user_id</code> or <code>target_organization_id</code> is required.</p>
+<p><strong>Response:</strong> <code>201 Created</code></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="p">{</span>
+<a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a><span class="w">  </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;tx1-…&quot;</span><span class="p">,</span>
+<a id="__codelineno-18-3" name="__codelineno-18-3" href="#__codelineno-18-3"></a><span class="w">  </span><span class="nt">&quot;asset_type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;part&quot;</span><span class="p">,</span>
+<a id="__codelineno-18-4" name="__codelineno-18-4" href="#__codelineno-18-4"></a><span class="w">  </span><span class="nt">&quot;asset_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&lt;part-uuid&gt;&quot;</span><span class="p">,</span>
+<a id="__codelineno-18-5" name="__codelineno-18-5" href="#__codelineno-18-5"></a><span class="w">  </span><span class="nt">&quot;source_user_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&lt;caller-uuid&gt;&quot;</span><span class="p">,</span>
+<a id="__codelineno-18-6" name="__codelineno-18-6" href="#__codelineno-18-6"></a><span class="w">  </span><span class="nt">&quot;source_organization_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<a id="__codelineno-18-7" name="__codelineno-18-7" href="#__codelineno-18-7"></a><span class="w">  </span><span class="nt">&quot;target_user_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&lt;user-uuid&gt;&quot;</span><span class="p">,</span>
+<a id="__codelineno-18-8" name="__codelineno-18-8" href="#__codelineno-18-8"></a><span class="w">  </span><span class="nt">&quot;target_organization_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<a id="__codelineno-18-9" name="__codelineno-18-9" href="#__codelineno-18-9"></a><span class="w">  </span><span class="nt">&quot;initiated_by_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&lt;caller-uuid&gt;&quot;</span><span class="p">,</span>
+<a id="__codelineno-18-10" name="__codelineno-18-10" href="#__codelineno-18-10"></a><span class="w">  </span><span class="nt">&quot;resolved_by_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<a id="__codelineno-18-11" name="__codelineno-18-11" href="#__codelineno-18-11"></a><span class="w">  </span><span class="nt">&quot;status&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;pending&quot;</span><span class="p">,</span>
+<a id="__codelineno-18-12" name="__codelineno-18-12" href="#__codelineno-18-12"></a><span class="w">  </span><span class="nt">&quot;reason&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<a id="__codelineno-18-13" name="__codelineno-18-13" href="#__codelineno-18-13"></a><span class="w">  </span><span class="nt">&quot;expires_at&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2026-07-04T00:00:00Z&quot;</span><span class="p">,</span>
+<a id="__codelineno-18-14" name="__codelineno-18-14" href="#__codelineno-18-14"></a><span class="w">  </span><span class="nt">&quot;resolved_at&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span>
+<a id="__codelineno-18-15" name="__codelineno-18-15" href="#__codelineno-18-15"></a><span class="p">}</span>
+</code></pre></div>
+<p><strong>Errors:</strong> <code>409 TRANSFER_ALREADY_PENDING</code>, <code>403 NOT_EFFECTIVE_OWNER</code></p>
+<h4 id="post-collection-centersidtransfers-same-shape">POST /collection-centers/{id}/transfers — same shape</h4>
+<h4 id="post-requestsidtransfers-same-shape">POST /requests/{id}/transfers — same shape</h4>
+<h4 id="get-transfersme">GET /transfers/me</h4>
+<p>Pending transfers where the caller is the target (must accept or
+decline) or the source (can cancel). Query param <code>direction=incoming|
+outgoing|all</code> (default <code>all</code>).</p>
+<h4 id="get-transfersid">GET /transfers/{id}</h4>
+<p>Single transfer. Visible to source/target principals and mod/admin.</p>
+<h4 id="post-transfersidaccept">POST /transfers/{id}/accept</h4>
+<p>Target accepts. Atomic ownership swap (FR-112).</p>
+<ul>
+<li>If <code>target_user_id</code> was set: only that user can call.</li>
+<li>If <code>target_organization_id</code> was set: any active <code>owner</code> of the org
+  can call on its behalf.</li>
+</ul>
+<p><strong>Response:</strong> <code>200 OK</code> — full transfer plus the updated asset summary.</p>
+<h4 id="post-transfersiddecline">POST /transfers/{id}/decline</h4>
+<p>Same authorization as accept. <code>{ "reason": "..." }</code>.</p>
+<h4 id="post-transfersidcancel">POST /transfers/{id}/cancel</h4>
+<p>The initiating effective owner cancels a pending transfer (FR-113).</p>
+<h4 id="post-partsidforce-transfer-similar-paths-for-ccs-requests">POST /parts/{id}/force-transfer | similar paths for CCs &amp; Requests</h4>
+<p><strong>Maintainer / admin only</strong> (FR-116). <code>{ "target_user_id": "...",
+"reason": "owner unreachable" }</code>.</p>
+<hr />
+<h3 id="8-discovery-prioritization">8. Discovery &amp; Prioritization</h3>
+<p>The discovery endpoints power the "What to print next" experience —
+the headline value of PrintForHelp.</p>
+<h4 id="get-discoverynext">GET /discovery/next</h4>
+<p>Ranks open RequestItems per FR-065.</p>
+<p><strong>Query Parameters:</strong></p>
+<ul>
+<li><code>country</code> (optional) — filter to items whose preferred centers
+  include one in that country</li>
+<li><code>tag</code> (optional, repeatable) — filter to items whose Part has that
+  tag</li>
+<li><code>featured_only</code> (bool) — only featured-Part items</li>
+<li><code>show_all</code> (bool) — skip the FR-066 reachable-Centro filter</li>
+<li><code>page</code>, <code>per_page</code></li>
+</ul>
+<p><strong>Response:</strong> <code>200 OK</code></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a><span class="p">{</span>
+<a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a><span class="w">  </span><span class="nt">&quot;items&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<a id="__codelineno-19-3" name="__codelineno-19-3" href="#__codelineno-19-3"></a><span class="w">    </span><span class="p">{</span>
+<a id="__codelineno-19-4" name="__codelineno-19-4" href="#__codelineno-19-4"></a><span class="w">      </span><span class="nt">&quot;request_item_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ii1-…&quot;</span><span class="p">,</span>
+<a id="__codelineno-19-5" name="__codelineno-19-5" href="#__codelineno-19-5"></a><span class="w">      </span><span class="nt">&quot;request_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;rrrr1111-…&quot;</span><span class="p">,</span>
+<a id="__codelineno-19-6" name="__codelineno-19-6" href="#__codelineno-19-6"></a><span class="w">      </span><span class="nt">&quot;request_title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Ferulas for Venezuela&quot;</span><span class="p">,</span>
+<a id="__codelineno-19-7" name="__codelineno-19-7" href="#__codelineno-19-7"></a><span class="w">      </span><span class="nt">&quot;part_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&lt;part-uuid&gt;&quot;</span><span class="p">,</span>
+<a id="__codelineno-19-8" name="__codelineno-19-8" href="#__codelineno-19-8"></a><span class="w">      </span><span class="nt">&quot;part_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Forearm splint v3&quot;</span><span class="p">,</span>
+<a id="__codelineno-19-9" name="__codelineno-19-9" href="#__codelineno-19-9"></a><span class="w">      </span><span class="nt">&quot;part_featured&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<a id="__codelineno-19-10" name="__codelineno-19-10" href="#__codelineno-19-10"></a><span class="w">      </span><span class="nt">&quot;quantity&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">50</span><span class="p">,</span>
+<a id="__codelineno-19-11" name="__codelineno-19-11" href="#__codelineno-19-11"></a><span class="w">      </span><span class="nt">&quot;committed&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">12</span><span class="p">,</span>
+<a id="__codelineno-19-12" name="__codelineno-19-12" href="#__codelineno-19-12"></a><span class="w">      </span><span class="nt">&quot;remaining&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">38</span><span class="p">,</span>
+<a id="__codelineno-19-13" name="__codelineno-19-13" href="#__codelineno-19-13"></a><span class="w">      </span><span class="nt">&quot;effective_deadline&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2026-08-15&quot;</span><span class="p">,</span>
+<a id="__codelineno-19-14" name="__codelineno-19-14" href="#__codelineno-19-14"></a><span class="w">      </span><span class="nt">&quot;preferred_collection_centers&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<a id="__codelineno-19-15" name="__codelineno-19-15" href="#__codelineno-19-15"></a><span class="w">        </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&lt;cc&gt;&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;UCAB Lab — Caracas&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;country&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;VE&quot;</span><span class="w"> </span><span class="p">}</span>
+<a id="__codelineno-19-16" name="__codelineno-19-16" href="#__codelineno-19-16"></a><span class="w">      </span><span class="p">]</span>
+<a id="__codelineno-19-17" name="__codelineno-19-17" href="#__codelineno-19-17"></a><span class="w">    </span><span class="p">}</span>
+<a id="__codelineno-19-18" name="__codelineno-19-18" href="#__codelineno-19-18"></a><span class="w">  </span><span class="p">],</span>
+<a id="__codelineno-19-19" name="__codelineno-19-19" href="#__codelineno-19-19"></a><span class="w">  </span><span class="nt">&quot;pagination&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;page&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;per_page&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">20</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;total&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">47</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;pages&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">3</span><span class="w"> </span><span class="p">}</span>
+<a id="__codelineno-19-20" name="__codelineno-19-20" href="#__codelineno-19-20"></a><span class="p">}</span>
+</code></pre></div>
+<h4 id="get-discoverydashboard">GET /discovery/dashboard</h4>
+<p>Aggregate stats (FR-067).</p>
+<p><strong>Response:</strong> <code>200 OK</code></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a><span class="p">{</span>
+<a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a><span class="w">  </span><span class="nt">&quot;open_requests&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">8</span><span class="p">,</span>
+<a id="__codelineno-20-3" name="__codelineno-20-3" href="#__codelineno-20-3"></a><span class="w">  </span><span class="nt">&quot;open_request_items&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">47</span><span class="p">,</span>
+<a id="__codelineno-20-4" name="__codelineno-20-4" href="#__codelineno-20-4"></a><span class="w">  </span><span class="nt">&quot;quantity_remaining_total&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1842</span><span class="p">,</span>
+<a id="__codelineno-20-5" name="__codelineno-20-5" href="#__codelineno-20-5"></a><span class="w">  </span><span class="nt">&quot;delivered_last_30d&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">612</span><span class="p">,</span>
+<a id="__codelineno-20-6" name="__codelineno-20-6" href="#__codelineno-20-6"></a><span class="w">  </span><span class="nt">&quot;top_parts&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<a id="__codelineno-20-7" name="__codelineno-20-7" href="#__codelineno-20-7"></a><span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&lt;part&gt;&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Finger splint v2&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;remaining_total&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">480</span><span class="w"> </span><span class="p">},</span>
+<a id="__codelineno-20-8" name="__codelineno-20-8" href="#__codelineno-20-8"></a><span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&lt;part&gt;&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Forearm splint v3&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;remaining_total&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">320</span><span class="w"> </span><span class="p">},</span>
+<a id="__codelineno-20-9" name="__codelineno-20-9" href="#__codelineno-20-9"></a><span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;...&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;...&quot;</span><span class="w"> </span><span class="p">}</span>
+<a id="__codelineno-20-10" name="__codelineno-20-10" href="#__codelineno-20-10"></a><span class="w">  </span><span class="p">]</span>
+<a id="__codelineno-20-11" name="__codelineno-20-11" href="#__codelineno-20-11"></a><span class="p">}</span>
+</code></pre></div>
+<h4 id="get-discoverypartspart_idchart">GET /discovery/parts/{part_id}/chart</h4>
+<p>Rolling-30-day contributions chart for one Part (FR-068).</p>
+<p><strong>Response:</strong> <code>200 OK</code></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a><span class="p">{</span>
+<a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a><span class="w">  </span><span class="nt">&quot;part_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&lt;part&gt;&quot;</span><span class="p">,</span>
+<a id="__codelineno-21-3" name="__codelineno-21-3" href="#__codelineno-21-3"></a><span class="w">  </span><span class="nt">&quot;window_days&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">30</span><span class="p">,</span>
+<a id="__codelineno-21-4" name="__codelineno-21-4" href="#__codelineno-21-4"></a><span class="w">  </span><span class="nt">&quot;points&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<a id="__codelineno-21-5" name="__codelineno-21-5" href="#__codelineno-21-5"></a><span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;date&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2026-05-29&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;claimed&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">12</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;delivered&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span><span class="w"> </span><span class="p">},</span>
+<a id="__codelineno-21-6" name="__codelineno-21-6" href="#__codelineno-21-6"></a><span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;date&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2026-05-30&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;claimed&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">9</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;delivered&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">3</span><span class="w"> </span><span class="p">}</span>
+<a id="__codelineno-21-7" name="__codelineno-21-7" href="#__codelineno-21-7"></a><span class="w">  </span><span class="p">]</span>
+<a id="__codelineno-21-8" name="__codelineno-21-8" href="#__codelineno-21-8"></a><span class="p">}</span>
+</code></pre></div>
+<hr />
+<h3 id="9-audit-log">9. Audit Log</h3>
+<h4 id="get-audit-log">GET /audit-log</h4>
+<p><strong>Maintainer / admin only.</strong></p>
+<p>Query params: <code>actor_id</code>, <code>action</code>, <code>target_type</code>, <code>target_id</code>,
+<code>before</code> (cursor), <code>limit</code> (default 100, max 500).</p>
+<p><strong>Response:</strong> <code>200 OK</code></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a><span class="p">{</span>
+<a id="__codelineno-22-2" name="__codelineno-22-2" href="#__codelineno-22-2"></a><span class="w">  </span><span class="nt">&quot;items&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<a id="__codelineno-22-3" name="__codelineno-22-3" href="#__codelineno-22-3"></a><span class="w">    </span><span class="p">{</span>
+<a id="__codelineno-22-4" name="__codelineno-22-4" href="#__codelineno-22-4"></a><span class="w">      </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;au1-…&quot;</span><span class="p">,</span>
+<a id="__codelineno-22-5" name="__codelineno-22-5" href="#__codelineno-22-5"></a><span class="w">      </span><span class="nt">&quot;actor_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&lt;user&gt;&quot;</span><span class="p">,</span>
+<a id="__codelineno-22-6" name="__codelineno-22-6" href="#__codelineno-22-6"></a><span class="w">      </span><span class="nt">&quot;actor_username&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;alice&quot;</span><span class="p">,</span>
+<a id="__codelineno-22-7" name="__codelineno-22-7" href="#__codelineno-22-7"></a><span class="w">      </span><span class="nt">&quot;action&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;verify_collection_center&quot;</span><span class="p">,</span>
+<a id="__codelineno-22-8" name="__codelineno-22-8" href="#__codelineno-22-8"></a><span class="w">      </span><span class="nt">&quot;target_type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;CollectionCenter&quot;</span><span class="p">,</span>
+<a id="__codelineno-22-9" name="__codelineno-22-9" href="#__codelineno-22-9"></a><span class="w">      </span><span class="nt">&quot;target_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&lt;cc&gt;&quot;</span><span class="p">,</span>
+<a id="__codelineno-22-10" name="__codelineno-22-10" href="#__codelineno-22-10"></a><span class="w">      </span><span class="nt">&quot;reason&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<a id="__codelineno-22-11" name="__codelineno-22-11" href="#__codelineno-22-11"></a><span class="w">      </span><span class="nt">&quot;created_at&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2026-06-27T02:00:00Z&quot;</span>
+<a id="__codelineno-22-12" name="__codelineno-22-12" href="#__codelineno-22-12"></a><span class="w">    </span><span class="p">}</span>
+<a id="__codelineno-22-13" name="__codelineno-22-13" href="#__codelineno-22-13"></a><span class="w">  </span><span class="p">],</span>
+<a id="__codelineno-22-14" name="__codelineno-22-14" href="#__codelineno-22-14"></a><span class="w">  </span><span class="nt">&quot;next_before&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2026-06-26T22:00:00Z&quot;</span>
+<a id="__codelineno-22-15" name="__codelineno-22-15" href="#__codelineno-22-15"></a><span class="p">}</span>
+</code></pre></div>
+<hr />
+<h3 id="10-personal-access-tokens">10. Personal Access Tokens</h3>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Path</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>GET</code></td>
+<td><code>/api-tokens/</code></td>
+<td>List the caller's tokens (metadata only).</td>
+</tr>
+<tr>
+<td><code>POST</code></td>
+<td><code>/api-tokens/</code></td>
+<td>Create a token. The plaintext <code>token</code> is returned <strong>once</strong>.</td>
+</tr>
+<tr>
+<td><code>DELETE</code></td>
+<td><code>/api-tokens/{token_id}</code></td>
+<td>Revoke (soft delete).</td>
+</tr>
+</tbody>
+</table>
+<p>PATs are prefixed <code>pforh_pat_</code> and may be sent as bearer tokens
+anywhere a JWT is accepted.</p>
+<hr />
+<h3 id="11-system-endpoints">11. System Endpoints</h3>
+<h4 id="get-enums">GET /enums</h4>
+<p>Returns every documented enum so the frontend doesn't hard-code them.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a><span class="p">{</span>
+<a id="__codelineno-23-2" name="__codelineno-23-2" href="#__codelineno-23-2"></a><span class="w">  </span><span class="nt">&quot;user_roles&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;user&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;maintainer&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;admin&quot;</span><span class="p">],</span>
+<a id="__codelineno-23-3" name="__codelineno-23-3" href="#__codelineno-23-3"></a><span class="w">  </span><span class="nt">&quot;locales&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;es&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;en&quot;</span><span class="p">],</span>
+<a id="__codelineno-23-4" name="__codelineno-23-4" href="#__codelineno-23-4"></a><span class="w">  </span><span class="nt">&quot;part_statuses&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;active&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;discontinued&quot;</span><span class="p">],</span>
+<a id="__codelineno-23-5" name="__codelineno-23-5" href="#__codelineno-23-5"></a><span class="w">  </span><span class="nt">&quot;collection_center_statuses&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;active&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;inactive&quot;</span><span class="p">],</span>
+<a id="__codelineno-23-6" name="__codelineno-23-6" href="#__codelineno-23-6"></a><span class="w">  </span><span class="nt">&quot;organization_statuses&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;active&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;inactive&quot;</span><span class="p">],</span>
+<a id="__codelineno-23-7" name="__codelineno-23-7" href="#__codelineno-23-7"></a><span class="w">  </span><span class="nt">&quot;request_statuses&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;open&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;fulfilled&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;closed&quot;</span><span class="p">],</span>
+<a id="__codelineno-23-8" name="__codelineno-23-8" href="#__codelineno-23-8"></a><span class="w">  </span><span class="nt">&quot;contribution_statuses&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<a id="__codelineno-23-9" name="__codelineno-23-9" href="#__codelineno-23-9"></a><span class="w">    </span><span class="s2">&quot;claimed&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;printed&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;delivered&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;received&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;released&quot;</span>
+<a id="__codelineno-23-10" name="__codelineno-23-10" href="#__codelineno-23-10"></a><span class="w">  </span><span class="p">],</span>
+<a id="__codelineno-23-11" name="__codelineno-23-11" href="#__codelineno-23-11"></a><span class="w">  </span><span class="nt">&quot;organization_roles&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;owner&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;member&quot;</span><span class="p">],</span>
+<a id="__codelineno-23-12" name="__codelineno-23-12" href="#__codelineno-23-12"></a><span class="w">  </span><span class="nt">&quot;collection_center_roles&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;contributor&quot;</span><span class="p">],</span>
+<a id="__codelineno-23-13" name="__codelineno-23-13" href="#__codelineno-23-13"></a><span class="w">  </span><span class="nt">&quot;ownership_transfer_asset_types&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;part&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;collection_center&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;request&quot;</span><span class="p">],</span>
+<a id="__codelineno-23-14" name="__codelineno-23-14" href="#__codelineno-23-14"></a><span class="w">  </span><span class="nt">&quot;ownership_transfer_statuses&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<a id="__codelineno-23-15" name="__codelineno-23-15" href="#__codelineno-23-15"></a><span class="w">    </span><span class="s2">&quot;pending&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;accepted&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;declined&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;cancelled&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;expired&quot;</span><span class="p">,</span>
+<a id="__codelineno-23-16" name="__codelineno-23-16" href="#__codelineno-23-16"></a><span class="w">    </span><span class="s2">&quot;force_transferred&quot;</span>
+<a id="__codelineno-23-17" name="__codelineno-23-17" href="#__codelineno-23-17"></a><span class="w">  </span><span class="p">]</span>
+<a id="__codelineno-23-18" name="__codelineno-23-18" href="#__codelineno-23-18"></a><span class="p">}</span>
+</code></pre></div>
+<h4 id="get-health">GET /health</h4>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-24-1" name="__codelineno-24-1" href="#__codelineno-24-1"></a><span class="p">{</span>
+<a id="__codelineno-24-2" name="__codelineno-24-2" href="#__codelineno-24-2"></a><span class="w">  </span><span class="nt">&quot;status&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;healthy&quot;</span><span class="p">,</span>
+<a id="__codelineno-24-3" name="__codelineno-24-3" href="#__codelineno-24-3"></a><span class="w">  </span><span class="nt">&quot;service&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;printforhelp-api&quot;</span><span class="p">,</span>
+<a id="__codelineno-24-4" name="__codelineno-24-4" href="#__codelineno-24-4"></a><span class="w">  </span><span class="nt">&quot;version&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;1.0.0&quot;</span>
+<a id="__codelineno-24-5" name="__codelineno-24-5" href="#__codelineno-24-5"></a><span class="p">}</span>
+</code></pre></div>
+<hr />
+<h2 id="error-codes">Error Codes</h2>
+<table>
+<thead>
+<tr>
+<th>Code</th>
+<th>HTTP</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>VALIDATION_ERROR</code></td>
+<td>400</td>
+<td>Request validation failed</td>
+</tr>
+<tr>
+<td><code>WEAK_PASSWORD</code></td>
+<td>400</td>
+<td>Password does not meet strength policy</td>
+</tr>
+<tr>
+<td><code>INCORRECT_PASSWORD</code></td>
+<td>400</td>
+<td>Current password is incorrect</td>
+</tr>
+<tr>
+<td><code>INVALID_CREDENTIALS</code></td>
+<td>401</td>
+<td>Invalid username or password</td>
+</tr>
+<tr>
+<td><code>INVALID_TOKEN</code></td>
+<td>401</td>
+<td>Invalid or expired token</td>
+</tr>
+<tr>
+<td><code>INACTIVE_USER</code></td>
+<td>403</td>
+<td>User account is inactive</td>
+</tr>
+<tr>
+<td><code>ROLE_REQUIRED</code></td>
+<td>403</td>
+<td>Endpoint requires a higher role</td>
+</tr>
+<tr>
+<td><code>LOCKOUT_PROTECTION</code></td>
+<td>403</td>
+<td>Cannot demote/deactivate the last active admin (FR-014)</td>
+</tr>
+<tr>
+<td><code>NOT_EFFECTIVE_OWNER</code></td>
+<td>403</td>
+<td>Caller is not an effective owner of the asset</td>
+</tr>
+<tr>
+<td><code>NOT_EFFECTIVE_MEMBER</code></td>
+<td>403</td>
+<td>Caller is not an effective member of the Collection Center</td>
+</tr>
+<tr>
+<td><code>ORG_MEMBERSHIP_REQUIRED</code></td>
+<td>403</td>
+<td>Caller is not an active member of the referenced Organization</td>
+</tr>
+<tr>
+<td><code>PART_NOT_FOUND</code></td>
+<td>404</td>
+<td>Part not found</td>
+</tr>
+<tr>
+<td><code>COLLECTION_CENTER_NOT_FOUND</code></td>
+<td>404</td>
+<td>Collection Center not found</td>
+</tr>
+<tr>
+<td><code>ORGANIZATION_NOT_FOUND</code></td>
+<td>404</td>
+<td>Organization not found</td>
+</tr>
+<tr>
+<td><code>REQUEST_NOT_FOUND</code></td>
+<td>404</td>
+<td>Request not found</td>
+</tr>
+<tr>
+<td><code>REQUEST_ITEM_NOT_FOUND</code></td>
+<td>404</td>
+<td>Request item not found</td>
+</tr>
+<tr>
+<td><code>CONTRIBUTION_NOT_FOUND</code></td>
+<td>404</td>
+<td>Contribution not found</td>
+</tr>
+<tr>
+<td><code>TRANSFER_NOT_FOUND</code></td>
+<td>404</td>
+<td>Ownership transfer not found</td>
+</tr>
+<tr>
+<td><code>USER_NOT_FOUND</code></td>
+<td>404</td>
+<td>User not found</td>
+</tr>
+<tr>
+<td><code>API_TOKEN_NOT_FOUND</code></td>
+<td>404</td>
+<td>API token not found</td>
+</tr>
+<tr>
+<td><code>USERNAME_TAKEN</code></td>
+<td>409</td>
+<td>Username already exists</td>
+</tr>
+<tr>
+<td><code>ORG_NAME_TAKEN</code></td>
+<td>409</td>
+<td>Organization name already exists</td>
+</tr>
+<tr>
+<td><code>PART_ARCHIVE_BLOCKED</code></td>
+<td>409</td>
+<td>Part has open Requests referencing it (FR-076)</td>
+</tr>
+<tr>
+<td><code>CC_ARCHIVE_BLOCKED</code></td>
+<td>409</td>
+<td>Collection Center has open Contributions (FR-079)</td>
+</tr>
+<tr>
+<td><code>ORG_ARCHIVE_BLOCKED</code></td>
+<td>409</td>
+<td>Organization still owns active assets (FR-104)</td>
+</tr>
+<tr>
+<td><code>REQUEST_REQUIRES_ITEMS</code></td>
+<td>400</td>
+<td>A Request must contain at least one item (FR-119)</td>
+</tr>
+<tr>
+<td><code>LAST_ITEM_CANNOT_BE_REMOVED</code></td>
+<td>409</td>
+<td>Cannot remove the last item from an active Request (FR-119)</td>
+</tr>
+<tr>
+<td><code>ITEM_HAS_CONTRIBUTIONS</code></td>
+<td>409</td>
+<td>Cannot remove an item with active Contributions (FR-123)</td>
+</tr>
+<tr>
+<td><code>REQUEST_NOT_OPEN</code></td>
+<td>409</td>
+<td>Cannot create a Contribution on a non-open parent Request</td>
+</tr>
+<tr>
+<td><code>COLLECTION_CENTER_NOT_VERIFIED_OR_ACTIVE</code></td>
+<td>409</td>
+<td>Centro must be verified and active (FR-064)</td>
+</tr>
+<tr>
+<td><code>CONTRIBUTION_NOT_IN_EXPECTED_STATE</code></td>
+<td>409</td>
+<td>Status transition not allowed from current state</td>
+</tr>
+<tr>
+<td><code>TRANSFER_ALREADY_PENDING</code></td>
+<td>409</td>
+<td>An asset cannot have two pending transfers (FR-115)</td>
+</tr>
+<tr>
+<td><code>TRANSFER_NOT_PENDING</code></td>
+<td>409</td>
+<td>Accept/decline/cancel allowed only on <code>pending</code></td>
+</tr>
+<tr>
+<td><code>OWNER_CANNOT_LEAVE</code></td>
+<td>409</td>
+<td>Owner must transfer ownership first (FR-087, FR-100)</td>
+</tr>
+<tr>
+<td><code>INTERNAL_SERVER_ERROR</code></td>
+<td>500</td>
+<td>Server error</td>
+</tr>
+</tbody>
+</table>
+<h2 id="http-status-codes">HTTP Status Codes</h2>
+<ul>
+<li><code>200 OK</code> — successful GET / PUT / POST that mutates state</li>
+<li><code>201 Created</code> — POST that creates a new resource</li>
+<li><code>204 No Content</code> — successful DELETE / self-deactivate</li>
+<li><code>400 Bad Request</code> — invalid request data</li>
+<li><code>401 Unauthorized</code> — auth required or invalid token</li>
+<li><code>403 Forbidden</code> — insufficient permissions</li>
+<li><code>404 Not Found</code> — resource not found</li>
+<li><code>409 Conflict</code> — state-based rejection (membership rules, archive
+  guards, transfer rules)</li>
+<li><code>422 Unprocessable Entity</code> — semantic validation failure</li>
+<li><code>500 Internal Server Error</code> — server error</li>
+</ul>
+<h2 id="rate-limiting">Rate Limiting</h2>
+<ul>
+<li><strong>Authenticated</strong>: 1,000 requests / hour</li>
+<li><strong>Authentication endpoints</strong>: 10 requests / minute / IP</li>
+<li><strong>Discovery endpoints</strong>: 60 requests / minute / user (these are
+  heavier aggregations)</li>
+</ul>
+<h2 id="data-validation-rules">Data Validation Rules</h2>
+<h3 id="identifiers">Identifiers</h3>
+<ul>
+<li>All IDs are UUID v4.</li>
+</ul>
+<h3 id="quantities">Quantities</h3>
+<ul>
+<li><code>Contribution.quantity</code>, <code>RequestItem.quantity</code>: positive integers</li>
+<li><code>RequestItem.quantity</code> may be <code>null</code> (means "as many as possible";
+  the item never auto-fulfills, FR-121)</li>
+<li>Maximum quantity per single Contribution: 1,000 (sanity guard)</li>
+</ul>
+<h3 id="dates-times">Dates &amp; Times</h3>
+<ul>
+<li>Dates: <code>YYYY-MM-DD</code></li>
+<li>Timestamps: ISO 8601 with <code>Z</code> suffix</li>
+<li><code>deadline</code>: not enforced to be in the future (back-fill of historical
+  campaigns is allowed) — but the frontend warns</li>
+</ul>
+<h3 id="text-fields">Text Fields</h3>
+<ul>
+<li><code>Organization.name</code>: 1–120 chars, unique</li>
+<li><code>Part.name</code>, <code>CollectionCenter.name</code>, <code>Request.title</code>: 1–200 chars</li>
+<li><code>description</code> fields: up to 10,000 chars, markdown</li>
+<li>Free-text contact/notes: up to 2,000 chars</li>
+</ul>
+<hr />
+<h2 id="api-usage-examples">API Usage Examples</h2>
+<h3 id="end-to-end-ferulas-for-venezuela">End-to-End: "Ferulas for Venezuela"</h3>
+<p>The exact workflow described in §3.5 of the requirements doc.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-25-1" name="__codelineno-25-1" href="#__codelineno-25-1"></a><span class="kd">const</span><span class="w"> </span><span class="nx">API</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;http://localhost:8100/api/v1&quot;</span><span class="p">;</span>
+<a id="__codelineno-25-2" name="__codelineno-25-2" href="#__codelineno-25-2"></a>
+<a id="__codelineno-25-3" name="__codelineno-25-3" href="#__codelineno-25-3"></a><span class="c1">// 1. Log in (after self-registering as `alice`)</span>
+<a id="__codelineno-25-4" name="__codelineno-25-4" href="#__codelineno-25-4"></a><span class="kd">const</span><span class="w"> </span><span class="nx">login</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">fetch</span><span class="p">(</span><span class="sb">`</span><span class="si">${</span><span class="nx">API</span><span class="si">}</span><span class="sb">/auth/login`</span><span class="p">,</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-25-5" name="__codelineno-25-5" href="#__codelineno-25-5"></a><span class="w">  </span><span class="nx">method</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;POST&quot;</span><span class="p">,</span>
+<a id="__codelineno-25-6" name="__codelineno-25-6" href="#__codelineno-25-6"></a><span class="w">  </span><span class="nx">headers</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="s2">&quot;Content-Type&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;application/x-www-form-urlencoded&quot;</span><span class="w"> </span><span class="p">},</span>
+<a id="__codelineno-25-7" name="__codelineno-25-7" href="#__codelineno-25-7"></a><span class="w">  </span><span class="nx">body</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;username=alice&amp;password=securePassword123&quot;</span><span class="p">,</span>
+<a id="__codelineno-25-8" name="__codelineno-25-8" href="#__codelineno-25-8"></a><span class="p">});</span>
+<a id="__codelineno-25-9" name="__codelineno-25-9" href="#__codelineno-25-9"></a><span class="kd">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">access_token</span><span class="o">:</span><span class="w"> </span><span class="nx">token</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">login</span><span class="p">.</span><span class="nx">json</span><span class="p">();</span>
+<a id="__codelineno-25-10" name="__codelineno-25-10" href="#__codelineno-25-10"></a><span class="kd">const</span><span class="w"> </span><span class="nx">H</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="s2">&quot;Authorization&quot;</span><span class="o">:</span><span class="w"> </span><span class="sb">`Bearer </span><span class="si">${</span><span class="nx">token</span><span class="si">}</span><span class="sb">`</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;Content-Type&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;application/json&quot;</span><span class="w"> </span><span class="p">};</span>
+<a id="__codelineno-25-11" name="__codelineno-25-11" href="#__codelineno-25-11"></a>
+<a id="__codelineno-25-12" name="__codelineno-25-12" href="#__codelineno-25-12"></a><span class="c1">// 2. Register a Collection Center (Caracas drop-off)</span>
+<a id="__codelineno-25-13" name="__codelineno-25-13" href="#__codelineno-25-13"></a><span class="kd">const</span><span class="w"> </span><span class="nx">cc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="p">(</span><span class="k">await</span><span class="w"> </span><span class="nx">fetch</span><span class="p">(</span><span class="sb">`</span><span class="si">${</span><span class="nx">API</span><span class="si">}</span><span class="sb">/collection-centers/`</span><span class="p">,</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-25-14" name="__codelineno-25-14" href="#__codelineno-25-14"></a><span class="w">  </span><span class="nx">method</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;POST&quot;</span><span class="p">,</span>
+<a id="__codelineno-25-15" name="__codelineno-25-15" href="#__codelineno-25-15"></a><span class="w">  </span><span class="nx">headers</span><span class="o">:</span><span class="w"> </span><span class="nx">H</span><span class="p">,</span>
+<a id="__codelineno-25-16" name="__codelineno-25-16" href="#__codelineno-25-16"></a><span class="w">  </span><span class="nx">body</span><span class="o">:</span><span class="w"> </span><span class="nb">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">({</span>
+<a id="__codelineno-25-17" name="__codelineno-25-17" href="#__codelineno-25-17"></a><span class="w">    </span><span class="nx">name</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Casa de Alice — Caracas&quot;</span><span class="p">,</span>
+<a id="__codelineno-25-18" name="__codelineno-25-18" href="#__codelineno-25-18"></a><span class="w">    </span><span class="nx">address</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Av. Principal, Caracas&quot;</span><span class="p">,</span>
+<a id="__codelineno-25-19" name="__codelineno-25-19" href="#__codelineno-25-19"></a><span class="w">    </span><span class="nx">country</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;VE&quot;</span><span class="p">,</span>
+<a id="__codelineno-25-20" name="__codelineno-25-20" href="#__codelineno-25-20"></a><span class="w">    </span><span class="nx">city</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Caracas&quot;</span><span class="p">,</span>
+<a id="__codelineno-25-21" name="__codelineno-25-21" href="#__codelineno-25-21"></a><span class="w">    </span><span class="nx">contact</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;+58-...&quot;</span><span class="p">,</span>
+<a id="__codelineno-25-22" name="__codelineno-25-22" href="#__codelineno-25-22"></a><span class="w">  </span><span class="p">}),</span>
+<a id="__codelineno-25-23" name="__codelineno-25-23" href="#__codelineno-25-23"></a><span class="p">})).</span><span class="nx">json</span><span class="p">();</span>
+<a id="__codelineno-25-24" name="__codelineno-25-24" href="#__codelineno-25-24"></a>
+<a id="__codelineno-25-25" name="__codelineno-25-25" href="#__codelineno-25-25"></a><span class="c1">// 2b. As admin, verify it (alice happens to be the bootstrap admin)</span>
+<a id="__codelineno-25-26" name="__codelineno-25-26" href="#__codelineno-25-26"></a><span class="k">await</span><span class="w"> </span><span class="nx">fetch</span><span class="p">(</span><span class="sb">`</span><span class="si">${</span><span class="nx">API</span><span class="si">}</span><span class="sb">/collection-centers/</span><span class="si">${</span><span class="nx">cc</span><span class="p">.</span><span class="nx">id</span><span class="si">}</span><span class="sb">/verify`</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">method</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;POST&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">headers</span><span class="o">:</span><span class="w"> </span><span class="nx">H</span><span class="w"> </span><span class="p">});</span>
+<a id="__codelineno-25-27" name="__codelineno-25-27" href="#__codelineno-25-27"></a>
+<a id="__codelineno-25-28" name="__codelineno-25-28" href="#__codelineno-25-28"></a><span class="c1">// 3. Register the Parts in the catalog</span>
+<a id="__codelineno-25-29" name="__codelineno-25-29" href="#__codelineno-25-29"></a><span class="kd">const</span><span class="w"> </span><span class="nx">forearm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="p">(</span><span class="k">await</span><span class="w"> </span><span class="nx">fetch</span><span class="p">(</span><span class="sb">`</span><span class="si">${</span><span class="nx">API</span><span class="si">}</span><span class="sb">/parts/`</span><span class="p">,</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-25-30" name="__codelineno-25-30" href="#__codelineno-25-30"></a><span class="w">  </span><span class="nx">method</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;POST&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">headers</span><span class="o">:</span><span class="w"> </span><span class="nx">H</span><span class="p">,</span>
+<a id="__codelineno-25-31" name="__codelineno-25-31" href="#__codelineno-25-31"></a><span class="w">  </span><span class="nx">body</span><span class="o">:</span><span class="w"> </span><span class="nb">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">({</span>
+<a id="__codelineno-25-32" name="__codelineno-25-32" href="#__codelineno-25-32"></a><span class="w">    </span><span class="nx">name</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Forearm splint v3&quot;</span><span class="p">,</span>
+<a id="__codelineno-25-33" name="__codelineno-25-33" href="#__codelineno-25-33"></a><span class="w">    </span><span class="nx">source_url</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;https://www.thingiverse.com/thing:9999&quot;</span><span class="p">,</span>
+<a id="__codelineno-25-34" name="__codelineno-25-34" href="#__codelineno-25-34"></a><span class="w">    </span><span class="nx">tags</span><span class="o">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;splint&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;forearm&quot;</span><span class="p">],</span>
+<a id="__codelineno-25-35" name="__codelineno-25-35" href="#__codelineno-25-35"></a><span class="w">  </span><span class="p">}),</span>
+<a id="__codelineno-25-36" name="__codelineno-25-36" href="#__codelineno-25-36"></a><span class="p">})).</span><span class="nx">json</span><span class="p">();</span>
+<a id="__codelineno-25-37" name="__codelineno-25-37" href="#__codelineno-25-37"></a><span class="kd">const</span><span class="w"> </span><span class="nx">finger</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="p">(</span><span class="k">await</span><span class="w"> </span><span class="nx">fetch</span><span class="p">(</span><span class="sb">`</span><span class="si">${</span><span class="nx">API</span><span class="si">}</span><span class="sb">/parts/`</span><span class="p">,</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-25-38" name="__codelineno-25-38" href="#__codelineno-25-38"></a><span class="w">  </span><span class="nx">method</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;POST&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">headers</span><span class="o">:</span><span class="w"> </span><span class="nx">H</span><span class="p">,</span>
+<a id="__codelineno-25-39" name="__codelineno-25-39" href="#__codelineno-25-39"></a><span class="w">  </span><span class="nx">body</span><span class="o">:</span><span class="w"> </span><span class="nb">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">({</span>
+<a id="__codelineno-25-40" name="__codelineno-25-40" href="#__codelineno-25-40"></a><span class="w">    </span><span class="nx">name</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Finger splint v2&quot;</span><span class="p">,</span>
+<a id="__codelineno-25-41" name="__codelineno-25-41" href="#__codelineno-25-41"></a><span class="w">    </span><span class="nx">source_url</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;https://www.thingiverse.com/thing:9998&quot;</span><span class="p">,</span>
+<a id="__codelineno-25-42" name="__codelineno-25-42" href="#__codelineno-25-42"></a><span class="w">    </span><span class="nx">tags</span><span class="o">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;splint&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;finger&quot;</span><span class="p">],</span>
+<a id="__codelineno-25-43" name="__codelineno-25-43" href="#__codelineno-25-43"></a><span class="w">  </span><span class="p">}),</span>
+<a id="__codelineno-25-44" name="__codelineno-25-44" href="#__codelineno-25-44"></a><span class="p">})).</span><span class="nx">json</span><span class="p">();</span>
+<a id="__codelineno-25-45" name="__codelineno-25-45" href="#__codelineno-25-45"></a>
+<a id="__codelineno-25-46" name="__codelineno-25-46" href="#__codelineno-25-46"></a><span class="c1">// 4. Create the campaign Request bundling both Parts</span>
+<a id="__codelineno-25-47" name="__codelineno-25-47" href="#__codelineno-25-47"></a><span class="kd">const</span><span class="w"> </span><span class="nx">req</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="p">(</span><span class="k">await</span><span class="w"> </span><span class="nx">fetch</span><span class="p">(</span><span class="sb">`</span><span class="si">${</span><span class="nx">API</span><span class="si">}</span><span class="sb">/requests/`</span><span class="p">,</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-25-48" name="__codelineno-25-48" href="#__codelineno-25-48"></a><span class="w">  </span><span class="nx">method</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;POST&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">headers</span><span class="o">:</span><span class="w"> </span><span class="nx">H</span><span class="p">,</span>
+<a id="__codelineno-25-49" name="__codelineno-25-49" href="#__codelineno-25-49"></a><span class="w">  </span><span class="nx">body</span><span class="o">:</span><span class="w"> </span><span class="nb">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">({</span>
+<a id="__codelineno-25-50" name="__codelineno-25-50" href="#__codelineno-25-50"></a><span class="w">    </span><span class="nx">title</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Ferulas for Venezuela&quot;</span><span class="p">,</span>
+<a id="__codelineno-25-51" name="__codelineno-25-51" href="#__codelineno-25-51"></a><span class="w">    </span><span class="nx">description</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Campaña férulas - terremoto junio 2026&quot;</span><span class="p">,</span>
+<a id="__codelineno-25-52" name="__codelineno-25-52" href="#__codelineno-25-52"></a><span class="w">    </span><span class="nx">deadline</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;2026-08-15&quot;</span><span class="p">,</span>
+<a id="__codelineno-25-53" name="__codelineno-25-53" href="#__codelineno-25-53"></a><span class="w">    </span><span class="nx">preferred_collection_center_ids</span><span class="o">:</span><span class="w"> </span><span class="p">[</span><span class="nx">cc</span><span class="p">.</span><span class="nx">id</span><span class="p">],</span>
+<a id="__codelineno-25-54" name="__codelineno-25-54" href="#__codelineno-25-54"></a><span class="w">    </span><span class="nx">items</span><span class="o">:</span><span class="w"> </span><span class="p">[</span>
+<a id="__codelineno-25-55" name="__codelineno-25-55" href="#__codelineno-25-55"></a><span class="w">      </span><span class="p">{</span><span class="w"> </span><span class="nx">part_id</span><span class="o">:</span><span class="w"> </span><span class="nx">forearm</span><span class="p">.</span><span class="nx">id</span><span class="p">,</span><span class="w"> </span><span class="nx">quantity</span><span class="o">:</span><span class="w"> </span><span class="mf">50</span><span class="w"> </span><span class="p">},</span>
+<a id="__codelineno-25-56" name="__codelineno-25-56" href="#__codelineno-25-56"></a><span class="w">      </span><span class="p">{</span><span class="w"> </span><span class="nx">part_id</span><span class="o">:</span><span class="w"> </span><span class="nx">finger</span><span class="p">.</span><span class="nx">id</span><span class="p">,</span><span class="w"> </span><span class="nx">quantity</span><span class="o">:</span><span class="w"> </span><span class="mf">100</span><span class="w"> </span><span class="p">},</span>
+<a id="__codelineno-25-57" name="__codelineno-25-57" href="#__codelineno-25-57"></a><span class="w">    </span><span class="p">],</span>
+<a id="__codelineno-25-58" name="__codelineno-25-58" href="#__codelineno-25-58"></a><span class="w">  </span><span class="p">}),</span>
+<a id="__codelineno-25-59" name="__codelineno-25-59" href="#__codelineno-25-59"></a><span class="p">})).</span><span class="nx">json</span><span class="p">();</span>
+<a id="__codelineno-25-60" name="__codelineno-25-60" href="#__codelineno-25-60"></a>
+<a id="__codelineno-25-61" name="__codelineno-25-61" href="#__codelineno-25-61"></a><span class="c1">// 5. Claim a Contribution for the first batch (5 forearm splints)</span>
+<a id="__codelineno-25-62" name="__codelineno-25-62" href="#__codelineno-25-62"></a><span class="kd">const</span><span class="w"> </span><span class="nx">forearmItemId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">req</span><span class="p">.</span><span class="nx">items</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="nx">i</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">i</span><span class="p">.</span><span class="nx">part_id</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="nx">forearm</span><span class="p">.</span><span class="nx">id</span><span class="p">).</span><span class="nx">id</span><span class="p">;</span>
+<a id="__codelineno-25-63" name="__codelineno-25-63" href="#__codelineno-25-63"></a><span class="kd">const</span><span class="w"> </span><span class="nx">c1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="p">(</span><span class="k">await</span><span class="w"> </span><span class="nx">fetch</span><span class="p">(</span><span class="sb">`</span><span class="si">${</span><span class="nx">API</span><span class="si">}</span><span class="sb">/contributions/`</span><span class="p">,</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-25-64" name="__codelineno-25-64" href="#__codelineno-25-64"></a><span class="w">  </span><span class="nx">method</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;POST&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">headers</span><span class="o">:</span><span class="w"> </span><span class="nx">H</span><span class="p">,</span>
+<a id="__codelineno-25-65" name="__codelineno-25-65" href="#__codelineno-25-65"></a><span class="w">  </span><span class="nx">body</span><span class="o">:</span><span class="w"> </span><span class="nb">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">({</span>
+<a id="__codelineno-25-66" name="__codelineno-25-66" href="#__codelineno-25-66"></a><span class="w">    </span><span class="nx">request_item_id</span><span class="o">:</span><span class="w"> </span><span class="nx">forearmItemId</span><span class="p">,</span>
+<a id="__codelineno-25-67" name="__codelineno-25-67" href="#__codelineno-25-67"></a><span class="w">    </span><span class="nx">quantity</span><span class="o">:</span><span class="w"> </span><span class="mf">5</span><span class="p">,</span>
+<a id="__codelineno-25-68" name="__codelineno-25-68" href="#__codelineno-25-68"></a><span class="w">    </span><span class="nx">collection_center_id</span><span class="o">:</span><span class="w"> </span><span class="nx">cc</span><span class="p">.</span><span class="nx">id</span><span class="p">,</span>
+<a id="__codelineno-25-69" name="__codelineno-25-69" href="#__codelineno-25-69"></a><span class="w">    </span><span class="nx">notes</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Batch 1 of 10&quot;</span><span class="p">,</span>
+<a id="__codelineno-25-70" name="__codelineno-25-70" href="#__codelineno-25-70"></a><span class="w">  </span><span class="p">}),</span>
+<a id="__codelineno-25-71" name="__codelineno-25-71" href="#__codelineno-25-71"></a><span class="p">})).</span><span class="nx">json</span><span class="p">();</span>
+<a id="__codelineno-25-72" name="__codelineno-25-72" href="#__codelineno-25-72"></a>
+<a id="__codelineno-25-73" name="__codelineno-25-73" href="#__codelineno-25-73"></a><span class="c1">// 6. After printing, mark printed</span>
+<a id="__codelineno-25-74" name="__codelineno-25-74" href="#__codelineno-25-74"></a><span class="k">await</span><span class="w"> </span><span class="nx">fetch</span><span class="p">(</span><span class="sb">`</span><span class="si">${</span><span class="nx">API</span><span class="si">}</span><span class="sb">/contributions/</span><span class="si">${</span><span class="nx">c1</span><span class="p">.</span><span class="nx">id</span><span class="si">}</span><span class="sb">/mark-printed`</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">method</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;POST&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">headers</span><span class="o">:</span><span class="w"> </span><span class="nx">H</span><span class="w"> </span><span class="p">});</span>
+<a id="__codelineno-25-75" name="__codelineno-25-75" href="#__codelineno-25-75"></a>
+<a id="__codelineno-25-76" name="__codelineno-25-76" href="#__codelineno-25-76"></a><span class="c1">// 7. After delivering to Centro</span>
+<a id="__codelineno-25-77" name="__codelineno-25-77" href="#__codelineno-25-77"></a><span class="c1">//    Because alice is the user-owner of the Centro (an effective member),</span>
+<a id="__codelineno-25-78" name="__codelineno-25-78" href="#__codelineno-25-78"></a><span class="c1">//    this auto-advances to `received` per FR-126 — auto_received=true.</span>
+<a id="__codelineno-25-79" name="__codelineno-25-79" href="#__codelineno-25-79"></a><span class="kd">const</span><span class="w"> </span><span class="nx">delivered</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="p">(</span><span class="k">await</span><span class="w"> </span><span class="nx">fetch</span><span class="p">(</span><span class="sb">`</span><span class="si">${</span><span class="nx">API</span><span class="si">}</span><span class="sb">/contributions/</span><span class="si">${</span><span class="nx">c1</span><span class="p">.</span><span class="nx">id</span><span class="si">}</span><span class="sb">/mark-delivered`</span><span class="p">,</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-25-80" name="__codelineno-25-80" href="#__codelineno-25-80"></a><span class="w">  </span><span class="nx">method</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;POST&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">headers</span><span class="o">:</span><span class="w"> </span><span class="nx">H</span><span class="p">,</span>
+<a id="__codelineno-25-81" name="__codelineno-25-81" href="#__codelineno-25-81"></a><span class="p">})).</span><span class="nx">json</span><span class="p">();</span>
+<a id="__codelineno-25-82" name="__codelineno-25-82" href="#__codelineno-25-82"></a><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">delivered</span><span class="p">.</span><span class="nx">status</span><span class="p">);</span><span class="w">          </span><span class="c1">// → &quot;received&quot;</span>
+<a id="__codelineno-25-83" name="__codelineno-25-83" href="#__codelineno-25-83"></a><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">delivered</span><span class="p">.</span><span class="nx">auto_received</span><span class="p">);</span><span class="w">   </span><span class="c1">// → true</span>
+<a id="__codelineno-25-84" name="__codelineno-25-84" href="#__codelineno-25-84"></a>
+<a id="__codelineno-25-85" name="__codelineno-25-85" href="#__codelineno-25-85"></a><span class="c1">// 8. (Future) Share the registration link</span>
+<a id="__codelineno-25-86" name="__codelineno-25-86" href="#__codelineno-25-86"></a><span class="c1">//    Other users self-register at /auth/register and repeat steps 5-7.</span>
+</code></pre></div>
+<h3 id="inviting-an-organization-to-take-over-a-part">Inviting an Organization to Take Over a Part</h3>
+<p>Once UCAB Lab joins, alice transfers ownership of the forearm Part:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-26-1" name="__codelineno-26-1" href="#__codelineno-26-1"></a><span class="c1">// 1. UCAB Lab is registered (by their admin user, not alice)</span>
+<a id="__codelineno-26-2" name="__codelineno-26-2" href="#__codelineno-26-2"></a><span class="c1">//    -&gt; orgId = &quot;cccc1111-…&quot;</span>
+<a id="__codelineno-26-3" name="__codelineno-26-3" href="#__codelineno-26-3"></a>
+<a id="__codelineno-26-4" name="__codelineno-26-4" href="#__codelineno-26-4"></a><span class="c1">// 2. Alice initiates the transfer to UCAB</span>
+<a id="__codelineno-26-5" name="__codelineno-26-5" href="#__codelineno-26-5"></a><span class="kd">const</span><span class="w"> </span><span class="nx">tx</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="p">(</span><span class="k">await</span><span class="w"> </span><span class="nx">fetch</span><span class="p">(</span><span class="sb">`</span><span class="si">${</span><span class="nx">API</span><span class="si">}</span><span class="sb">/parts/</span><span class="si">${</span><span class="nx">forearm</span><span class="p">.</span><span class="nx">id</span><span class="si">}</span><span class="sb">/transfers`</span><span class="p">,</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-26-6" name="__codelineno-26-6" href="#__codelineno-26-6"></a><span class="w">  </span><span class="nx">method</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;POST&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">headers</span><span class="o">:</span><span class="w"> </span><span class="nx">H</span><span class="p">,</span>
+<a id="__codelineno-26-7" name="__codelineno-26-7" href="#__codelineno-26-7"></a><span class="w">  </span><span class="nx">body</span><span class="o">:</span><span class="w"> </span><span class="nb">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">({</span><span class="w"> </span><span class="nx">target_organization_id</span><span class="o">:</span><span class="w"> </span><span class="nx">orgId</span><span class="w"> </span><span class="p">}),</span>
+<a id="__codelineno-26-8" name="__codelineno-26-8" href="#__codelineno-26-8"></a><span class="p">})).</span><span class="nx">json</span><span class="p">();</span>
+<a id="__codelineno-26-9" name="__codelineno-26-9" href="#__codelineno-26-9"></a>
+<a id="__codelineno-26-10" name="__codelineno-26-10" href="#__codelineno-26-10"></a><span class="c1">// 3. Any UCAB owner accepts on behalf of the org</span>
+<a id="__codelineno-26-11" name="__codelineno-26-11" href="#__codelineno-26-11"></a><span class="c1">//    (calling with their own JWT)</span>
+<a id="__codelineno-26-12" name="__codelineno-26-12" href="#__codelineno-26-12"></a><span class="kd">const</span><span class="w"> </span><span class="nx">accepted</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">fetch</span><span class="p">(</span><span class="sb">`</span><span class="si">${</span><span class="nx">API</span><span class="si">}</span><span class="sb">/transfers/</span><span class="si">${</span><span class="nx">tx</span><span class="p">.</span><span class="nx">id</span><span class="si">}</span><span class="sb">/accept`</span><span class="p">,</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-26-13" name="__codelineno-26-13" href="#__codelineno-26-13"></a><span class="w">  </span><span class="nx">method</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;POST&quot;</span><span class="p">,</span>
+<a id="__codelineno-26-14" name="__codelineno-26-14" href="#__codelineno-26-14"></a><span class="w">  </span><span class="nx">headers</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">Authorization</span><span class="o">:</span><span class="w"> </span><span class="sb">`Bearer </span><span class="si">${</span><span class="nx">ucabOwnerJwt</span><span class="si">}</span><span class="sb">`</span><span class="w"> </span><span class="p">},</span>
+<a id="__codelineno-26-15" name="__codelineno-26-15" href="#__codelineno-26-15"></a><span class="p">});</span>
+<a id="__codelineno-26-16" name="__codelineno-26-16" href="#__codelineno-26-16"></a><span class="c1">// Part&#39;s owner_user_id now NULL; owner_organization_id = orgId. Atomic swap.</span>
+</code></pre></div>
+<p>This reproduces the "creator joins later" scenario the polymorphic
+ownership model was designed for.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.highlight", "search.share", "toc.integrate", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="https://unpkg.com/mermaid@10.6.1/dist/mermaid.min.js"></script>
+      
+    
+  </body>
+</html>

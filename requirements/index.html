@@ -1,0 +1,2770 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Coordination platform for community-driven 3D-printed humanitarian aid">
+      
+      
+      
+      
+        <link rel="prev" href="../roadmap/">
+      
+      
+        <link rel="next" href="../architecture/backend/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>Requirements - PrintForHelp Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="teal" data-md-color-accent="teal">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#software-requirements-specification" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="PrintForHelp Documentation" class="md-header__button md-logo" aria-label="PrintForHelp Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            PrintForHelp Documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Requirements
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="teal" data-md-color-accent="teal"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="teal" data-md-color-accent="teal"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Share" aria-label="Share" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/jcarranz97/printforhelp" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    jcarranz97/printforhelp
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href=".." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../roadmap/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Roadmap
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    <li class="md-tabs__item md-tabs__item--active">
+      <a href="./" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Requirements
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../architecture/backend/" class="md-tabs__link">
+          
+  
+  
+  Architecture
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+  
+
+<nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="PrintForHelp Documentation" class="md-nav__button md-logo" aria-label="PrintForHelp Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    PrintForHelp Documentation
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/jcarranz97/printforhelp" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    jcarranz97/printforhelp
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../roadmap/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Roadmap
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Requirements
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Requirements
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-introduction" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Introduction
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. Introduction">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#11-purpose" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.1 Purpose
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#12-scope" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.2 Scope
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#13-background" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.3 Background
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-overall-description" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Overall Description
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Overall Description">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-product-perspective" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1 Product Perspective
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-user-classes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.2 User Classes
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-functional-requirements" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Functional Requirements
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Functional Requirements">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-user-authentication-registration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1 User Authentication &amp; Registration
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-user-roles-permissions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2 User Roles &amp; Permissions
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3.2 User Roles &amp; Permissions">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#permission-matrix" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Permission Matrix
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33-parts-catalog" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.3 Parts Catalog
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#34-collection-centers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.4 Collection Centers
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3.4 Collection Centers">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#collection-center-membership" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Collection Center Membership
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Collection Center Membership">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#collection-center-membership-permission-matrix" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Collection Center Membership Permission Matrix
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#35-print-requests" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.5 Print Requests
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3.5 Print Requests">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#request-campaign-level" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Request (campaign-level)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#requestitem-line-item-level" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        RequestItem (line-item level)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#36-contributions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.6 Contributions
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#37-discovery-prioritization" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.7 Discovery &amp; Prioritization
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#38-navigation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.8 Navigation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#39-organizations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.9 Organizations
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3.9 Organizations">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#organization-membership-permission-matrix" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Organization Membership Permission Matrix
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#310-polymorphic-ownership-transfers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.10 Polymorphic Ownership &amp; Transfers
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3.10 Polymorphic Ownership &amp; Transfers">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ownership-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ownership Model
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ownership-transfer-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ownership Transfer Flow
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-non-functional-requirements" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Non-Functional Requirements
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Non-Functional Requirements">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-performance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1 Performance
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-security" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2 Security
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#43-usability" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.3 Usability
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#44-reliability" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.4 Reliability
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#45-internationalization" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.5 Internationalization
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-technical-constraints" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Technical Constraints
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-data-requirements" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Data Requirements
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. Data Requirements">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#61-user-schema" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.1 User Schema
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#62-part-schema" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.2 Part Schema
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#63-collection-center-schema" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.3 Collection Center Schema
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#64-request-schema" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.4 Request Schema
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#65-contribution-schema" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.5 Contribution Schema
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#66-audit-log-schema" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.6 Audit Log Schema
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#67-collection-center-membership-schema" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.7 Collection Center Membership Schema
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#68-organization-schema" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.8 Organization Schema
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#69-organization-membership-schema" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.9 Organization Membership Schema
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#610-ownership-transfer-schema" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.10 Ownership Transfer Schema
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#611-requestitem-schema" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.11 RequestItem Schema
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-integration-requirements" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Integration Requirements
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="7. Integration Requirements">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#71-authentication" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.1 Authentication
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#72-notifications-future" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.2 Notifications (Future)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Architecture
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../architecture/backend/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Backend
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../architecture/database-schema/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Database
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../architecture/api-specification/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="software-requirements-specification">Software Requirements Specification</h1>
+<h2 id="1-introduction">1. Introduction</h2>
+<h3 id="11-purpose">1.1 Purpose</h3>
+<p>This document specifies the functional and non-functional requirements
+for PrintForHelp, a coordination platform that connects people who need
+3D-printed parts with the maker community that can print and deliver
+them.</p>
+<h3 id="12-scope">1.2 Scope</h3>
+<p>PrintForHelp will provide:</p>
+<ul>
+<li>A catalog of 3D-printable parts contributed by the community</li>
+<li>A directory of physical drop-off Collection Centers</li>
+<li>A request board where people in need can post the parts they require</li>
+<li>A contribution lifecycle so makers can claim, print, deliver, and
+  confirm receipt of printed parts</li>
+<li>Prioritization views that show the community which open requests need
+  print capacity the most, avoiding duplicated effort</li>
+<li>Role-based access (user, maintainer, admin) with maintainer
+  moderation of catalog, requests, collection centers, and delivery confirmation</li>
+</ul>
+<h3 id="13-background">1.3 Background</h3>
+<p>The platform was initially conceived in response to the June 2026
+Venezuela earthquake, where independent 3D-printing groups began
+producing medical splints (ferulas) for the injured and coordinated
+informally via social media. The lack of a central coordination tool
+caused duplicated work and made it hard for makers to know which
+splints were most needed and where to send them. PrintForHelp aims to
+solve that coordination problem first for the Venezuela response and
+then as a general-purpose hub for community-driven 3D-printed
+humanitarian aid.</p>
+<h2 id="2-overall-description">2. Overall Description</h2>
+<h3 id="21-product-perspective">2.1 Product Perspective</h3>
+<p>PrintForHelp is a standalone web application consisting of:</p>
+<ul>
+<li>A RESTful API backend (FastAPI) with role-based access control</li>
+<li>A responsive web frontend (Next.js) with a bilingual ES/EN UI</li>
+<li>A containerized deployment solution (Docker Compose for development,
+  Kubernetes for production)</li>
+</ul>
+<h3 id="22-user-classes">2.2 User Classes</h3>
+<table>
+<thead>
+<tr>
+<th>Actor</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Guest</strong></td>
+<td>An unauthenticated visitor — can browse public catalog and collection centers, register, or log in</td>
+</tr>
+<tr>
+<td><strong>User</strong></td>
+<td>An authenticated account — can post requests, claim prints, register parts and collection centers</td>
+</tr>
+<tr>
+<td><strong>Maintainer</strong></td>
+<td>A trusted account with moderation powers — verifies collection centers, edits/closes any request, moderates the parts catalog, confirms received contributions</td>
+</tr>
+<tr>
+<td><strong>Admin</strong></td>
+<td>A system administrator — has all maintainer powers plus user role management</td>
+</tr>
+</tbody>
+</table>
+<h2 id="3-functional-requirements">3. Functional Requirements</h2>
+<h3 id="31-user-authentication-registration">3.1 User Authentication &amp; Registration</h3>
+<ul>
+<li><strong>FR-001</strong>: Guests must be able to self-register an account by
+  providing a unique username and a password.</li>
+<li><strong>FR-002</strong>: Passwords must meet a minimum strength policy (length and
+  composition rules enforced server-side).</li>
+<li><strong>FR-003</strong>: Users must be able to log in using their username and
+  password.</li>
+<li><strong>FR-004</strong>: Users must be able to log out, which invalidates their
+  session.</li>
+<li><strong>FR-005</strong>: Users must be able to change their password while
+  authenticated.</li>
+<li><strong>FR-006</strong>: Users must be able to update their preferred locale
+  (<code>es</code> or <code>en</code>) which controls the UI language.</li>
+<li><strong>FR-007</strong>: A default admin user must be created automatically on
+  first deploy from environment variables, mirroring the bootstrap
+  pattern used by the Colony project.</li>
+<li><strong>FR-008</strong>: Users must be able to deactivate their own account
+  (soft delete; data preserved for historical attribution).</li>
+</ul>
+<h3 id="32-user-roles-permissions">3.2 User Roles &amp; Permissions</h3>
+<ul>
+<li><strong>FR-009</strong>: Every user must have exactly one role: <code>user</code>,
+  <code>maintainer</code>, or <code>admin</code>. New accounts default to <code>user</code>.</li>
+<li><strong>FR-010</strong>: Only admins must be able to change another user's role.</li>
+<li><strong>FR-011</strong>: The permission matrix below must be enforced by the
+  backend; the frontend must hide controls the current user cannot
+  invoke.</li>
+</ul>
+<h4 id="permission-matrix">Permission Matrix</h4>
+<table>
+<thead>
+<tr>
+<th>Action</th>
+<th>User</th>
+<th>Maintainer</th>
+<th>Admin</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Create / edit own Parts</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>Mark own Part as <code>discontinued</code></td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>Archive own Part (only if no open Requests reference it)</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>Edit any Part</td>
+<td>—</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>Force-archive any Part (auto-closes referencing Requests)</td>
+<td>—</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>Mark a Part as <code>featured</code></td>
+<td>—</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>Register a Collection Center</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>Edit own Collection Center (while <code>verified = false</code>)</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>Mark own Collection Center as <code>inactive</code></td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>Archive own Collection Center (only if no open Contributions routed to it)</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>Edit any Collection Center</td>
+<td>—</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>Verify a Collection Center</td>
+<td>—</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>Force-archive any Collection Center (releases routed Contributions)</td>
+<td>—</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>Create a Request</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>Edit / close own Request</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>Edit / close any Request</td>
+<td>—</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>Claim a Contribution</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>Advance own Contribution to <code>printed</code> / <code>delivered</code></td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>Confirm a Contribution as <code>received</code></td>
+<td>—</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>Change another user's role</td>
+<td>—</td>
+<td>—</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>Deactivate / reactivate another user</td>
+<td>—</td>
+<td>—</td>
+<td>✓</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><strong>FR-012</strong>: Admins must be able to deactivate or reactivate any
+  user account.</li>
+<li><strong>FR-013</strong>: A user whose account is deactivated must not be able to
+  log in, but their historical Parts, Requests, and Contributions must
+  remain visible (attributed to the deactivated account).</li>
+<li><strong>FR-014</strong>: The system must prevent the last active admin from being
+  demoted or deactivated, to avoid lockout.</li>
+</ul>
+<h3 id="33-parts-catalog">3.3 Parts Catalog</h3>
+<ul>
+<li><strong>FR-015</strong>: Users must be able to register a Part in the catalog with
+  the following attributes:</li>
+<li>Name</li>
+<li>Description (markdown supported)</li>
+<li>Source URL (link to the STL/3MF file or model page)</li>
+<li>Suggested print settings (optional free-text field)</li>
+<li>Tags (optional list)</li>
+<li>Owner — either the registering user themselves (default) or an
+    Organization the registering user is an active member of (see
+    §3.9 and the polymorphic ownership rules in §3.10)</li>
+<li><strong>FR-016</strong>: The creator of a Part (the user who first registered it)
+  must be recorded as immutable historical attribution. The Part's
+  current owner — a User or an Organization — is tracked separately
+  per §3.10 and may change over time via ownership transfer.</li>
+<li><strong>FR-017</strong>: The owner of a Part must be able to edit it. When the
+  Part is user-owned, this means the owner User; when it is
+  org-owned, any active member of the owning Organization. See
+  §3.10 for the polymorphic owner definition that applies to all
+  "owner can …" rules below.</li>
+<li><strong>FR-018</strong>: Maintainers and admins must be able to edit any Part
+  regardless of authorship (catalog moderation). Archival semantics
+  for Parts are specified separately in FR-076 (owner) and FR-077
+  (moderator force-archive).</li>
+<li><strong>FR-019</strong>: Maintainers and admins must be able to flag a Part as
+  <code>featured</code> so it surfaces at the top of the catalog and on the
+  landing page.</li>
+<li><strong>FR-020</strong>: Parts must have a status of <code>active</code> or <code>discontinued</code>.
+  Only active Parts can be referenced by new Requests.</li>
+<li><strong>FR-021</strong>: Users must be able to view the full catalog, filtered by
+  tag, status, and free-text search on name and description.</li>
+<li><strong>FR-022</strong>: The catalog list must show, for each Part, the number of
+  open Requests referencing it so makers can spot popular needs at a
+  glance.</li>
+<li><strong>FR-023</strong>: The detail view of a Part must list all open Requests
+  that reference it, with quantity remaining and deadline.</li>
+<li><strong>FR-024</strong>: The system must validate that the Source URL is a valid
+  URL but must not require it to resolve (some sources are private
+  Discord / Drive links).</li>
+<li><strong>FR-025</strong>: Parts must be soft-deleted (<code>active = false</code>), never
+  hard-deleted, to preserve historical Contribution attribution.</li>
+<li><strong>FR-075</strong>: A Part's creator must be able to mark their own Part as
+  <code>discontinued</code> at any time. Once discontinued, no new Requests may
+  reference the Part, but existing Requests, Contributions, and
+  catalog visibility remain unchanged. The action is reversible by
+  the creator (or any maintainer/admin) by setting status back to
+  <code>active</code>.</li>
+<li><strong>FR-076</strong>: A Part's creator must be able to archive (soft-delete,
+  <code>active = false</code>) their own Part only if no <code>open</code> Requests
+  reference it. If any <code>open</code> Request exists, the request must be
+  rejected with a clear error directing the user to mark the Part
+  <code>discontinued</code> instead, or to escalate to a maintainer.</li>
+<li><strong>FR-077</strong>: Maintainers and admins must be able to force-archive any
+  Part regardless of referencing Requests. When this happens, every
+  <code>open</code> Request referencing the Part must be automatically
+  transitioned to <code>closed</code> with the system-generated reason
+  <code>part_archived</code>, and the action must be recorded in the audit log
+  (FR-008 / NFR-008).</li>
+</ul>
+<h3 id="34-collection-centers">3.4 Collection Centers</h3>
+<ul>
+<li><strong>FR-026</strong>: Any authenticated user must be able to register a
+  Collection Center with the following attributes:</li>
+<li>Name</li>
+<li>Address (free-text)</li>
+<li>Country</li>
+<li>City</li>
+<li>Contact (phone / email / social handle, free-text)</li>
+<li>Opening hours (optional free-text)</li>
+<li>Notes (optional free-text)</li>
+<li>Owner — either the registering user themselves (default) or an
+    Organization the registering user is an active member of (see
+    §3.9 and §3.10)</li>
+<li><strong>FR-027</strong>: A newly registered Collection Center must default to
+  <code>verified = false</code> and must not appear in the public-facing
+  collection centers list until a maintainer or admin verifies it.</li>
+<li><strong>FR-028</strong>: A pending Collection Center must be visible to its
+  members (see §3.4 Membership) and to maintainers/admins under a
+  "Pending verification" filter.</li>
+<li><strong>FR-029</strong>: Maintainers and admins must be able to verify a Collection Center
+  by flipping the <code>verified</code> flag to <code>true</code>.</li>
+<li><strong>FR-030</strong>: Maintainers and admins must be able to revoke
+  verification on an existing Collection Center (revert to <code>verified = false</code>)
+  with an optional reason that is recorded in an audit log.</li>
+<li><strong>FR-031</strong>: Any active member of a Collection Center (owner or
+  contributor — see Membership FRs below) must be able to edit the
+  Collection Center's attributes at any time, regardless of its
+  <code>verified</code> status. Edits to a verified Collection Center must
+  preserve verification (do not automatically revoke); revocation is
+  a separate maintainer action (FR-030).</li>
+<li><strong>FR-032</strong>: Maintainers and admins must be able to edit any Collection Center
+  at any time.</li>
+<li><strong>FR-033</strong>: Collection Centers must support a status of <code>active</code> or
+  <code>inactive</code>. An inactive Collection Center must not be selectable as
+  a delivery target for new Contributions but must remain visible for
+  historical reference.</li>
+<li><strong>FR-034</strong>: Users must be able to browse the list of verified active
+  Collection Centers, filtered by country and city.</li>
+<li><strong>FR-035</strong>: Each Collection Center's detail view must show the number of
+  Contributions currently in <code>delivered</code> state awaiting confirmation,
+  so the collection center operator knows how much inventory is waiting.</li>
+<li><strong>FR-036</strong>: Collection Centers must be soft-deleted, never hard-deleted, to
+  preserve historical Contribution attribution.</li>
+<li><strong>FR-037</strong>: The system must record <code>registered_by</code> (the user who
+  created the Collection Center, immutable historical attribution)
+  and <code>verified_by</code> (the maintainer/admin who verified it), both as
+  FK references to User. The current owner of the Collection Center
+  is stored separately (either <code>owner_user_id</code> or
+  <code>owner_organization_id</code>, exactly one non-null per §3.10) and may
+  change over time via ownership transfer.</li>
+<li><strong>FR-078</strong>: Any active member of a Collection Center must be able to
+  flip its status between <code>active</code> and <code>inactive</code> at any time. An
+  inactive Collection Center cannot receive new Contributions but
+  remains visible for historical reference (FR-033).</li>
+<li><strong>FR-079</strong>: Only the Collection Center's owner (or a maintainer or
+  admin) must be able to archive (soft-delete, <code>active = false</code>) the
+  Collection Center. The action must be rejected if any <code>open</code>
+  Contributions (status <code>claimed</code>, <code>printed</code>, or <code>delivered</code>) are
+  routed to the Collection Center; the error must direct the owner to
+  mark the Collection Center <code>inactive</code> instead, or to escalate to a
+  maintainer.</li>
+<li><strong>FR-080</strong>: Maintainers and admins must be able to force-archive any
+  Collection Center regardless of routed Contributions. When this
+  happens, every open Contribution routed to that Collection Center
+  must be automatically transitioned to <code>released</code> with the
+  system-generated reason <code>collection_center_archived</code>, and the
+  action must be recorded in the audit log (FR-008 / NFR-008).</li>
+</ul>
+<h4 id="collection-center-membership">Collection Center Membership</h4>
+<p>Each Collection Center has a team of users — its <strong>owner</strong> and zero or
+more <strong>contributors</strong> — who collectively operate it. This decentralizes
+day-to-day management so maintainers are not the bottleneck for routine
+operational changes (toggling status, confirming deliveries, editing
+contact info).</p>
+<ul>
+<li><strong>FR-081</strong>: The system must support a <code>CollectionCenterMembership</code>
+  entity that links a <code>User</code> to a <code>CollectionCenter</code> as an additional
+  per-center <code>contributor</code>. This is distinct from the polymorphic
+  owner (User or Organization) stored on the Collection Center itself
+  per §3.10 — the membership table does not record owners.</li>
+<li><strong>FR-082</strong>: When a user registers a new Collection Center (FR-026),
+  the system must set the owner principal on the Collection Center
+  directly: either <code>owner_user_id = creator.id</code> (the default) or
+  <code>owner_organization_id = org.id</code> if the creator is registering on
+  behalf of an Organization they are an active member of (§3.10). No
+  membership row is created for the owner; ownership is recorded on
+  the Collection Center entity. The original creator is also stored
+  as <code>registered_by_id</code> for immutable historical attribution (FR-037).</li>
+<li><strong>FR-083</strong>: An active Collection Center must always have exactly
+  one owner principal: either <code>owner_user_id</code> or
+  <code>owner_organization_id</code> non-null, never both, never neither. The
+  system must enforce this invariant on every write to the Collection
+  Center.</li>
+<li><strong>FR-084</strong>: The Collection Center's effective owner (the
+  user-owner if user-owned, or any active <code>owner</code> member of the
+  owning Organization if org-owned — see §3.10) must be able to add
+  another user as a per-center <code>contributor</code> by username. The
+  membership becomes active immediately; there is no separate accept
+  step in v1.</li>
+<li><strong>FR-085</strong>: The Collection Center's effective owner must be able to
+  remove any per-center <code>contributor</code> at any time. The removed user
+  loses all member powers on that Collection Center but retains
+  historical attribution on any Contributions they confirmed as
+  <code>received</code> while a member.</li>
+<li><strong>FR-086</strong>: A per-center <code>contributor</code> must be able to leave a
+  Collection Center voluntarily at any time (deactivate their own
+  membership).</li>
+<li><strong>FR-087</strong>: The Collection Center's user-owner (when user-owned)
+  must not be able to release ownership without going through the
+  transfer flow defined in §3.10 (FR-109 — initiate transfer with
+  recipient acceptance). For org-owned Collection Centers, the
+  individual user has no "owner of the Center" role to release —
+  ownership lives at the org level.</li>
+<li><strong>FR-088</strong>: Ownership transfer of a Collection Center (to a
+  different User or a different Organization) is the polymorphic
+  transfer flow defined in §3.10 (FR-109 – FR-114). Unlike the
+  earlier owner→contributor transfer pattern, the recipient is a
+  separate principal (not necessarily a current per-center member)
+  and must accept the transfer.</li>
+<li><strong>FR-089</strong>: When the user-owner of a Collection Center is
+  deactivated (FR-013) and the Center has no org owner, the Center
+  is considered orphaned. Maintainers and admins must be able to
+  force-transfer ownership to any user or organization via FR-113
+  (polymorphic force-transfer). Force-transfer must be recorded in
+  the audit log.</li>
+<li><strong>FR-090</strong>: Any user who has effective member powers on a
+  Collection Center — the user-owner, any per-center contributor,
+  or any active member of the owning Organization when org-owned —
+  must be able to view the full list of the Center's contributors
+  and (when org-owned) the owning Organization's members on the
+  Center's detail view.</li>
+<li><strong>FR-091</strong>: Per-center membership creations, removals, and
+  ownership-related events (initiate, accept, decline, cancel,
+  expire, force-transfer per §3.10) must each be recorded in the
+  audit log (NFR-008) with actor, target user/org, target Collection
+  Center, and optional reason.</li>
+<li><strong>FR-092</strong>: The system must prevent a user who lacks effective
+  member powers on a Collection Center (i.e., is not the user-owner,
+  not a per-center contributor, not a member of the owning
+  Organization, and not a maintainer/admin) from invoking any
+  member-scoped action defined above. Frontend hiding of these
+  controls is for UX only and must not be the sole defense
+  (per NFR-006).</li>
+<li><strong>FR-093</strong>: Future feature (deferred to a later release): each
+  Collection Center should be able to declare which Parts it accepts
+  (a per-center filter on the global Parts catalog), so makers see
+  upfront which centers will receive a given Part. No FR is binding
+  until the membership and ownership models are delivered.</li>
+</ul>
+<h5 id="collection-center-membership-permission-matrix">Collection Center Membership Permission Matrix</h5>
+<p>This sub-matrix scopes actions to a specific Collection Center. The
+columns are: a user with no relationship to the Center (<strong>Non-member</strong>),
+a per-center <code>contributor</code> (<strong>Contrib</strong>), an active <strong>member of the
+owning Organization</strong> when the Center is org-owned (<strong>OrgMember</strong>),
+the Center's <strong>effective owner</strong> (the user-owner directly, or any
+active <code>owner</code> of the owning Organization when org-owned), the global
+<strong>Maintainer</strong> role, and the global <strong>Admin</strong> role. Maintainer and
+Admin always have member-equivalent powers on every Collection Center.</p>
+<table>
+<thead>
+<tr>
+<th>Action on a Collection Center</th>
+<th>Non-member</th>
+<th>Contrib</th>
+<th>OrgMember</th>
+<th>Owner</th>
+<th>Maintainer</th>
+<th>Admin</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>View public details</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>View contributor list &amp; pending deliveries</td>
+<td>—</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>Edit details (FR-031)</td>
+<td>—</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>Toggle <code>active</code> / <code>inactive</code> (FR-078)</td>
+<td>—</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>Confirm a routed Contribution as <code>received</code> (FR-056)</td>
+<td>—</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>Add a per-center contributor (FR-084)</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>Remove a per-center contributor (FR-085)</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>Leave the Collection Center (self-remove contributor) (FR-086)</td>
+<td>—</td>
+<td>✓</td>
+<td>n/a</td>
+<td>n/a</td>
+<td>n/a</td>
+<td>n/a</td>
+</tr>
+<tr>
+<td>Initiate ownership transfer (FR-088 / §3.10)</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>✓</td>
+<td>—</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>Force-transfer ownership (FR-089 / §3.10)</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>Archive the Collection Center (FR-079)</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>Force-archive the Collection Center (FR-080)</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>Verify / revoke verification (FR-029 / FR-030)</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+</tbody>
+</table>
+<h3 id="35-print-requests">3.5 Print Requests</h3>
+<p>A <strong>Request</strong> is a campaign-level container ("Ferulas for Venezuela")
+that bundles one or more <strong>RequestItems</strong>. Each RequestItem is a
+specific Part with its own target quantity and lifecycle. Contributions
+attach to RequestItems, not to the parent Request. This lets a single
+campaign cover multiple distinct printable parts without forcing the
+requester to create one Request per Part.</p>
+<h4 id="request-campaign-level">Request (campaign-level)</h4>
+<ul>
+<li><strong>FR-038</strong>: Authenticated users must be able to create a Request with
+  the following attributes:</li>
+<li>Title (required; e.g. "Ferulas for Venezuela")</li>
+<li>Description (markdown supported, optional context for the campaign
+    as a whole)</li>
+<li>Deadline (optional date; applies to every item unless an item
+    overrides it)</li>
+<li>Preferred Collection Centers (optional list of FK Collection
+    Centers — hints to makers which drop-off points are closest to
+    the eventual beneficiary)</li>
+<li>Requester — either the creating user themselves (default) or an
+    Organization the creating user is an active member of (see §3.10
+    and FR-125 for the polymorphic requester rules)</li>
+<li>At least one RequestItem (FR-120). A Request without items must
+    be rejected with a validation error.</li>
+<li><strong>FR-039</strong>: The requester of a Request is polymorphic: either a
+  User (<code>requester_user_id</code>) or an Organization
+  (<code>requester_organization_id</code>) per §3.10, with exactly one non-null.
+  The user who actually clicked "Create" is recorded separately as
+  immutable historical attribution.</li>
+<li><strong>FR-040</strong>: A Request must have a lifecycle status:</li>
+<li><code>open</code> — at least one RequestItem is still accepting Contributions</li>
+<li><code>fulfilled</code> — every RequestItem on the Request is <code>fulfilled</code></li>
+<li><code>closed</code> — manually closed (by the Request's effective requester,
+    maintainer, or admin) before all items reached <code>fulfilled</code></li>
+<li><strong>FR-041</strong>: The system must automatically transition a Request from
+  <code>open</code> to <code>fulfilled</code> when every RequestItem on the Request is
+  <code>fulfilled</code> (FR-121). A Request with at least one item whose status
+  is still <code>open</code> cannot be auto-fulfilled.</li>
+<li><strong>FR-042</strong>: The Request's effective requester (FR-109 mapping
+  applied to Requests) must be able to edit campaign-level Request
+  metadata (title, description, deadline, preferred Centers) while
+  the Request is <code>open</code>. Item-level edits follow FR-120.</li>
+<li><strong>FR-043</strong>: The Request's effective requester must be able to close
+  their own Request at any time, with an optional reason. Closing a
+  Request cascades to all its open RequestItems (FR-049 / FR-124).</li>
+<li><strong>FR-044</strong>: Maintainers and admins must be able to edit or close
+  any Request at any time, with an optional reason that is recorded
+  in the audit log.</li>
+<li><strong>FR-045</strong>: A Request's detail view must show:</li>
+<li>The list of RequestItems with their progress (Part, quantity,
+    committed, remaining, deadline, status)</li>
+<li>Aggregate progress across items (total committed, total delivered,
+    total received, total remaining)</li>
+<li>The full Contribution breakdown grouped by item</li>
+<li><strong>FR-046</strong>: Users must be able to browse open RequestItems (not
+  parent Requests; see FR-065), filtered by Part, deadline, and
+  remaining quantity, sorted by default by <code>deadline ASC,
+  remaining DESC</code>. The parent Request's title is always displayed
+  alongside the item so makers know the campaign context.</li>
+<li><strong>FR-047</strong>: A Request must not be deletable. Closing it preserves
+  historical attribution; once <code>fulfilled</code> or <code>closed</code>, the Request
+  and all its items become read-only except for moderator audit
+  fields.</li>
+<li><strong>FR-049</strong>: When a Request is closed before fulfilment, every
+  RequestItem still <code>open</code> on that Request must be transitioned to
+  <code>closed</code>, and every Contribution still in <code>claimed</code> state on those
+  items must be automatically transitioned to <code>released</code> (with reason
+  <code>request_closed</code>), freeing makers to pick up other work.</li>
+</ul>
+<h4 id="requestitem-line-item-level">RequestItem (line-item level)</h4>
+<ul>
+<li><strong>FR-119</strong>: The system must support a <code>RequestItem</code> entity. Every
+  Request must contain at least one RequestItem at all times; if the
+  last RequestItem on an <code>open</code> Request is removed, the system must
+  reject the removal (the requester must close the whole Request
+  instead). Each Contribution (FR-050) references a single
+  RequestItem.</li>
+<li><strong>FR-120</strong>: A RequestItem must have the following attributes:</li>
+<li>Request (FK, required; the parent campaign)</li>
+<li>Part (FK, required; must reference an <code>active</code> Part)</li>
+<li>Quantity (optional positive integer — null means "as many as
+    possible" for that item)</li>
+<li>Description (markdown, optional; item-level context such as
+    sizing, color, or batch notes)</li>
+<li>Deadline (optional date; overrides the parent Request's deadline
+    when present)</li>
+<li>Status — see FR-121</li>
+<li><strong>FR-121</strong>: A RequestItem must have a lifecycle status independent
+  of its parent Request:</li>
+<li><code>open</code> — accepting new Contributions</li>
+<li><code>fulfilled</code> — <code>Σ(contributions.quantity where status ≥ delivered)
+    ≥ requestitem.quantity</code>. Items with a null quantity never
+    auto-fulfill and must be closed manually.</li>
+<li><code>closed</code> — manually closed before fulfilment (by the Request's
+    effective requester, maintainer, or admin)</li>
+<li><strong>FR-122</strong>: A Request's effective requester must be able to add new
+  RequestItems to a Request while the Request is <code>open</code>. Adding an
+  item is always allowed regardless of any other item's state.</li>
+<li><strong>FR-123</strong>: A Request's effective requester must be able to remove
+  a RequestItem from an <code>open</code> Request only if it has no active
+  Contributions (none in <code>claimed</code>, <code>printed</code>, <code>delivered</code>, or
+  <code>received</code>). If it has active Contributions, the requester must
+  close the item instead (FR-124), which releases any <code>claimed</code>
+  contributions. The last remaining item on a Request cannot be
+  removed (FR-119).</li>
+<li><strong>FR-124</strong>: A Request's effective requester (or any
+  maintainer/admin) must be able to close an individual RequestItem
+  without closing the parent Request, with an optional reason. When
+  an item is closed, every Contribution still in <code>claimed</code> state on
+  that item must be automatically transitioned to <code>released</code> (with
+  reason <code>request_item_closed</code>). The parent Request remains <code>open</code>
+  unless all other items are also closed or fulfilled.</li>
+<li><strong>FR-125</strong>: When the polymorphic requester (FR-039) is an
+  Organization, all FRs in this section that refer to "the Request's
+  effective requester" resolve through §3.10's effective-owner
+  mapping: any active <code>owner</code> of the owning Organization can act as
+  the requester. Plain organization <code>member</code>s have no Request-level
+  powers; only <code>owner</code>s can edit or close on behalf of an Org. (This
+  is stricter than the Collection Center model because a Request is
+  a campaign-level commitment, not a day-to-day operational asset.)</li>
+</ul>
+<h3 id="36-contributions">3.6 Contributions</h3>
+<p>A Contribution represents a single maker's commitment to print a
+specific quantity of one RequestItem (a specific Part within a
+campaign-level Request, see §3.5) and the delivery of those printed
+units to a Collection Center.</p>
+<ul>
+<li><strong>FR-050</strong>: Authenticated users must be able to create a Contribution
+  on an <code>open</code> RequestItem with the following attributes:</li>
+<li>RequestItem (FK, required; the parent Request's status must also
+    be <code>open</code>)</li>
+<li>Quantity (positive integer, required)</li>
+<li>Target Collection Center (FK Collection Center, required; must
+    be <code>verified</code> and <code>active</code>)</li>
+<li>Notes (optional free-text)
+  The parent Request is reachable via the RequestItem; queries that
+  need to filter Contributions by campaign should JOIN through
+  <code>request_items</code>.</li>
+<li><strong>FR-051</strong>: A new Contribution must start in <code>claimed</code> status with
+  <code>claimed_at</code> set to the current timestamp.</li>
+<li><strong>FR-052</strong>: A Contribution must support the following lifecycle:</li>
+<li><code>claimed</code> — maker has committed to print; not yet started</li>
+<li><code>printed</code> — printing complete; not yet dropped off</li>
+<li><code>delivered</code> — dropped off at the target Collection Center;
+    awaiting confirmation</li>
+<li><code>received</code> — Collection Center operator (maintainer/admin) has confirmed
+    receipt; closes the loop</li>
+<li><code>released</code> — voluntarily abandoned by the maker or expired
+    (terminal, frees the quantity back to the Request)</li>
+<li><strong>FR-053</strong>: A maker must be able to advance their own Contribution
+  from <code>claimed → printed → delivered</code>. They must not be able to
+  advance it to <code>received</code> (that requires the target Collection
+  Center's members, or a maintainer/admin — see FR-056).</li>
+<li><strong>FR-054</strong>: A maker must be able to release their own Contribution
+  while it is in <code>claimed</code> or <code>printed</code> status, transitioning it to
+  <code>released</code> and freeing the committed quantity.</li>
+<li><strong>FR-055</strong>: A <code>claimed</code> Contribution that has not advanced to
+  <code>printed</code> within a configurable number of days (default 14) must
+  expire automatically (status set to <code>released</code>) so committed quantity
+  does not block other makers indefinitely.</li>
+<li><strong>FR-056</strong>: Only an active effective member (FR-110) of the
+  Contribution's target Collection Center, or any maintainer/admin,
+  must be able to transition a Contribution to <code>received</code>. The system
+  must record <code>received_at</code> and <code>received_by_id</code> on this transition.</li>
+<li><strong>FR-126</strong>: When a maker advances their own Contribution to
+  <code>delivered</code> and that maker is also an active effective member
+  (FR-110) of the target Collection Center, the system must
+  automatically transition the Contribution to <code>received</code> in the same
+  operation. The <code>received_by_id</code> must be set to the maker, and an
+  <code>auto_receive_contribution</code> audit log entry must be written so the
+  inferred receipt is traceable. If the maker is not an effective
+  member of the target Centro, the Contribution remains in
+  <code>delivered</code> and a manual confirmation per FR-056 is required.</li>
+<li><strong>FR-057</strong>: A maker must be able to edit the quantity and notes of
+  their Contribution only while it is in <code>claimed</code> status. Once it
+  has advanced past <code>claimed</code>, the quantity is locked.</li>
+<li><strong>FR-058</strong>: Each status transition must record an immutable
+  timestamp (<code>claimed_at</code>, <code>printed_at</code>, <code>delivered_at</code>, <code>received_at</code>,
+  <code>released_at</code> as applicable) and the actor user ID.</li>
+<li><strong>FR-059</strong>: Contributions must not be deletable. The <code>released</code>
+  status is the only way to back out of a Contribution.</li>
+<li><strong>FR-060</strong>: Users must be able to view all their own Contributions
+  ("My Prints" tab), filterable by status.</li>
+<li><strong>FR-061</strong>: A Request's detail view must list all Contributions
+  routed to every one of its RequestItems, grouped by item, including
+  the maker's username, quantity, target collection center, and
+  current status.</li>
+<li><strong>FR-062</strong>: When computing "committed quantity" for a RequestItem
+  (FR-121) — and by extension the Request roll-up (FR-041) —
+  Contributions in <code>released</code> status must be excluded; Contributions
+  in <code>claimed</code>, <code>printed</code>, <code>delivered</code>, and <code>received</code> must all be
+  counted.</li>
+<li><strong>FR-063</strong>: When computing "delivered quantity" for a RequestItem's
+  auto-fulfilment (FR-121), only Contributions in <code>delivered</code> or
+  <code>received</code> status must be counted.</li>
+<li><strong>FR-064</strong>: The system must prevent a Contribution from being
+  created against a Collection Center that is not <code>verified</code> and
+  <code>active</code>, even if the user can otherwise see the Collection Center.</li>
+</ul>
+<h3 id="37-discovery-prioritization">3.7 Discovery &amp; Prioritization</h3>
+<p>This is the headline value of PrintForHelp: helping the community see
+at a glance which open RequestItems most need print capacity, so
+makers don't duplicate work.</p>
+<ul>
+<li><strong>FR-065</strong>: The system must expose a prioritization view ("What to
+  print next") that ranks open RequestItems (not parent Requests) by:</li>
+<li>The effective deadline (<code>item.deadline ?? parent_request.deadline</code>)
+    ASC — urgent first; null deadlines last</li>
+<li><code>remaining DESC</code> where
+    <code>remaining = max(0, item.quantity − Σ active committed quantity)</code></li>
+<li>Featured Parts boosted above non-featured Parts at the same
+    urgency tier
+  Each row in the view must display both the item's Part name and the
+  parent Request's title for context (e.g., "Forearm splint · Ferulas
+  for Venezuela").</li>
+<li><strong>FR-066</strong>: The prioritization view must filter RequestItems so
+  that only items whose parent Request lists at least one <code>verified</code>
+  and <code>active</code> Collection Center the maker can reasonably ship to are
+  shown by default, with a toggle to show all open items globally.</li>
+<li><strong>FR-067</strong>: The dashboard must show aggregate statistics:</li>
+<li>Total open Requests and total open RequestItems</li>
+<li>Total quantity remaining across all open RequestItems</li>
+<li>Total quantity delivered in the last 30 days</li>
+<li>Top 5 most-needed Parts (by aggregated remaining quantity across
+    every open RequestItem that references the Part)</li>
+<li><strong>FR-068</strong>: A Part's detail view must include a small chart of
+  contributions over time (rolling 30-day window) so the community
+  can see whether the response is keeping up with demand.</li>
+<li><strong>FR-069</strong>: The prioritization view must be cache-warmed and update
+  in near-real-time (≤ 5 seconds) when a Contribution status changes
+  or a new RequestItem is created.</li>
+<li><strong>FR-070</strong>: Aggregations in the discovery view must always use the
+  live committed/delivered totals defined in FR-062 and FR-063; no
+  denormalized counters that can drift.</li>
+</ul>
+<h3 id="38-navigation">3.8 Navigation</h3>
+<ul>
+<li><strong>FR-071</strong>: The application navigation must have the following tabs:</li>
+<li><strong>Parts</strong> — catalog of printable designs (public, read-only for
+    guests; create / edit for users)</li>
+<li><strong>Requests</strong> — open print requests (public read; create / edit
+    for users)</li>
+<li><strong>Collection Centers</strong> — directory of verified drop-off locations
+    (public read; register for users)</li>
+<li><strong>Organizations</strong> — directory of verified organizations
+    (public read; create / manage for users; verify for maintainers)</li>
+<li><strong>My Prints</strong> — the current user's Contributions (authenticated
+    only)</li>
+<li><strong>Users</strong> — user and role management (admin only)</li>
+<li><strong>FR-072</strong>: Guests must be able to browse Parts, Requests, Collection
+  Centers, and Organizations without an account; any action that
+  requires authentication must prompt them to log in or register.</li>
+<li><strong>FR-073</strong>: The navigation must surface a persistent CTA to switch
+  the UI language between Spanish (<code>es</code>) and English (<code>en</code>).</li>
+<li><strong>FR-074</strong>: Each tab must reflect the user's role: admin-only tabs
+  must not be rendered for non-admin users; controls gated by the
+  permission matrix (§3.2) must be hidden from users who lack the
+  permission.</li>
+</ul>
+<h3 id="39-organizations">3.9 Organizations</h3>
+<p>An Organization is a named group of users that can own Parts and
+Collection Centers. Organizations let real-world entities (makerspaces,
+hospitals, university labs, NGOs) operate on PrintForHelp under their
+own identity, distinct from any single user account. Organizations are
+also the recipient of ownership transfers from individuals — a single
+volunteer can publish parts now, and once the originating organization
+joins, ownership can be reassigned to them via §3.10.</p>
+<ul>
+<li><strong>FR-094</strong>: Any authenticated user must be able to create an
+  Organization with the following attributes:</li>
+<li>Name (unique across all Organizations)</li>
+<li>Description (markdown supported, optional)</li>
+<li>Contact (phone / email / social handle, free-text, required)</li>
+<li>Website (optional URL)</li>
+<li>Country (required)</li>
+<li><strong>FR-095</strong>: When a user creates an Organization, the system must
+  atomically create an <code>OrganizationMembership</code> for the creator with
+  role <code>owner</code>. The creator is also recorded as <code>registered_by_id</code> on
+  the Organization for immutable historical attribution.</li>
+<li><strong>FR-096</strong>: Organizations must default to <code>verified = false</code>.
+  Maintainers and admins must be able to verify an Organization by
+  flipping the <code>verified</code> flag to <code>true</code>, recording <code>verified_by_id</code>
+  and the verification timestamp. Unverified Organizations may still
+  own Parts and Collection Centers (FR-105) but are visibly flagged
+  on public views.</li>
+<li><strong>FR-097</strong>: Maintainers and admins must be able to revoke
+  verification on an Organization (revert to <code>verified = false</code>) with
+  an optional reason recorded in the audit log.</li>
+<li><strong>FR-098</strong>: The owner of an Organization must be able to add another
+  user as a <code>member</code> by username. The membership becomes active
+  immediately; there is no separate accept step. Members can leave
+  voluntarily at any time (FR-099).</li>
+<li><strong>FR-099</strong>: The owner of an Organization must be able to remove any
+  <code>member</code>. A <code>member</code> must be able to leave the Organization
+  voluntarily at any time (deactivate their own membership).</li>
+<li><strong>FR-100</strong>: The owner of an Organization must not be able to leave
+  or remove their own membership. To step down, the owner must first
+  transfer Organization ownership (FR-101).</li>
+<li><strong>FR-101</strong>: The owner of an Organization must be able to transfer
+  Organization ownership to any existing active <code>member</code>. The
+  transfer is atomic: the new user becomes <code>owner</code> and the prior
+  owner is demoted to <code>member</code>. Because the recipient is already a
+  member of the Organization, no separate accept step is required.</li>
+<li><strong>FR-102</strong>: When the owner of an Organization is deactivated
+  (FR-013), the Organization is considered orphaned. Maintainers and
+  admins must be able to force-transfer Organization ownership to any
+  active member (or, if no other members exist, first add a member
+  and then force-transfer). Force-transfer must be recorded in the
+  audit log.</li>
+<li><strong>FR-103</strong>: Organizations must support a status of <code>active</code> or
+  <code>inactive</code>. Only the Organization's owner (or a maintainer/admin)
+  must be able to change the status. An inactive Organization cannot
+  receive new ownership transfers (it cannot become an owner of new
+  assets), but its existing owned Parts and Collection Centers
+  continue to operate.</li>
+<li><strong>FR-104</strong>: Only the Organization's owner (or a maintainer/admin)
+  must be able to archive (soft-delete, <code>active = false</code>) an
+  Organization. The action must be rejected if the Organization owns
+  any active Parts or Collection Centers; assets must be transferred
+  away (§3.10) or force-archived (FR-077, FR-080) first. There is no
+  force-archive that bypasses this rule; the cascade through asset
+  archival keeps the model clean.</li>
+<li><strong>FR-105</strong>: An unverified Organization may own Parts and Collection
+  Centers, but every public-facing view of those assets and of the
+  Organization itself must clearly display an "Unverified
+  organization" badge so users can judge trust.</li>
+<li><strong>FR-106</strong>: Any active member of an Organization must be able to
+  view the Organization's member list, owned Parts, and owned
+  Collection Centers on the Organization's detail view. Public users
+  see only the public attributes (name, description, contact, country,
+  verified status) and the counts of public owned assets.</li>
+</ul>
+<h5 id="organization-membership-permission-matrix">Organization Membership Permission Matrix</h5>
+<p>This sub-matrix scopes actions to a specific Organization. The
+columns are: a user with no relationship to the Organization
+(<strong>Non-member</strong>), an active <code>member</code> (<strong>Member</strong>), the Organization's
+<code>owner</code> (<strong>Owner</strong>), the global <strong>Maintainer</strong> role, and the global
+<strong>Admin</strong> role.</p>
+<table>
+<thead>
+<tr>
+<th>Action on an Organization</th>
+<th>Non-member</th>
+<th>Member</th>
+<th>Owner</th>
+<th>Maintainer</th>
+<th>Admin</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>View public details</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>View member list &amp; owned assets</td>
+<td>—</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>Edit Organization details</td>
+<td>—</td>
+<td>—</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>Add a member (FR-098)</td>
+<td>—</td>
+<td>—</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>Remove a member (FR-099)</td>
+<td>—</td>
+<td>—</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>Leave the Organization (self-remove) (FR-099)</td>
+<td>—</td>
+<td>✓</td>
+<td>—</td>
+<td>n/a</td>
+<td>n/a</td>
+</tr>
+<tr>
+<td>Transfer ownership to a member (FR-101)</td>
+<td>—</td>
+<td>—</td>
+<td>✓</td>
+<td>—</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>Force-transfer ownership (FR-102)</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>Toggle <code>active</code> / <code>inactive</code> (FR-103)</td>
+<td>—</td>
+<td>—</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>Archive the Organization (FR-104)</td>
+<td>—</td>
+<td>—</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>Verify / revoke verification (FR-096 / FR-097)</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>Act on Organization-owned Parts / Centers</td>
+<td>—</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+</tbody>
+</table>
+<p>The last row resolves to per-asset rules: a <code>member</code> acting on an
+org-owned Part has the same powers as a user-owner; a <code>member</code> acting
+on an org-owned Collection Center has the same powers as a per-center
+contributor (and an <code>owner</code> of the Organization has the same powers as
+the user-owner of that Center). See §3.10 for the formal mapping.</p>
+<h3 id="310-polymorphic-ownership-transfers">3.10 Polymorphic Ownership &amp; Transfers</h3>
+<p>Parts and Collection Centers are owned by either a User or an
+Organization, never both, never neither. This section defines the
+polymorphic ownership model and the cross-principal transfer flow that
+lets owners reassign assets to other users or organizations.</p>
+<h4 id="ownership-model">Ownership Model</h4>
+<ul>
+<li><strong>FR-107</strong>: Each Part and each Collection Center must have exactly
+  one owner principal at all times. The owner is stored as two
+  nullable foreign key columns on the asset — <code>owner_user_id</code> (FK
+  User) and <code>owner_organization_id</code> (FK Organization) — with a
+  database-level constraint enforcing that exactly one is non-null.</li>
+<li><strong>FR-108</strong>: At registration time the registering user must declare
+  the owner principal: either themselves (default, sets
+  <code>owner_user_id</code>) or an Organization they are an active member of
+  (sets <code>owner_organization_id</code>). Registering on behalf of an
+  Organization the registering user is not a member of must be
+  rejected with a clear error.</li>
+<li><strong>FR-109</strong>: For all FRs in §3.3 (Parts) and §3.4 (Collection
+  Centers) that grant powers to the "owner" or "creator" of an
+  asset, the <strong>effective owner</strong> is defined as:</li>
+<li>For a user-owned asset: the user identified by <code>owner_user_id</code>.</li>
+<li>For an org-owned asset: any user who has an active
+    <code>OrganizationMembership</code> with role <code>owner</code> on the owning
+    Organization.</li>
+<li><strong>FR-110</strong>: For all FRs that grant powers to "members" or
+  "contributors" of a Collection Center, the <strong>effective members</strong>
+  are defined as the union of:</li>
+<li>The user-owner of the Center (when user-owned).</li>
+<li>All active per-center contributors recorded in
+    <code>CollectionCenterMembership</code>.</li>
+<li>All active members of the owning Organization (when org-owned).</li>
+</ul>
+<h4 id="ownership-transfer-flow">Ownership Transfer Flow</h4>
+<ul>
+<li><strong>FR-111</strong>: An asset's effective owner must be able to initiate an
+  ownership transfer to a target principal (another User by username,
+  or another Organization by name). Initiating a transfer creates an
+  <code>OwnershipTransfer</code> row with status <code>pending</code> and records both the
+  source and the target principals.</li>
+<li><strong>FR-112</strong>: A pending transfer must be accepted or declined by the
+  target principal:</li>
+<li>When the target is a User, that user accepts or declines.</li>
+<li>When the target is an Organization, any active <code>owner</code> of that
+    Organization accepts or declines on its behalf.
+  Acceptance atomically swaps the asset's ownership FKs to point at
+  the target principal and sets the transfer status to <code>accepted</code>.
+  Declining sets the status to <code>declined</code> and ownership is unchanged.</li>
+<li><strong>FR-113</strong>: The initiating effective owner must be able to cancel a
+  pending transfer at any time before it is accepted or declined,
+  setting the status to <code>cancelled</code>.</li>
+<li><strong>FR-114</strong>: A pending transfer must auto-expire after a configurable
+  number of days (default 7), setting the status to <code>expired</code>.
+  Ownership is unchanged on expiry. Expiry must be processed by a
+  scheduled job and recorded in the audit log.</li>
+<li><strong>FR-115</strong>: An asset must not have more than one transfer in
+  <code>pending</code> status at a time. If the effective owner initiates a new
+  transfer while one is already pending, the request must be rejected
+  with an error directing the user to cancel the existing pending
+  transfer first.</li>
+<li><strong>FR-116</strong>: Maintainers and admins must be able to force-transfer
+  ownership of any Part or Collection Center to any User or
+  Organization without acceptance, recording the reason in the audit
+  log. This is used to recover assets from deactivated owners
+  (FR-089) or to resolve abuse and ownership disputes.</li>
+<li><strong>FR-117</strong>: Initiating, accepting, declining, cancelling, expiring,
+  and force-transferring ownership must each be recorded in the
+  audit log (NFR-008).</li>
+<li><strong>FR-118</strong>: The polymorphic ownership transfer flow (FR-111 –
+  FR-116) applies to Parts, Collection Centers, and Requests. The
+  <code>ownership_transfer_asset_type</code> enum therefore contains three
+  values: <code>part</code>, <code>collection_center</code>, and <code>request</code>. Organization
+  ownership transfer is a separate mechanism that lives within an
+  Organization's own membership (FR-101). The <code>creator_id</code> /
+  <code>registered_by_id</code> columns on assets remain immutable historical
+  attribution regardless of how many times ownership is transferred.</li>
+</ul>
+<h2 id="4-non-functional-requirements">4. Non-Functional Requirements</h2>
+<h3 id="41-performance">4.1 Performance</h3>
+<ul>
+<li><strong>NFR-001</strong>: The prioritization view must load within 2 seconds for a
+  catalog of up to 1,000 open Requests.</li>
+<li><strong>NFR-002</strong>: Aggregation queries (FR-067) must use indexed columns
+  and must not exceed 500 ms server-side at the 1,000-Request scale.</li>
+<li><strong>NFR-003</strong>: Status changes on a Contribution must propagate to the
+  prioritization view within 5 seconds.</li>
+</ul>
+<h3 id="42-security">4.2 Security</h3>
+<ul>
+<li><strong>NFR-004</strong>: Passwords must be hashed with Argon2ID via <code>pwdlib</code>
+  (matching Colony's auth standard).</li>
+<li><strong>NFR-005</strong>: All API endpoints except <code>auth/register</code>, <code>auth/login</code>,
+  and the public read endpoints for Parts / Requests / verified
+  Collection Centers must require authentication.</li>
+<li><strong>NFR-006</strong>: Role-based authorization must be enforced server-side
+  on every protected endpoint. Frontend hiding of controls is for UX
+  only and must never be the sole defense.</li>
+<li><strong>NFR-007</strong>: All API traffic in production must be served over
+  HTTPS.</li>
+<li><strong>NFR-008</strong>: Audit-relevant actions (Collection Center verification,
+  revocation, request override-close, role change, deactivate user,
+  confirm received) must record actor, action, target, timestamp, and
+  optional
+  reason in an immutable audit log.</li>
+</ul>
+<h3 id="43-usability">4.3 Usability</h3>
+<ul>
+<li><strong>NFR-009</strong>: The interface must be responsive across desktop,
+  tablet, and mobile breakpoints.</li>
+<li><strong>NFR-010</strong>: Forms must validate inline before submission and must
+  surface server errors in the user's preferred locale.</li>
+<li><strong>NFR-011</strong>: Empty states (no parts yet, no requests yet, no
+  contributions yet) must include a clear next action.</li>
+</ul>
+<h3 id="44-reliability">4.4 Reliability</h3>
+<ul>
+<li><strong>NFR-012</strong>: All entities must be soft-deletable only
+  (<code>active = false</code>); the database must never hard-delete user-created
+  records.</li>
+<li><strong>NFR-013</strong>: Database backups must run daily and be retained for at
+  least 30 days.</li>
+<li><strong>NFR-014</strong>: Status transitions on Contributions and Requests must
+  be transactional — partial updates that would leave totals out of
+  sync must roll back.</li>
+</ul>
+<h3 id="45-internationalization">4.5 Internationalization</h3>
+<ul>
+<li><strong>NFR-015</strong>: The frontend must ship bilingual Spanish and English
+  translations from the v1 release. Every user-visible string must be
+  resolved through an i18n layer; no hard-coded copy in components.</li>
+<li><strong>NFR-016</strong>: The current locale must be persisted on the User record
+  (<code>preferred_locale</code>) so it survives across sessions and devices.</li>
+<li><strong>NFR-017</strong>: Guests must default to the browser's <code>Accept-Language</code>
+  preference, falling back to Spanish.</li>
+</ul>
+<h2 id="5-technical-constraints">5. Technical Constraints</h2>
+<ul>
+<li>Must use FastAPI (Python 3.13+) for the backend.</li>
+<li>Must use Next.js 15 (App Router) for the frontend.</li>
+<li>Must use PostgreSQL as the production database.</li>
+<li>Must be containerizable with Docker; Docker Compose for local
+  development.</li>
+<li>Must use Alembic for schema migrations.</li>
+<li>Must use SQLAlchemy 2.0 with typed <code>Mapped[...]</code> columns.</li>
+<li>Must use Pydantic 2.0 for request/response validation.</li>
+<li>Must follow the domain module layout documented in
+  <code>backend/AGENTS.md</code> (one folder per domain with the seven canonical
+  files).</li>
+</ul>
+<h2 id="6-data-requirements">6. Data Requirements</h2>
+<h3 id="61-user-schema">6.1 User Schema</h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>- id: UUID
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>- username: String (unique, required)
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>- password_hash: String (Argon2ID)
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>- role: Enum (user, maintainer, admin)
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>- preferred_locale: Enum (es, en)
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>- active: Boolean
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>- created_at: DateTime
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>- updated_at: DateTime
+</code></pre></div>
+<h3 id="62-part-schema">6.2 Part Schema</h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>- id: UUID
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>- name: String (required)
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>- description: String (markdown, optional)
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>- source_url: String (URL, required)
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>- suggested_settings: String (optional)
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>- tags: String[] (optional)
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>- status: Enum (active, discontinued)
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>- featured: Boolean (default false)
+<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>- creator_id: UUID (FK User, required; immutable historical
+<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>  attribution — see FR-016)
+<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a>- owner_user_id: UUID (FK User, nullable)
+<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a>- owner_organization_id: UUID (FK Organization, nullable)
+<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a>- active: Boolean
+<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a>- created_at: DateTime
+<a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a>- updated_at: DateTime
+</code></pre></div>
+<p>Invariant: exactly one of <code>owner_user_id</code> or <code>owner_organization_id</code>
+is non-null at all times (FR-107). Both columns are mutated atomically
+when ownership is transferred (§3.10).</p>
+<h3 id="63-collection-center-schema">6.3 Collection Center Schema</h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>- id: UUID
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>- name: String (required)
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>- address: String (required)
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>- country: String (required)
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>- city: String (required)
+<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>- contact: String (required)
+<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>- opening_hours: String (optional)
+<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>- notes: String (optional)
+<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>- verified: Boolean (default false)
+<a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>- registered_by_id: UUID (FK User, required; immutable historical
+<a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a>  attribution — see FR-082)
+<a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a>- verified_by_id: UUID (FK User, nullable until verified)
+<a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a>- owner_user_id: UUID (FK User, nullable)
+<a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a>- owner_organization_id: UUID (FK Organization, nullable)
+<a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a>- status: Enum (active, inactive)
+<a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a>- active: Boolean
+<a id="__codelineno-2-17" name="__codelineno-2-17" href="#__codelineno-2-17"></a>- created_at: DateTime
+<a id="__codelineno-2-18" name="__codelineno-2-18" href="#__codelineno-2-18"></a>- updated_at: DateTime
+</code></pre></div>
+<p>Invariant: exactly one of <code>owner_user_id</code> or <code>owner_organization_id</code>
+is non-null at all times (FR-107 / FR-083). Both columns are mutated
+atomically when ownership is transferred (§3.10).</p>
+<p>The current owner of a Collection Center is therefore stored directly
+on this row (not derived from any membership table). The
+<code>CollectionCenterMembership</code> table (§6.7) tracks only per-center
+contributors, never owners.</p>
+<h3 id="64-request-schema">6.4 Request Schema</h3>
+<p>A Request is the campaign-level container; each Request has one or
+more RequestItems (§6.11). The <code>part_id</code> and <code>quantity</code> fields that
+were on Request in earlier drafts have moved to RequestItem.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>- id: UUID
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>- title: String (required)
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>- description: String (markdown, optional)
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>- deadline: Date (optional; applies to all items unless overridden
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>  at the item level — see §6.11)
+<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>- requester_user_id: UUID (FK User, nullable)
+<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>- requester_organization_id: UUID (FK Organization, nullable)
+<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>- created_by_id: UUID (FK User, required; the user who clicked
+<a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a>  &quot;Create&quot; — immutable historical attribution)
+<a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a>- preferred_collection_center_ids: UUID[] (FK Collection Center,
+<a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a>  optional)
+<a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a>- status: Enum (open, fulfilled, closed)
+<a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a>- closed_reason: String (optional; free-text or system-generated)
+<a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a>- closed_by_id: UUID (FK User, nullable)
+<a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a>- closed_at: DateTime (nullable)
+<a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a>- active: Boolean
+<a id="__codelineno-3-17" name="__codelineno-3-17" href="#__codelineno-3-17"></a>- created_at: DateTime
+<a id="__codelineno-3-18" name="__codelineno-3-18" href="#__codelineno-3-18"></a>- updated_at: DateTime
+</code></pre></div>
+<p>Invariant: exactly one of <code>requester_user_id</code> or
+<code>requester_organization_id</code> is non-null at all times (FR-039 /
+FR-107). Both columns are mutated atomically when ownership is
+transferred (§3.10 / FR-118).</p>
+<h3 id="65-contribution-schema">6.5 Contribution Schema</h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>- id: UUID
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>- request_item_id: UUID (FK RequestItem, required; the parent Request
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>  is reachable via JOIN through request_items)
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>- maker_id: UUID (FK User, required)
+<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>- collection_center_id: UUID (FK Collection Center, required, must be
+<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>  verified and active)
+<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a>- quantity: Integer (positive, required)
+<a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>- notes: String (optional)
+<a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a>- status: Enum (claimed, printed, delivered, received, released)
+<a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a>- claimed_at: DateTime (set on creation)
+<a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a>- printed_at: DateTime (nullable)
+<a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a>- delivered_at: DateTime (nullable)
+<a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a>- received_at: DateTime (nullable)
+<a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a>- received_by_id: UUID (FK User, nullable; set on transition to
+<a id="__codelineno-4-15" name="__codelineno-4-15" href="#__codelineno-4-15"></a>  `received`. Equals `maker_id` when auto-received per FR-126)
+<a id="__codelineno-4-16" name="__codelineno-4-16" href="#__codelineno-4-16"></a>- auto_received: Boolean (default false; true when the receipt was
+<a id="__codelineno-4-17" name="__codelineno-4-17" href="#__codelineno-4-17"></a>  auto-confirmed because the maker was an effective member of the
+<a id="__codelineno-4-18" name="__codelineno-4-18" href="#__codelineno-4-18"></a>  target Centro — FR-126)
+<a id="__codelineno-4-19" name="__codelineno-4-19" href="#__codelineno-4-19"></a>- released_at: DateTime (nullable)
+<a id="__codelineno-4-20" name="__codelineno-4-20" href="#__codelineno-4-20"></a>- released_reason: String (optional; &quot;manual&quot;, &quot;expired&quot;,
+<a id="__codelineno-4-21" name="__codelineno-4-21" href="#__codelineno-4-21"></a>  &quot;collection_center_archived&quot;, &quot;request_closed&quot;, or
+<a id="__codelineno-4-22" name="__codelineno-4-22" href="#__codelineno-4-22"></a>  &quot;request_item_closed&quot;)
+<a id="__codelineno-4-23" name="__codelineno-4-23" href="#__codelineno-4-23"></a>- active: Boolean
+<a id="__codelineno-4-24" name="__codelineno-4-24" href="#__codelineno-4-24"></a>- created_at: DateTime
+<a id="__codelineno-4-25" name="__codelineno-4-25" href="#__codelineno-4-25"></a>- updated_at: DateTime
+</code></pre></div>
+<h3 id="66-audit-log-schema">6.6 Audit Log Schema</h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>- id: UUID
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>- actor_id: UUID (FK User, required)
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>- action: Enum (verify_collection_center, revoke_collection_center,
+<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>  force_archive_part, force_archive_collection_center,
+<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>  override_close_request, override_close_request_item,
+<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>  change_role, deactivate_user, reactivate_user, confirm_received,
+<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a>  auto_receive_contribution, add_contributor, remove_contributor,
+<a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a>  verify_organization, revoke_organization_verification,
+<a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a>  org_add_member, org_remove_member, org_transfer_ownership,
+<a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a>  force_transfer_org_ownership, initiate_ownership_transfer,
+<a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a>  accept_ownership_transfer, decline_ownership_transfer,
+<a id="__codelineno-5-12" name="__codelineno-5-12" href="#__codelineno-5-12"></a>  cancel_ownership_transfer, expire_ownership_transfer,
+<a id="__codelineno-5-13" name="__codelineno-5-13" href="#__codelineno-5-13"></a>  force_transfer_ownership)
+<a id="__codelineno-5-14" name="__codelineno-5-14" href="#__codelineno-5-14"></a>- target_type: String (User, Part, Collection Center, Request,
+<a id="__codelineno-5-15" name="__codelineno-5-15" href="#__codelineno-5-15"></a>  RequestItem, Contribution, CollectionCenterMembership, Organization,
+<a id="__codelineno-5-16" name="__codelineno-5-16" href="#__codelineno-5-16"></a>  OrganizationMembership, OwnershipTransfer)
+<a id="__codelineno-5-17" name="__codelineno-5-17" href="#__codelineno-5-17"></a>- target_id: UUID (required)
+<a id="__codelineno-5-18" name="__codelineno-5-18" href="#__codelineno-5-18"></a>- reason: String (optional)
+<a id="__codelineno-5-19" name="__codelineno-5-19" href="#__codelineno-5-19"></a>- created_at: DateTime
+</code></pre></div>
+<h3 id="67-collection-center-membership-schema">6.7 Collection Center Membership Schema</h3>
+<p>This table records per-center contributors only. Ownership of a
+Collection Center is stored on the Collection Center entity itself
+(§6.3), not here.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>- id: UUID
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>- collection_center_id: UUID (FK Collection Center, required)
+<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>- user_id: UUID (FK User, required)
+<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>- role: Enum (contributor)
+<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>- invited_by_id: UUID (FK User, required)
+<a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>- active: Boolean
+<a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a>- created_at: DateTime
+<a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a>- updated_at: DateTime
+</code></pre></div>
+<p>Invariants:</p>
+<ul>
+<li>Unique active membership per (<code>collection_center_id</code>, <code>user_id</code>)
+  pair — a user cannot have two simultaneous contributor memberships
+  on the same Collection Center.</li>
+<li>The <code>role</code> enum currently has a single value (<code>contributor</code>). It
+  remains an enum to leave room for future per-center roles without
+  a schema migration.</li>
+</ul>
+<h3 id="68-organization-schema">6.8 Organization Schema</h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>- id: UUID
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>- name: String (unique, required)
+<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>- description: String (markdown, optional)
+<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>- contact: String (required)
+<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>- website: String (URL, optional)
+<a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a>- country: String (required)
+<a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a>- verified: Boolean (default false)
+<a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a>- registered_by_id: UUID (FK User, required; immutable historical
+<a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a>  attribution — see FR-095)
+<a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a>- verified_by_id: UUID (FK User, nullable until verified)
+<a id="__codelineno-7-11" name="__codelineno-7-11" href="#__codelineno-7-11"></a>- status: Enum (active, inactive)
+<a id="__codelineno-7-12" name="__codelineno-7-12" href="#__codelineno-7-12"></a>- active: Boolean
+<a id="__codelineno-7-13" name="__codelineno-7-13" href="#__codelineno-7-13"></a>- created_at: DateTime
+<a id="__codelineno-7-14" name="__codelineno-7-14" href="#__codelineno-7-14"></a>- updated_at: DateTime
+</code></pre></div>
+<h3 id="69-organization-membership-schema">6.9 Organization Membership Schema</h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>- id: UUID
+<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>- organization_id: UUID (FK Organization, required)
+<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>- user_id: UUID (FK User, required)
+<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>- role: Enum (owner, member)
+<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a>- invited_by_id: UUID (FK User, nullable; null for the auto-created
+<a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a>  owner membership at Organization registration)
+<a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a>- active: Boolean
+<a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a>- created_at: DateTime
+<a id="__codelineno-8-9" name="__codelineno-8-9" href="#__codelineno-8-9"></a>- updated_at: DateTime
+</code></pre></div>
+<p>Invariants:</p>
+<ul>
+<li>Unique active membership per (<code>organization_id</code>, <code>user_id</code>).</li>
+<li>Exactly one active membership with <code>role = 'owner'</code> per active
+  Organization (FR-100).</li>
+</ul>
+<h3 id="610-ownership-transfer-schema">6.10 Ownership Transfer Schema</h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>- id: UUID
+<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>- asset_type: Enum (part, collection_center, request)
+<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>- asset_id: UUID (required; FK Part, FK Collection Center, or FK
+<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a>  Request depending on asset_type)
+<a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a>- source_user_id: UUID (FK User, nullable)
+<a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a>- source_organization_id: UUID (FK Organization, nullable)
+<a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a>- target_user_id: UUID (FK User, nullable)
+<a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a>- target_organization_id: UUID (FK Organization, nullable)
+<a id="__codelineno-9-9" name="__codelineno-9-9" href="#__codelineno-9-9"></a>- initiated_by_id: UUID (FK User, required; the user who initiated)
+<a id="__codelineno-9-10" name="__codelineno-9-10" href="#__codelineno-9-10"></a>- resolved_by_id: UUID (FK User, nullable; the user who accepted,
+<a id="__codelineno-9-11" name="__codelineno-9-11" href="#__codelineno-9-11"></a>  declined, cancelled, or force-transferred)
+<a id="__codelineno-9-12" name="__codelineno-9-12" href="#__codelineno-9-12"></a>- status: Enum (pending, accepted, declined, cancelled, expired,
+<a id="__codelineno-9-13" name="__codelineno-9-13" href="#__codelineno-9-13"></a>  force_transferred)
+<a id="__codelineno-9-14" name="__codelineno-9-14" href="#__codelineno-9-14"></a>- reason: String (optional; used on force-transfer)
+<a id="__codelineno-9-15" name="__codelineno-9-15" href="#__codelineno-9-15"></a>- expires_at: DateTime (required)
+<a id="__codelineno-9-16" name="__codelineno-9-16" href="#__codelineno-9-16"></a>- resolved_at: DateTime (nullable)
+<a id="__codelineno-9-17" name="__codelineno-9-17" href="#__codelineno-9-17"></a>- created_at: DateTime
+<a id="__codelineno-9-18" name="__codelineno-9-18" href="#__codelineno-9-18"></a>- updated_at: DateTime
+</code></pre></div>
+<p>Invariants:</p>
+<ul>
+<li>Exactly one of <code>source_user_id</code> or <code>source_organization_id</code> is
+  non-null (the source principal at initiation time).</li>
+<li>Exactly one of <code>target_user_id</code> or <code>target_organization_id</code> is
+  non-null (the target principal).</li>
+<li>At most one row per (<code>asset_type</code>, <code>asset_id</code>) may have
+  <code>status = 'pending'</code> at any time (FR-115).</li>
+</ul>
+<h3 id="611-requestitem-schema">6.11 RequestItem Schema</h3>
+<p>A RequestItem is one line in a Request: a specific Part with a target
+quantity. Contributions reference RequestItems, not the parent
+Request. See §3.5 (FR-119 – FR-124) for the lifecycle.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>- id: UUID
+<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>- request_id: UUID (FK Request, required; ON DELETE CASCADE)
+<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>- part_id: UUID (FK Part, required; the Part must be `active` at
+<a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a>  insertion time)
+<a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a>- quantity: Integer (nullable; null = &quot;as many as possible&quot;)
+<a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a>- description: String (markdown, optional; item-level context such
+<a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a>  as sizing, color, or batch notes)
+<a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a>- deadline: Date (optional; overrides the parent Request&#39;s deadline
+<a id="__codelineno-10-9" name="__codelineno-10-9" href="#__codelineno-10-9"></a>  when non-null)
+<a id="__codelineno-10-10" name="__codelineno-10-10" href="#__codelineno-10-10"></a>- status: Enum (open, fulfilled, closed)
+<a id="__codelineno-10-11" name="__codelineno-10-11" href="#__codelineno-10-11"></a>- closed_reason: String (optional; free-text or system-generated
+<a id="__codelineno-10-12" name="__codelineno-10-12" href="#__codelineno-10-12"></a>  values like &quot;parent_request_closed&quot;, &quot;part_archived&quot;)
+<a id="__codelineno-10-13" name="__codelineno-10-13" href="#__codelineno-10-13"></a>- closed_by_id: UUID (FK User, nullable)
+<a id="__codelineno-10-14" name="__codelineno-10-14" href="#__codelineno-10-14"></a>- closed_at: DateTime (nullable)
+<a id="__codelineno-10-15" name="__codelineno-10-15" href="#__codelineno-10-15"></a>- active: Boolean
+<a id="__codelineno-10-16" name="__codelineno-10-16" href="#__codelineno-10-16"></a>- created_at: DateTime
+<a id="__codelineno-10-17" name="__codelineno-10-17" href="#__codelineno-10-17"></a>- updated_at: DateTime
+</code></pre></div>
+<p>Invariants:</p>
+<ul>
+<li>Every active Request must have at least one active RequestItem
+  (FR-119). The service layer enforces this on item removal.</li>
+<li>A Contribution's <code>request_item_id</code> must point at an item whose
+  parent Request is <code>open</code> at the time the Contribution is created
+  (FR-050).</li>
+</ul>
+<h2 id="7-integration-requirements">7. Integration Requirements</h2>
+<h3 id="71-authentication">7.1 Authentication</h3>
+<ul>
+<li><strong>IR-001</strong>: Google OAuth must be supported as a future
+  authentication option, with the goal of making it the primary
+  signup path once available. Username/password remains supported for
+  users who prefer not to link a Google account.</li>
+</ul>
+<h3 id="72-notifications-future">7.2 Notifications (Future)</h3>
+<ul>
+<li><strong>IR-002</strong>: Email notifications must be supported as a future
+  feature for the following events:</li>
+<li>A Request the user created has been fulfilled</li>
+<li>A Contribution the user is responsible for has been confirmed as
+    received</li>
+<li>A Collection Center the user registered has been verified or had
+    verification revoked</li>
+<li><strong>IR-003</strong>: A future integration must allow makers to subscribe to
+  alerts for new Requests matching a tag, Part, or country.</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.highlight", "search.share", "toc.integrate", "content.code.copy"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="https://unpkg.com/mermaid@10.6.1/dist/mermaid.min.js"></script>
+      
+    
+  </body>
+</html>

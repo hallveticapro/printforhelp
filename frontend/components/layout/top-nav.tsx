@@ -7,6 +7,7 @@ import { getServerI18n } from "@/i18n/server";
 
 import { LocaleToggle } from "./locale-toggle";
 import { NavTabs } from "./nav-tabs";
+import { ThemeToggle } from "./theme-toggle";
 
 /**
  * Global top navigation bar shown on every page: brand, the Tabs
@@ -19,7 +20,7 @@ export async function TopNav() {
   const { dict } = await getServerI18n();
 
   return (
-    <header className="border-b border-border">
+    <header className="sticky top-0 z-40 border-b border-border bg-[var(--background)]">
       <div className="mx-auto flex h-14 max-w-5xl items-stretch justify-between gap-6 px-6">
         <div className="flex items-stretch gap-8">
           <Link href="/" className="flex items-center text-lg font-bold">
@@ -30,6 +31,7 @@ export async function TopNav() {
 
         <div className="flex items-center gap-3 text-sm">
           <LocaleToggle />
+          <ThemeToggle />
           {user ? (
             <>
               <span className="text-muted">

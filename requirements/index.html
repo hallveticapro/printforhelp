@@ -803,6 +803,28 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#311-collection-center-shipments" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.11 Collection Center Shipments
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#312-comments-activity-timeline" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.12 Comments &amp; Activity Timeline
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -1018,6 +1040,39 @@
     <span class="md-ellipsis">
       
         6.11 RequestItem Schema
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#612-shipment-schema" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.12 Shipment Schema
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#613-comment-schema" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.13 Comment Schema
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#614-activity-log-schema" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.14 Activity Log Schema
       
     </span>
   </a>
@@ -1422,6 +1477,30 @@ humanitarian aid.</p>
 </tr>
 <tr>
 <td>Force-archive any Collection Center (releases routed Contributions)</td>
+<td>—</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>Manage Shipments of a Collection Center you are an effective member of</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>Manage Shipments of any Collection Center</td>
+<td>—</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>Post / edit own comments (authenticated)</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>Delete any comment</td>
 <td>—</td>
 <td>✓</td>
 <td>✓</td>
@@ -2366,6 +2445,55 @@ lets owners reassign assets to other users or organizations.</p>
   <code>registered_by_id</code> columns on assets remain immutable historical
   attribution regardless of how many times ownership is transferred.</li>
 </ul>
+<h3 id="311-collection-center-shipments">3.11 Collection Center Shipments</h3>
+<p>A <strong>Shipment</strong> is a planned dispatch of collected aid from a Collection
+Center to where it is needed (e.g. the earthquake zone). It tells the
+community the deadline by which to drop off their printed parts, and
+tracks whether the center is still accepting packages for that batch.</p>
+<ul>
+<li><strong>FR-127</strong>: A Collection Center must be able to have zero or more
+  Shipments. Each Shipment has a planned <code>shipment_date</code>, an optional
+  free-text <code>destination</code> ("the place where it is needed"), and an
+  optional Markdown <code>description</code>.</li>
+<li><strong>FR-128</strong>: A Shipment must have a <code>status</code> of <code>receiving</code> (still
+  accepting packages), <code>closed</code> (dispatched / no longer accepting), or
+  <code>cancelled</code>. New Shipments default to <code>receiving</code>.</li>
+<li><strong>FR-129</strong>: Creating, editing, deleting, and changing the status of a
+  Shipment requires authentication and is restricted to the effective
+  members of the Collection Center (its owner, per-center contributors,
+  and — when org-owned — the owning organization's members) plus
+  maintainers and admins (NFR-006). Unlike Collection Center
+  registration (which is open to guests, see FR-027 notes), Shipments
+  cannot be created anonymously.</li>
+<li><strong>FR-130</strong>: Shipments must be publicly visible — listed on the
+  Collection Center's public detail view whether or not the viewer is
+  authenticated, and regardless of the center's <code>verified</code> flag — so the
+  community always knows the upcoming drop-off deadlines. Deleting a
+  Shipment is a soft delete (<code>active = false</code>) and removes it from the
+  public list.</li>
+</ul>
+<h3 id="312-comments-activity-timeline">3.12 Comments &amp; Activity Timeline</h3>
+<p>To coordinate around drop-offs and shipments, the platform provides a
+lightweight, polymorphic comment and activity system (modelled on the
+Colony project's feed) attachable to any supported entity. In v1 the
+supported entities are Collection Centers and Shipments.</p>
+<ul>
+<li><strong>FR-131</strong>: Any authenticated user must be able to post a comment on a
+  commentable entity (Collection Center or Shipment). Comment bodies
+  support <strong>Markdown</strong> (rendered client-side; raw HTML is not rendered).
+  Comments are publicly readable by everyone, including guests, so a
+  community member can leave a note (e.g. "shipped 12 splints today")
+  without anyone needing to log in to read it. A comment must reference
+  an existing entity.</li>
+<li><strong>FR-132</strong>: A comment may be edited only by its author. A comment may
+  be deleted (soft delete) by its author or by a maintainer/admin.</li>
+<li><strong>FR-133</strong>: The system must maintain a public, append-only <strong>activity
+  timeline</strong> per entity, recording lifecycle events — entity created,
+  updated, status changed, deleted — and comment events. The timeline is
+  polymorphic over <code>entity_type</code> + <code>entity_id</code> and is readable by
+  everyone. It is independent of the internal moderation <code>audit_log</code>
+  (§6.6 / NFR-008), which remains private.</li>
+</ul>
 <h2 id="4-non-functional-requirements">4. Non-Functional Requirements</h2>
 <h3 id="41-performance">4.1 Performance</h3>
 <ul>
@@ -2685,6 +2813,52 @@ Request. See §3.5 (FR-119 – FR-124) for the lifecycle.</p>
   parent Request is <code>open</code> at the time the Contribution is created
   (FR-050).</li>
 </ul>
+<h3 id="612-shipment-schema">6.12 Shipment Schema</h3>
+<p>A Shipment is a planned dispatch of aid from a Collection Center
+(§3.11 / FR-127 – FR-130).</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>- id: UUID
+<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>- collection_center_id: UUID (FK CollectionCenter, required;
+<a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a>  ON DELETE CASCADE)
+<a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a>- shipment_date: Date (required; the planned dispatch date)
+<a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a>- status: Enum (receiving, closed, cancelled; default receiving)
+<a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a>- destination: String(255) (optional; &quot;the place where it is needed&quot;)
+<a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a>- description: String (markdown, optional)
+<a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a>- created_by_id: UUID (FK User, required; historical attribution)
+<a id="__codelineno-11-9" name="__codelineno-11-9" href="#__codelineno-11-9"></a>- active: Boolean (soft delete)
+<a id="__codelineno-11-10" name="__codelineno-11-10" href="#__codelineno-11-10"></a>- created_at: DateTime
+<a id="__codelineno-11-11" name="__codelineno-11-11" href="#__codelineno-11-11"></a>- updated_at: DateTime
+</code></pre></div>
+<h3 id="613-comment-schema">6.13 Comment Schema</h3>
+<p>A Comment is a user-authored, Markdown note attached polymorphically to
+a commentable entity (§3.12 / FR-131 – FR-132).</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>- id: UUID
+<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>- entity_type: String(40) (e.g. &quot;collection_center&quot;, &quot;shipment&quot;)
+<a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a>- entity_id: UUID (the target entity; no FK — polymorphic)
+<a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a>- author_user_id: UUID (FK User, required)
+<a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a>- body: Text (markdown, required, non-empty, max 10000 chars)
+<a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a>- edited_at: DateTime (nullable; set when the author edits)
+<a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a>- active: Boolean (soft delete)
+<a id="__codelineno-12-8" name="__codelineno-12-8" href="#__codelineno-12-8"></a>- created_at: DateTime
+<a id="__codelineno-12-9" name="__codelineno-12-9" href="#__codelineno-12-9"></a>- updated_at: DateTime
+</code></pre></div>
+<p>Indexed on <code>(entity_type, entity_id, created_at)</code> for fast per-entity
+listing.</p>
+<h3 id="614-activity-log-schema">6.14 Activity Log Schema</h3>
+<p>The public activity timeline (§3.12 / FR-133). Distinct from the private
+moderation <code>audit_log</code> (§6.6).</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>- id: UUID
+<a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>- entity_type: String(40)
+<a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a>- entity_id: UUID (polymorphic; no FK)
+<a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a>- actor_user_id: UUID (FK User, required)
+<a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a>- action: String(40) (created, updated, status_changed, deleted,
+<a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a>  commented, comment_edited, comment_deleted)
+<a id="__codelineno-13-7" name="__codelineno-13-7" href="#__codelineno-13-7"></a>- changes: JSONB (event detail, e.g. {&quot;status&quot;: {&quot;from&quot;: &quot;receiving&quot;,
+<a id="__codelineno-13-8" name="__codelineno-13-8" href="#__codelineno-13-8"></a>  &quot;to&quot;: &quot;closed&quot;}})
+<a id="__codelineno-13-9" name="__codelineno-13-9" href="#__codelineno-13-9"></a>- active: Boolean
+<a id="__codelineno-13-10" name="__codelineno-13-10" href="#__codelineno-13-10"></a>- created_at: DateTime
+<a id="__codelineno-13-11" name="__codelineno-13-11" href="#__codelineno-13-11"></a>- updated_at: DateTime
+</code></pre></div>
+<p>Indexed on <code>(entity_type, entity_id, created_at)</code>.</p>
 <h2 id="7-integration-requirements">7. Integration Requirements</h2>
 <h3 id="71-authentication">7.1 Authentication</h3>
 <ul>

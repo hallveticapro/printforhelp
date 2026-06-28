@@ -561,18 +561,19 @@
     </span>
   </a>
   
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#phase-4-parts-requests-contributions" class="md-nav__link">
+    <nav class="md-nav" aria-label="Phase 3: Public Collection Centers Tab — Frontend 🚧">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#collection-center-shipments-community-feed-added-to-phase-3" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Phase 4: Parts, Requests, Contributions 🔮
+        Collection Center Shipments + Community Feed (added to Phase 3)
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Phase 4: Parts, Requests, Contributions 🔮">
+    <nav class="md-nav" aria-label="Collection Center Shipments + Community Feed (added to Phase 3)">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -588,6 +589,50 @@
         
           <li class="md-nav__item">
   <a href="#frontend_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Frontend
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#phase-4-parts-requests-contributions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Phase 4: Parts, Requests, Contributions 🔮
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Phase 4: Parts, Requests, Contributions 🔮">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#backend_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Backend
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#frontend_2" class="md-nav__link">
     <span class="md-ellipsis">
       
         Frontend
@@ -948,10 +993,33 @@ Centers near them, with full contact info — no login required.</p>
 <li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled checked/><span class="task-list-indicator"></span></label> Create user accounts (admin user-management UI shipped in
         Phase 1 at <code>/admin/users</code>)</li>
 </ul>
+<h3 id="collection-center-shipments-community-feed-added-to-phase-3">Collection Center Shipments + Community Feed (added to Phase 3)</h3>
+<p>Pulled into Phase 3 because the Venezuela community needs drop-off
+deadlines now. See requirements §3.11 – §3.12 (FR-127 – FR-133).</p>
+<h4 id="backend_1">Backend</h4>
+<ul class="task-list">
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled checked/><span class="task-list-indicator"></span></label> Migration <code>0004</code> for <code>shipments</code>, <code>comments</code>, <code>activity_log</code>
+      (+ <code>shipment_status</code> enum)</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled checked/><span class="task-list-indicator"></span></label> <code>shipments</code> domain: nested CRUD under
+      <code>/collection-centers/{id}/shipments</code> — public list; member-gated
+      create/edit/delete + status change (FR-127 – FR-130)</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled checked/><span class="task-list-indicator"></span></label> <code>activity</code> domain: polymorphic Markdown <code>comments</code>
+      (<code>/comments</code>) + public <code>activity_log</code> feed (<code>/activity</code>),
+      attachable to Collection Centers and Shipments (FR-131 – FR-133)</li>
+</ul>
+<h4 id="frontend_1">Frontend</h4>
+<ul class="task-list">
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled checked/><span class="task-list-indicator"></span></label> Shipments section on <code>/centers/{id}</code> — always visible, with
+      status badges and dates (FR-130)</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled checked/><span class="task-list-indicator"></span></label> Member/maintainer shipment management (create / edit / change
+      status / delete) on the center detail page</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled checked/><span class="task-list-indicator"></span></label> Markdown comment composer + activity timeline on the center
+      detail page (<code>react-markdown</code> + <code>remark-gfm</code>), ES/EN</li>
+</ul>
 <h2 id="phase-4-parts-requests-contributions">Phase 4: Parts, Requests, Contributions 🔮</h2>
 <p>Goal: the full maker-coordination loop. Builds on the Phase 2/3
 foundation.</p>
-<h3 id="backend_1">Backend</h3>
+<h3 id="backend_2">Backend</h3>
 <ul class="task-list">
 <li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Migration for <code>parts</code>, <code>requests</code>, <code>request_items</code>,
       <code>contributions</code></li>
@@ -967,7 +1035,7 @@ foundation.</p>
 <li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Discovery: <code>GET /discovery/next</code>, <code>/dashboard</code>,
       <code>/parts/{id}/chart</code></li>
 </ul>
-<h3 id="frontend_1">Frontend</h3>
+<h3 id="frontend_2">Frontend</h3>
 <ul class="task-list">
 <li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Parts tab (public read; create for logged-in users)</li>
 <li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Requests tab — public read; create for logged-in users</li>

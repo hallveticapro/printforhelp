@@ -1884,6 +1884,11 @@ convention across the API:</p>
 <td>List all users. <strong>Admin.</strong></td>
 </tr>
 <tr>
+<td><code>POST</code></td>
+<td><code>/users</code></td>
+<td>Create an account: <code>{ "username", "password", "role"?, "preferred_locale"? }</code>. <strong>Admin.</strong> (FR-007 / Phase 1)</td>
+</tr>
+<tr>
 <td><code>GET</code></td>
 <td><code>/users/{user_id}</code></td>
 <td>Get a user. <strong>Admin.</strong></td>
@@ -1892,6 +1897,11 @@ convention across the API:</p>
 <td><code>PUT</code></td>
 <td><code>/users/{user_id}/role</code></td>
 <td><code>{ "role": "maintainer" }</code>. <strong>Admin.</strong> Rejected if would demote the last active admin (FR-014).</td>
+</tr>
+<tr>
+<td><code>PUT</code></td>
+<td><code>/users/{user_id}/password</code></td>
+<td><code>{ "new_password": "..." }</code>. <strong>Admin.</strong> Resets any account's password; no current password required, password policy still enforced (FR-002).</td>
 </tr>
 <tr>
 <td><code>POST</code></td>

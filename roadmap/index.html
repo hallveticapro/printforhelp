@@ -467,12 +467,12 @@
   <a href="#phase-1-authentication-admin-provisioned-users" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Phase 1: Authentication &amp; Admin-Provisioned Users 🚧
+        Phase 1: Authentication &amp; Admin-Provisioned Users ✅
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Phase 1: Authentication &amp; Admin-Provisioned Users 🚧">
+    <nav class="md-nav" aria-label="Phase 1: Authentication &amp; Admin-Provisioned Users ✅">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -861,29 +861,38 @@ see <a href="../architecture/database-schema/"><code>architecture/database-schem
 <li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled checked/><span class="task-list-indicator"></span></label> API specification draft
       (<a href="../architecture/api-specification/">architecture/api-specification.md</a>)</li>
 </ul>
-<h2 id="phase-1-authentication-admin-provisioned-users">Phase 1: Authentication &amp; Admin-Provisioned Users 🚧</h2>
+<h2 id="phase-1-authentication-admin-provisioned-users">Phase 1: Authentication &amp; Admin-Provisioned Users ✅</h2>
 <p>Goal: an admin can log in and create accounts for trusted contributors.
 Self-registration stays disabled.</p>
 <h3 id="backend">Backend</h3>
 <ul class="task-list">
-<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Alembic initialization + first migration (<code>users</code>, <code>audit_log</code>)</li>
-<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Bootstrap default admin from <code>DEFAULT_ADMIN_USERNAME</code> /
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled checked/><span class="task-list-indicator"></span></label> Alembic initialization + first migration (<code>users</code>, <code>audit_log</code>)</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled checked/><span class="task-list-indicator"></span></label> Bootstrap default admin from <code>DEFAULT_ADMIN_USERNAME</code> /
       <code>DEFAULT_ADMIN_PASSWORD</code> env vars (FR-007)</li>
-<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> <code>POST /auth/login</code> — JWT issuance with Argon2ID password hashing</li>
-<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> <code>GET /auth/me</code> + <code>PUT /auth/me/password</code></li>
-<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Admin-only: <code>POST /users</code> to create an account</li>
-<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Admin-only: <code>GET /users</code>, <code>PUT /users/{id}/role</code>,
-      <code>POST /users/{id}/deactivate</code></li>
-<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Last-admin lockout-protection guard (FR-014)</li>
-<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> CI: Pyright + Ruff + pytest pipeline green</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled checked/><span class="task-list-indicator"></span></label> <code>POST /auth/login</code> — JWT issuance with Argon2ID password hashing</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled checked/><span class="task-list-indicator"></span></label> <code>GET /auth/me</code> + <code>PUT /auth/me/password</code></li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled checked/><span class="task-list-indicator"></span></label> Admin-only: <code>POST /users</code> to create an account</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled checked/><span class="task-list-indicator"></span></label> Admin-only: <code>GET /users</code>, <code>PUT /users/{id}/role</code>,
+      <code>POST /users/{id}/deactivate</code> (+ <code>reactivate</code>)</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled checked/><span class="task-list-indicator"></span></label> Admin-only: <code>PUT /users/{id}/password</code> — reset any account's
+      password (no current-password required; policy still enforced)</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled checked/><span class="task-list-indicator"></span></label> Last-admin lockout-protection guard (FR-014)</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled checked/><span class="task-list-indicator"></span></label> CI: Pyright + Ruff + pytest pipeline green</li>
 </ul>
+<p>Password policy (FR-002): minimum 8 characters with at least one letter
+and one digit. Sessions are 7-day JWTs (no refresh-token flow in v1).
+For local development, the backend auto-runs <code>alembic upgrade head</code> on
+startup and seeds two extra accounts (<code>maintainer1</code>, <code>user1</code>) when
+<code>SEED_DEV_DATA=true</code> (set in <code>docker-compose.yml</code>).</p>
 <h3 id="frontend">Frontend</h3>
 <ul class="task-list">
-<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> <code>/login</code> page wired to <code>POST /auth/login</code></li>
-<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> JWT stored in httpOnly cookie</li>
-<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Logged-in header state on the landing page (username + logout)</li>
-<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> <code>/logout</code> clears the cookie and redirects to the landing page</li>
-<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Auth middleware: protect any future <code>/admin/*</code> paths</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled checked/><span class="task-list-indicator"></span></label> <code>/login</code> page wired to <code>POST /auth/login</code></li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled checked/><span class="task-list-indicator"></span></label> JWT stored in httpOnly cookie</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled checked/><span class="task-list-indicator"></span></label> Logged-in header state on the landing page (username + logout)</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled checked/><span class="task-list-indicator"></span></label> <code>/logout</code> clears the cookie and redirects to the landing page</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled checked/><span class="task-list-indicator"></span></label> Auth middleware (<code>proxy.ts</code>): protect any future <code>/admin/*</code> paths</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled checked/><span class="task-list-indicator"></span></label> <code>/admin/users</code> — admin-only management tab: create accounts,
+      change roles, reset passwords, and activate/deactivate users</li>
 </ul>
 <h2 id="phase-2-organizations-collection-centers-backend">Phase 2: Organizations &amp; Collection Centers — Backend 📅</h2>
 <p>Goal: ship the data model and APIs that back the public directory.
@@ -933,7 +942,8 @@ Centers near them, with full contact info — no login required.</p>
 <li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Add / remove per-center contributors</li>
 <li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Logged-in flows (maintainer/admin side):</li>
 <li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Verify or revoke verification on a Center / Org</li>
-<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Create user accounts (Phase 1 backend, admin UI lands here)</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled checked/><span class="task-list-indicator"></span></label> Create user accounts (admin user-management UI shipped in
+        Phase 1 at <code>/admin/users</code>)</li>
 </ul>
 <h2 id="phase-4-parts-requests-contributions">Phase 4: Parts, Requests, Contributions 🔮</h2>
 <p>Goal: the full maker-coordination loop. Builds on the Phase 2/3

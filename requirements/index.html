@@ -2604,18 +2604,20 @@ when ownership is transferred (§3.10).</p>
 <a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>- country: String (required)
 <a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>- city: String (required)
 <a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>- contact: String (required)
-<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>- opening_hours: String (optional)
-<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>- notes: String (optional)
-<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>- verified: Boolean (default false)
-<a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>- registered_by_id: UUID (FK User, required; immutable historical
-<a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a>  attribution — see FR-082)
-<a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a>- verified_by_id: UUID (FK User, nullable until verified)
-<a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a>- owner_user_id: UUID (FK User, nullable)
-<a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a>- owner_organization_id: UUID (FK Organization, nullable)
-<a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a>- status: Enum (active, inactive)
-<a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a>- active: Boolean
-<a id="__codelineno-2-17" name="__codelineno-2-17" href="#__codelineno-2-17"></a>- created_at: DateTime
-<a id="__codelineno-2-18" name="__codelineno-2-18" href="#__codelineno-2-18"></a>- updated_at: DateTime
+<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>- location_url: String (optional; absolute http(s) map link, e.g.
+<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>  Google Maps)
+<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>- opening_hours: String (optional)
+<a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>- notes: String (optional)
+<a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a>- verified: Boolean (default false)
+<a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a>- registered_by_id: UUID (FK User, required; immutable historical
+<a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a>  attribution — see FR-082)
+<a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a>- verified_by_id: UUID (FK User, nullable until verified)
+<a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a>- owner_user_id: UUID (FK User, nullable)
+<a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a>- owner_organization_id: UUID (FK Organization, nullable)
+<a id="__codelineno-2-17" name="__codelineno-2-17" href="#__codelineno-2-17"></a>- status: Enum (active, inactive)
+<a id="__codelineno-2-18" name="__codelineno-2-18" href="#__codelineno-2-18"></a>- active: Boolean
+<a id="__codelineno-2-19" name="__codelineno-2-19" href="#__codelineno-2-19"></a>- created_at: DateTime
+<a id="__codelineno-2-20" name="__codelineno-2-20" href="#__codelineno-2-20"></a>- updated_at: DateTime
 </code></pre></div>
 <p>Invariant: exactly one of <code>owner_user_id</code> or <code>owner_organization_id</code>
 is non-null at all times (FR-107 / FR-083). Both columns are mutated

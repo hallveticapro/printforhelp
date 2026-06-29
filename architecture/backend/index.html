@@ -1168,7 +1168,7 @@
 <h1 id="backend-architecture">Backend Architecture</h1>
 <p>PrintForHelp's backend follows a modular, domain-driven architecture
 using <strong>FastAPI</strong> with clear separation of concerns. Each business
-domain — <code>auth</code>, <code>users</code>, <code>organizations</code>, <code>parts</code>,
+domain — <code>auth</code>, <code>users</code>, <code>organizations</code>, <code>resources</code>,
 <code>collection_centers</code>, <code>requests</code>, <code>contributions</code>,
 <code>ownership_transfers</code>, <code>audit_log</code>, <code>discovery</code> — is a self-contained
 module with its own router, schemas, models, services, and
@@ -1183,7 +1183,7 @@ at a time, behind a uniform REST surface defined in
   (router · schemas · models · service · dependencies · exceptions
   · constants).</li>
 <li><strong>Polymorphic Ownership at the Service Layer</strong> — the two-FK +
-  CHECK pattern on <code>parts</code> / <code>collection_centers</code> / <code>requests</code> is
+  CHECK pattern on <code>resources</code> / <code>collection_centers</code> / <code>requests</code> is
   resolved by a small set of helper functions in <code>app/permissions.py</code>
   that every domain's service layer calls before performing a
   mutating operation. There is no Owner ORM hierarchy; principals
@@ -1227,10 +1227,10 @@ at a time, behind a uniform REST surface defined in
 <a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a>│   │   ├── dependencies.py
 <a id="__codelineno-0-28" name="__codelineno-0-28" href="#__codelineno-0-28"></a>│   │   ├── exceptions.py
 <a id="__codelineno-0-29" name="__codelineno-0-29" href="#__codelineno-0-29"></a>│   │   └── constants.py
-<a id="__codelineno-0-30" name="__codelineno-0-30" href="#__codelineno-0-30"></a>│   ├── parts/                      # Catalog of printable designs
+<a id="__codelineno-0-30" name="__codelineno-0-30" href="#__codelineno-0-30"></a>│   ├── resources/                      # Catalog of printable designs
 <a id="__codelineno-0-31" name="__codelineno-0-31" href="#__codelineno-0-31"></a>│   │   ├── router.py
 <a id="__codelineno-0-32" name="__codelineno-0-32" href="#__codelineno-0-32"></a>│   │   ├── schemas.py
-<a id="__codelineno-0-33" name="__codelineno-0-33" href="#__codelineno-0-33"></a>│   │   ├── models.py               # Part
+<a id="__codelineno-0-33" name="__codelineno-0-33" href="#__codelineno-0-33"></a>│   │   ├── models.py               # Resource
 <a id="__codelineno-0-34" name="__codelineno-0-34" href="#__codelineno-0-34"></a>│   │   ├── service.py
 <a id="__codelineno-0-35" name="__codelineno-0-35" href="#__codelineno-0-35"></a>│   │   ├── dependencies.py
 <a id="__codelineno-0-36" name="__codelineno-0-36" href="#__codelineno-0-36"></a>│   │   ├── exceptions.py
@@ -1296,7 +1296,7 @@ at a time, behind a uniform REST surface defined in
 <a id="__codelineno-0-96" name="__codelineno-0-96" href="#__codelineno-0-96"></a>│   ├── auth/
 <a id="__codelineno-0-97" name="__codelineno-0-97" href="#__codelineno-0-97"></a>│   ├── users/
 <a id="__codelineno-0-98" name="__codelineno-0-98" href="#__codelineno-0-98"></a>│   ├── organizations/
-<a id="__codelineno-0-99" name="__codelineno-0-99" href="#__codelineno-0-99"></a>│   ├── parts/
+<a id="__codelineno-0-99" name="__codelineno-0-99" href="#__codelineno-0-99"></a>│   ├── resources/
 <a id="__codelineno-0-100" name="__codelineno-0-100" href="#__codelineno-0-100"></a>│   ├── collection_centers/
 <a id="__codelineno-0-101" name="__codelineno-0-101" href="#__codelineno-0-101"></a>│   ├── requests/
 <a id="__codelineno-0-102" name="__codelineno-0-102" href="#__codelineno-0-102"></a>│   ├── contributions/
@@ -1305,6 +1305,19 @@ at a time, behind a uniform REST surface defined in
 <a id="__codelineno-0-105" name="__codelineno-0-105" href="#__codelineno-0-105"></a>├── alembic.ini
 <a id="__codelineno-0-106" name="__codelineno-0-106" href="#__codelineno-0-106"></a>└── pyproject.toml
 </code></pre></div>
+<blockquote>
+<p><strong>Phase 4 implementation status.</strong> <code>resources</code>, <code>requests</code>, and
+<code>contributions</code> are implemented (the <code>requests</code> domain holds both
+<code>Request</code> and <code>RequestItem</code>). Per-item progress aggregation lives in
+<code>requests.service.compute_item_progress</code> and is reused by request
+detail. <code>FR-055</code> stale-claim expiry lives in
+<code>contributions.service.expire_stale_claims</code> (unit-testable) with a
+thin <code>app/scheduled/expire_claims.py</code> runner; the APScheduler
+bootstrap (<code>scheduler.py</code>) and <code>ownership_transfers</code> / <code>discovery</code>
+domains remain target-state for later phases. Because the
+<code>resources</code>/<code>requests</code>/<code>contributions</code>/<code>collection_centers</code> services call
+one another, they use function-local imports to avoid import cycles.</p>
+</blockquote>
 <h2 id="domain-module-layout">Domain Module Layout</h2>
 <p>Every domain has the same seven files. Adding a new domain is
 strictly mechanical — copy an existing folder, swap the names, write
@@ -1312,7 +1325,7 @@ the FRs.</p>
 <h3 id="routerpy">router.py</h3>
 <p>Thin HTTP layer. Delegates to <code>service</code>; raises domain exceptions on
 business-rule failures (never <code>HTTPException</code>).</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1"># app/parts/router.py</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1"># app/resources/router.py</span>
 <a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Annotated</span>
 <a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="kn">from</span><span class="w"> </span><span class="nn">uuid</span><span class="w"> </span><span class="kn">import</span> <span class="n">UUID</span>
 <a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>
@@ -1324,41 +1337,41 @@ business-rule failures (never <code>HTTPException</code>).</p>
 <a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>
 <a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">service</span><span class="p">,</span> <span class="n">schemas</span>
 <a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a>
-<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="n">router</span> <span class="o">=</span> <span class="n">APIRouter</span><span class="p">(</span><span class="n">prefix</span><span class="o">=</span><span class="s2">&quot;/parts&quot;</span><span class="p">,</span> <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;parts&quot;</span><span class="p">])</span>
+<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="n">router</span> <span class="o">=</span> <span class="n">APIRouter</span><span class="p">(</span><span class="n">prefix</span><span class="o">=</span><span class="s2">&quot;/resources&quot;</span><span class="p">,</span> <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;resources&quot;</span><span class="p">])</span>
 <a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a>
 <a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a>
-<a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a><span class="nd">@router</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">,</span> <span class="n">response_model</span><span class="o">=</span><span class="n">schemas</span><span class="o">.</span><span class="n">PartResponse</span><span class="p">,</span> <span class="n">status_code</span><span class="o">=</span><span class="mi">201</span><span class="p">)</span>
+<a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a><span class="nd">@router</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">,</span> <span class="n">response_model</span><span class="o">=</span><span class="n">schemas</span><span class="o">.</span><span class="n">ResourceResponse</span><span class="p">,</span> <span class="n">status_code</span><span class="o">=</span><span class="mi">201</span><span class="p">)</span>
 <a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">create_part</span><span class="p">(</span>
-<a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a>    <span class="n">payload</span><span class="p">:</span> <span class="n">schemas</span><span class="o">.</span><span class="n">PartCreate</span><span class="p">,</span>
+<a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a>    <span class="n">payload</span><span class="p">:</span> <span class="n">schemas</span><span class="o">.</span><span class="n">ResourceCreate</span><span class="p">,</span>
 <a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a>    <span class="n">db</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Session</span><span class="p">,</span> <span class="n">Depends</span><span class="p">(</span><span class="n">get_db</span><span class="p">)],</span>
 <a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a>    <span class="n">current_user</span><span class="p">:</span> <span class="n">CurrentActiveUser</span><span class="p">,</span>
-<a id="__codelineno-1-21" name="__codelineno-1-21" href="#__codelineno-1-21"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">schemas</span><span class="o">.</span><span class="n">PartResponse</span><span class="p">:</span>
-<a id="__codelineno-1-22" name="__codelineno-1-22" href="#__codelineno-1-22"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Register a new Part. Owner is the caller (default) or an Org</span>
+<a id="__codelineno-1-21" name="__codelineno-1-21" href="#__codelineno-1-21"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">schemas</span><span class="o">.</span><span class="n">ResourceResponse</span><span class="p">:</span>
+<a id="__codelineno-1-22" name="__codelineno-1-22" href="#__codelineno-1-22"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Register a new Resource. Owner is the caller (default) or an Org</span>
 <a id="__codelineno-1-23" name="__codelineno-1-23" href="#__codelineno-1-23"></a><span class="sd">    the caller is an active member of (FR-015 / FR-108).&quot;&quot;&quot;</span>
 <a id="__codelineno-1-24" name="__codelineno-1-24" href="#__codelineno-1-24"></a>    <span class="k">return</span> <span class="n">service</span><span class="o">.</span><span class="n">create_part</span><span class="p">(</span><span class="n">db</span><span class="p">,</span> <span class="n">payload</span><span class="p">,</span> <span class="n">current_user</span><span class="p">)</span>
 <a id="__codelineno-1-25" name="__codelineno-1-25" href="#__codelineno-1-25"></a>
 <a id="__codelineno-1-26" name="__codelineno-1-26" href="#__codelineno-1-26"></a>
-<a id="__codelineno-1-27" name="__codelineno-1-27" href="#__codelineno-1-27"></a><span class="nd">@router</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;/</span><span class="si">{part_id}</span><span class="s2">/discontinue&quot;</span><span class="p">,</span> <span class="n">response_model</span><span class="o">=</span><span class="n">schemas</span><span class="o">.</span><span class="n">PartResponse</span><span class="p">)</span>
+<a id="__codelineno-1-27" name="__codelineno-1-27" href="#__codelineno-1-27"></a><span class="nd">@router</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;/</span><span class="si">{resource_id}</span><span class="s2">/discontinue&quot;</span><span class="p">,</span> <span class="n">response_model</span><span class="o">=</span><span class="n">schemas</span><span class="o">.</span><span class="n">ResourceResponse</span><span class="p">)</span>
 <a id="__codelineno-1-28" name="__codelineno-1-28" href="#__codelineno-1-28"></a><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">discontinue_part</span><span class="p">(</span>
-<a id="__codelineno-1-29" name="__codelineno-1-29" href="#__codelineno-1-29"></a>    <span class="n">part_id</span><span class="p">:</span> <span class="n">UUID</span><span class="p">,</span>
+<a id="__codelineno-1-29" name="__codelineno-1-29" href="#__codelineno-1-29"></a>    <span class="n">resource_id</span><span class="p">:</span> <span class="n">UUID</span><span class="p">,</span>
 <a id="__codelineno-1-30" name="__codelineno-1-30" href="#__codelineno-1-30"></a>    <span class="n">db</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Session</span><span class="p">,</span> <span class="n">Depends</span><span class="p">(</span><span class="n">get_db</span><span class="p">)],</span>
 <a id="__codelineno-1-31" name="__codelineno-1-31" href="#__codelineno-1-31"></a>    <span class="n">current_user</span><span class="p">:</span> <span class="n">CurrentActiveUser</span><span class="p">,</span>
-<a id="__codelineno-1-32" name="__codelineno-1-32" href="#__codelineno-1-32"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">schemas</span><span class="o">.</span><span class="n">PartResponse</span><span class="p">:</span>
-<a id="__codelineno-1-33" name="__codelineno-1-33" href="#__codelineno-1-33"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;FR-075. Mark a Part as `discontinued`. Owner only.&quot;&quot;&quot;</span>
-<a id="__codelineno-1-34" name="__codelineno-1-34" href="#__codelineno-1-34"></a>    <span class="k">return</span> <span class="n">service</span><span class="o">.</span><span class="n">discontinue_part</span><span class="p">(</span><span class="n">db</span><span class="p">,</span> <span class="n">part_id</span><span class="p">,</span> <span class="n">current_user</span><span class="p">)</span>
+<a id="__codelineno-1-32" name="__codelineno-1-32" href="#__codelineno-1-32"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">schemas</span><span class="o">.</span><span class="n">ResourceResponse</span><span class="p">:</span>
+<a id="__codelineno-1-33" name="__codelineno-1-33" href="#__codelineno-1-33"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;FR-075. Mark a Resource as `discontinued`. Owner only.&quot;&quot;&quot;</span>
+<a id="__codelineno-1-34" name="__codelineno-1-34" href="#__codelineno-1-34"></a>    <span class="k">return</span> <span class="n">service</span><span class="o">.</span><span class="n">discontinue_part</span><span class="p">(</span><span class="n">db</span><span class="p">,</span> <span class="n">resource_id</span><span class="p">,</span> <span class="n">current_user</span><span class="p">)</span>
 </code></pre></div>
 <h3 id="schemaspy">schemas.py</h3>
 <p>Request/response Pydantic models. Use
 <code>ConfigDict(from_attributes=True)</code> on responses so SQLAlchemy models
 serialize directly.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1"># app/parts/schemas.py</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1"># app/resources/schemas.py</span>
 <a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span>
 <a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="kn">from</span><span class="w"> </span><span class="nn">uuid</span><span class="w"> </span><span class="kn">import</span> <span class="n">UUID</span>
 <a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>
 <a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="kn">from</span><span class="w"> </span><span class="nn">pydantic</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseModel</span><span class="p">,</span> <span class="n">ConfigDict</span><span class="p">,</span> <span class="n">Field</span><span class="p">,</span> <span class="n">HttpUrl</span>
 <a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>
 <a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>
-<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="k">class</span><span class="w"> </span><span class="nc">PartCreate</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="k">class</span><span class="w"> </span><span class="nc">ResourceCreate</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
 <a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">min_length</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">max_length</span><span class="o">=</span><span class="mi">200</span><span class="p">)</span>
 <a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>    <span class="n">description</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
 <a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a>    <span class="n">source_url</span><span class="p">:</span> <span class="n">HttpUrl</span>
@@ -1369,7 +1382,7 @@ serialize directly.</p>
 <a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a>    <span class="n">owner_organization_id</span><span class="p">:</span> <span class="n">UUID</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
 <a id="__codelineno-2-17" name="__codelineno-2-17" href="#__codelineno-2-17"></a>
 <a id="__codelineno-2-18" name="__codelineno-2-18" href="#__codelineno-2-18"></a>
-<a id="__codelineno-2-19" name="__codelineno-2-19" href="#__codelineno-2-19"></a><span class="k">class</span><span class="w"> </span><span class="nc">PartResponse</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<a id="__codelineno-2-19" name="__codelineno-2-19" href="#__codelineno-2-19"></a><span class="k">class</span><span class="w"> </span><span class="nc">ResourceResponse</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
 <a id="__codelineno-2-20" name="__codelineno-2-20" href="#__codelineno-2-20"></a>    <span class="n">model_config</span> <span class="o">=</span> <span class="n">ConfigDict</span><span class="p">(</span><span class="n">from_attributes</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <a id="__codelineno-2-21" name="__codelineno-2-21" href="#__codelineno-2-21"></a>
 <a id="__codelineno-2-22" name="__codelineno-2-22" href="#__codelineno-2-22"></a>    <span class="nb">id</span><span class="p">:</span> <span class="n">UUID</span>
@@ -1390,7 +1403,7 @@ serialize directly.</p>
 <h3 id="modelspy">models.py</h3>
 <p>SQLAlchemy 2.0 typed models inheriting <code>BaseModel</code> (provides
 <code>id</code>, <code>created_at</code>, <code>updated_at</code>, <code>active</code>).</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="c1"># app/parts/models.py</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="c1"># app/resources/models.py</span>
 <a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="kn">import</span><span class="w"> </span><span class="nn">uuid</span>
 <a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
 <a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>
@@ -1405,8 +1418,8 @@ serialize directly.</p>
 <a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a>    <span class="kn">from</span><span class="w"> </span><span class="nn">app.users.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">User</span>
 <a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a>
 <a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a>
-<a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a><span class="k">class</span><span class="w"> </span><span class="nc">Part</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
-<a id="__codelineno-3-17" name="__codelineno-3-17" href="#__codelineno-3-17"></a>    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;parts&quot;</span>
+<a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a><span class="k">class</span><span class="w"> </span><span class="nc">Resource</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<a id="__codelineno-3-17" name="__codelineno-3-17" href="#__codelineno-3-17"></a>    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;resources&quot;</span>
 <a id="__codelineno-3-18" name="__codelineno-3-18" href="#__codelineno-3-18"></a>    <span class="n">__table_args__</span> <span class="o">=</span> <span class="p">(</span>
 <a id="__codelineno-3-19" name="__codelineno-3-19" href="#__codelineno-3-19"></a>        <span class="n">CheckConstraint</span><span class="p">(</span>
 <a id="__codelineno-3-20" name="__codelineno-3-20" href="#__codelineno-3-20"></a>            <span class="s2">&quot;(owner_user_id IS NOT NULL AND owner_organization_id IS NULL) OR &quot;</span>
@@ -1445,7 +1458,7 @@ serialize directly.</p>
 <h3 id="servicepy">service.py</h3>
 <p>Business logic. Static methods or plain functions — no class state.
 Every mutating call ends with <code>db.commit()</code> + <code>db.refresh(obj)</code>.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c1"># app/parts/service.py</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c1"># app/resources/service.py</span>
 <a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">uuid</span><span class="w"> </span><span class="kn">import</span> <span class="n">UUID</span>
 <a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>
 <a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="kn">from</span><span class="w"> </span><span class="nn">sqlalchemy.orm</span><span class="w"> </span><span class="kn">import</span> <span class="n">Session</span>
@@ -1459,22 +1472,22 @@ Every mutating call ends with <code>db.commit()</code> + <code>db.refresh(obj)</
 <a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a>
 <a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a><span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">models</span><span class="p">,</span> <span class="n">schemas</span>
 <a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a><span class="kn">from</span><span class="w"> </span><span class="nn">.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
-<a id="__codelineno-4-15" name="__codelineno-4-15" href="#__codelineno-4-15"></a>    <span class="n">PartArchiveBlockedExceptionError</span><span class="p">,</span>
-<a id="__codelineno-4-16" name="__codelineno-4-16" href="#__codelineno-4-16"></a>    <span class="n">PartNotFoundExceptionError</span><span class="p">,</span>
-<a id="__codelineno-4-17" name="__codelineno-4-17" href="#__codelineno-4-17"></a>    <span class="n">PartOwnerRequiredExceptionError</span><span class="p">,</span>
+<a id="__codelineno-4-15" name="__codelineno-4-15" href="#__codelineno-4-15"></a>    <span class="n">ResourceArchiveBlockedExceptionError</span><span class="p">,</span>
+<a id="__codelineno-4-16" name="__codelineno-4-16" href="#__codelineno-4-16"></a>    <span class="n">ResourceNotFoundExceptionError</span><span class="p">,</span>
+<a id="__codelineno-4-17" name="__codelineno-4-17" href="#__codelineno-4-17"></a>    <span class="n">ResourceOwnerRequiredExceptionError</span><span class="p">,</span>
 <a id="__codelineno-4-18" name="__codelineno-4-18" href="#__codelineno-4-18"></a><span class="p">)</span>
 <a id="__codelineno-4-19" name="__codelineno-4-19" href="#__codelineno-4-19"></a>
 <a id="__codelineno-4-20" name="__codelineno-4-20" href="#__codelineno-4-20"></a>
 <a id="__codelineno-4-21" name="__codelineno-4-21" href="#__codelineno-4-21"></a><span class="k">def</span><span class="w"> </span><span class="nf">create_part</span><span class="p">(</span>
-<a id="__codelineno-4-22" name="__codelineno-4-22" href="#__codelineno-4-22"></a>    <span class="n">db</span><span class="p">:</span> <span class="n">Session</span><span class="p">,</span> <span class="n">payload</span><span class="p">:</span> <span class="n">schemas</span><span class="o">.</span><span class="n">PartCreate</span><span class="p">,</span> <span class="n">caller</span><span class="p">:</span> <span class="n">User</span>
-<a id="__codelineno-4-23" name="__codelineno-4-23" href="#__codelineno-4-23"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">models</span><span class="o">.</span><span class="n">Part</span><span class="p">:</span>
-<a id="__codelineno-4-24" name="__codelineno-4-24" href="#__codelineno-4-24"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;FR-015 / FR-108: register a Part owned by the caller or an Org</span>
+<a id="__codelineno-4-22" name="__codelineno-4-22" href="#__codelineno-4-22"></a>    <span class="n">db</span><span class="p">:</span> <span class="n">Session</span><span class="p">,</span> <span class="n">payload</span><span class="p">:</span> <span class="n">schemas</span><span class="o">.</span><span class="n">ResourceCreate</span><span class="p">,</span> <span class="n">caller</span><span class="p">:</span> <span class="n">User</span>
+<a id="__codelineno-4-23" name="__codelineno-4-23" href="#__codelineno-4-23"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">models</span><span class="o">.</span><span class="n">Resource</span><span class="p">:</span>
+<a id="__codelineno-4-24" name="__codelineno-4-24" href="#__codelineno-4-24"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;FR-015 / FR-108: register a Resource owned by the caller or an Org</span>
 <a id="__codelineno-4-25" name="__codelineno-4-25" href="#__codelineno-4-25"></a><span class="sd">    the caller is an active member of.&quot;&quot;&quot;</span>
 <a id="__codelineno-4-26" name="__codelineno-4-26" href="#__codelineno-4-26"></a>    <span class="n">owner_user_id</span><span class="p">,</span> <span class="n">owner_org_id</span> <span class="o">=</span> <span class="n">_resolve_owner</span><span class="p">(</span><span class="n">payload</span><span class="p">,</span> <span class="n">caller</span><span class="p">)</span>
 <a id="__codelineno-4-27" name="__codelineno-4-27" href="#__codelineno-4-27"></a>    <span class="k">if</span> <span class="n">owner_org_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
 <a id="__codelineno-4-28" name="__codelineno-4-28" href="#__codelineno-4-28"></a>        <span class="n">assert_caller_can_own_on_behalf_of</span><span class="p">(</span><span class="n">db</span><span class="p">,</span> <span class="n">caller</span><span class="p">,</span> <span class="n">owner_org_id</span><span class="p">)</span>
 <a id="__codelineno-4-29" name="__codelineno-4-29" href="#__codelineno-4-29"></a>
-<a id="__codelineno-4-30" name="__codelineno-4-30" href="#__codelineno-4-30"></a>    <span class="n">part</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">Part</span><span class="p">(</span>
+<a id="__codelineno-4-30" name="__codelineno-4-30" href="#__codelineno-4-30"></a>    <span class="n">part</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">Resource</span><span class="p">(</span>
 <a id="__codelineno-4-31" name="__codelineno-4-31" href="#__codelineno-4-31"></a>        <span class="n">name</span><span class="o">=</span><span class="n">payload</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
 <a id="__codelineno-4-32" name="__codelineno-4-32" href="#__codelineno-4-32"></a>        <span class="n">description</span><span class="o">=</span><span class="n">payload</span><span class="o">.</span><span class="n">description</span><span class="p">,</span>
 <a id="__codelineno-4-33" name="__codelineno-4-33" href="#__codelineno-4-33"></a>        <span class="n">source_url</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">payload</span><span class="o">.</span><span class="n">source_url</span><span class="p">),</span>
@@ -1491,12 +1504,12 @@ Every mutating call ends with <code>db.commit()</code> + <code>db.refresh(obj)</
 <a id="__codelineno-4-44" name="__codelineno-4-44" href="#__codelineno-4-44"></a>
 <a id="__codelineno-4-45" name="__codelineno-4-45" href="#__codelineno-4-45"></a>
 <a id="__codelineno-4-46" name="__codelineno-4-46" href="#__codelineno-4-46"></a><span class="k">def</span><span class="w"> </span><span class="nf">discontinue_part</span><span class="p">(</span>
-<a id="__codelineno-4-47" name="__codelineno-4-47" href="#__codelineno-4-47"></a>    <span class="n">db</span><span class="p">:</span> <span class="n">Session</span><span class="p">,</span> <span class="n">part_id</span><span class="p">:</span> <span class="n">UUID</span><span class="p">,</span> <span class="n">caller</span><span class="p">:</span> <span class="n">User</span>
-<a id="__codelineno-4-48" name="__codelineno-4-48" href="#__codelineno-4-48"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">models</span><span class="o">.</span><span class="n">Part</span><span class="p">:</span>
+<a id="__codelineno-4-47" name="__codelineno-4-47" href="#__codelineno-4-47"></a>    <span class="n">db</span><span class="p">:</span> <span class="n">Session</span><span class="p">,</span> <span class="n">resource_id</span><span class="p">:</span> <span class="n">UUID</span><span class="p">,</span> <span class="n">caller</span><span class="p">:</span> <span class="n">User</span>
+<a id="__codelineno-4-48" name="__codelineno-4-48" href="#__codelineno-4-48"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">models</span><span class="o">.</span><span class="n">Resource</span><span class="p">:</span>
 <a id="__codelineno-4-49" name="__codelineno-4-49" href="#__codelineno-4-49"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;FR-075. Only effective owners can flip status to `discontinued`.&quot;&quot;&quot;</span>
-<a id="__codelineno-4-50" name="__codelineno-4-50" href="#__codelineno-4-50"></a>    <span class="n">part</span> <span class="o">=</span> <span class="n">_get_part_or_raise</span><span class="p">(</span><span class="n">db</span><span class="p">,</span> <span class="n">part_id</span><span class="p">)</span>
+<a id="__codelineno-4-50" name="__codelineno-4-50" href="#__codelineno-4-50"></a>    <span class="n">part</span> <span class="o">=</span> <span class="n">_get_part_or_raise</span><span class="p">(</span><span class="n">db</span><span class="p">,</span> <span class="n">resource_id</span><span class="p">)</span>
 <a id="__codelineno-4-51" name="__codelineno-4-51" href="#__codelineno-4-51"></a>    <span class="k">if</span> <span class="n">caller</span><span class="o">.</span><span class="n">id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">effective_owner_user_ids</span><span class="p">(</span><span class="n">db</span><span class="p">,</span> <span class="n">part</span><span class="p">):</span>
-<a id="__codelineno-4-52" name="__codelineno-4-52" href="#__codelineno-4-52"></a>        <span class="k">raise</span> <span class="n">PartOwnerRequiredExceptionError</span><span class="p">(</span><span class="n">part_id</span><span class="p">)</span>
+<a id="__codelineno-4-52" name="__codelineno-4-52" href="#__codelineno-4-52"></a>        <span class="k">raise</span> <span class="n">ResourceOwnerRequiredExceptionError</span><span class="p">(</span><span class="n">resource_id</span><span class="p">)</span>
 <a id="__codelineno-4-53" name="__codelineno-4-53" href="#__codelineno-4-53"></a>
 <a id="__codelineno-4-54" name="__codelineno-4-54" href="#__codelineno-4-54"></a>    <span class="n">part</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="s2">&quot;discontinued&quot;</span>
 <a id="__codelineno-4-55" name="__codelineno-4-55" href="#__codelineno-4-55"></a>    <span class="n">db</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
@@ -1504,28 +1517,28 @@ Every mutating call ends with <code>db.commit()</code> + <code>db.refresh(obj)</
 <a id="__codelineno-4-57" name="__codelineno-4-57" href="#__codelineno-4-57"></a>    <span class="k">return</span> <span class="n">part</span>
 <a id="__codelineno-4-58" name="__codelineno-4-58" href="#__codelineno-4-58"></a>
 <a id="__codelineno-4-59" name="__codelineno-4-59" href="#__codelineno-4-59"></a>
-<a id="__codelineno-4-60" name="__codelineno-4-60" href="#__codelineno-4-60"></a><span class="k">def</span><span class="w"> </span><span class="nf">_get_part_or_raise</span><span class="p">(</span><span class="n">db</span><span class="p">:</span> <span class="n">Session</span><span class="p">,</span> <span class="n">part_id</span><span class="p">:</span> <span class="n">UUID</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">models</span><span class="o">.</span><span class="n">Part</span><span class="p">:</span>
-<a id="__codelineno-4-61" name="__codelineno-4-61" href="#__codelineno-4-61"></a>    <span class="n">part</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Part</span><span class="p">)</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span>
-<a id="__codelineno-4-62" name="__codelineno-4-62" href="#__codelineno-4-62"></a>        <span class="n">models</span><span class="o">.</span><span class="n">Part</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="n">part_id</span><span class="p">,</span> <span class="n">models</span><span class="o">.</span><span class="n">Part</span><span class="o">.</span><span class="n">active</span><span class="o">.</span><span class="n">is_</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+<a id="__codelineno-4-60" name="__codelineno-4-60" href="#__codelineno-4-60"></a><span class="k">def</span><span class="w"> </span><span class="nf">_get_part_or_raise</span><span class="p">(</span><span class="n">db</span><span class="p">:</span> <span class="n">Session</span><span class="p">,</span> <span class="n">resource_id</span><span class="p">:</span> <span class="n">UUID</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">models</span><span class="o">.</span><span class="n">Resource</span><span class="p">:</span>
+<a id="__codelineno-4-61" name="__codelineno-4-61" href="#__codelineno-4-61"></a>    <span class="n">part</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Resource</span><span class="p">)</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span>
+<a id="__codelineno-4-62" name="__codelineno-4-62" href="#__codelineno-4-62"></a>        <span class="n">models</span><span class="o">.</span><span class="n">Resource</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="n">resource_id</span><span class="p">,</span> <span class="n">models</span><span class="o">.</span><span class="n">Resource</span><span class="o">.</span><span class="n">active</span><span class="o">.</span><span class="n">is_</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
 <a id="__codelineno-4-63" name="__codelineno-4-63" href="#__codelineno-4-63"></a>    <span class="p">)</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
 <a id="__codelineno-4-64" name="__codelineno-4-64" href="#__codelineno-4-64"></a>    <span class="k">if</span> <span class="n">part</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-<a id="__codelineno-4-65" name="__codelineno-4-65" href="#__codelineno-4-65"></a>        <span class="k">raise</span> <span class="n">PartNotFoundExceptionError</span><span class="p">(</span><span class="n">part_id</span><span class="p">)</span>
+<a id="__codelineno-4-65" name="__codelineno-4-65" href="#__codelineno-4-65"></a>        <span class="k">raise</span> <span class="n">ResourceNotFoundExceptionError</span><span class="p">(</span><span class="n">resource_id</span><span class="p">)</span>
 <a id="__codelineno-4-66" name="__codelineno-4-66" href="#__codelineno-4-66"></a>    <span class="k">return</span> <span class="n">part</span>
 <a id="__codelineno-4-67" name="__codelineno-4-67" href="#__codelineno-4-67"></a>
 <a id="__codelineno-4-68" name="__codelineno-4-68" href="#__codelineno-4-68"></a>
 <a id="__codelineno-4-69" name="__codelineno-4-69" href="#__codelineno-4-69"></a><span class="k">def</span><span class="w"> </span><span class="nf">_resolve_owner</span><span class="p">(</span>
-<a id="__codelineno-4-70" name="__codelineno-4-70" href="#__codelineno-4-70"></a>    <span class="n">payload</span><span class="p">:</span> <span class="n">schemas</span><span class="o">.</span><span class="n">PartCreate</span><span class="p">,</span> <span class="n">caller</span><span class="p">:</span> <span class="n">User</span>
+<a id="__codelineno-4-70" name="__codelineno-4-70" href="#__codelineno-4-70"></a>    <span class="n">payload</span><span class="p">:</span> <span class="n">schemas</span><span class="o">.</span><span class="n">ResourceCreate</span><span class="p">,</span> <span class="n">caller</span><span class="p">:</span> <span class="n">User</span>
 <a id="__codelineno-4-71" name="__codelineno-4-71" href="#__codelineno-4-71"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">UUID</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">UUID</span> <span class="o">|</span> <span class="kc">None</span><span class="p">]:</span>
 <a id="__codelineno-4-72" name="__codelineno-4-72" href="#__codelineno-4-72"></a>    <span class="k">if</span> <span class="n">payload</span><span class="o">.</span><span class="n">owner_organization_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
 <a id="__codelineno-4-73" name="__codelineno-4-73" href="#__codelineno-4-73"></a>        <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="n">payload</span><span class="o">.</span><span class="n">owner_organization_id</span>
-<a id="__codelineno-4-74" name="__codelineno-4-74" href="#__codelineno-4-74"></a>    <span class="c1"># Default: the caller owns the Part personally</span>
+<a id="__codelineno-4-74" name="__codelineno-4-74" href="#__codelineno-4-74"></a>    <span class="c1"># Default: the caller owns the Resource personally</span>
 <a id="__codelineno-4-75" name="__codelineno-4-75" href="#__codelineno-4-75"></a>    <span class="k">return</span> <span class="n">caller</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="kc">None</span>
 </code></pre></div>
 <h3 id="dependenciespy">dependencies.py</h3>
 <p>Domain-level FastAPI dependencies (path-parameter resolvers, ownership
 checks bundled as <code>Annotated</code> types). Re-export from <code>app.dependencies</code>
 when used elsewhere.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="c1"># app/parts/dependencies.py</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="c1"># app/resources/dependencies.py</span>
 <a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Annotated</span>
 <a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="kn">from</span><span class="w"> </span><span class="nn">uuid</span><span class="w"> </span><span class="kn">import</span> <span class="n">UUID</span>
 <a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>
@@ -1535,26 +1548,26 @@ when used elsewhere.</p>
 <a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a><span class="kn">from</span><span class="w"> </span><span class="nn">app.database</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_db</span>
 <a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a>
 <a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a><span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">service</span>
-<a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a><span class="kn">from</span><span class="w"> </span><span class="nn">.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">PartNotFoundExceptionError</span>
+<a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a><span class="kn">from</span><span class="w"> </span><span class="nn">.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">ResourceNotFoundExceptionError</span>
 <a id="__codelineno-5-12" name="__codelineno-5-12" href="#__codelineno-5-12"></a>
 <a id="__codelineno-5-13" name="__codelineno-5-13" href="#__codelineno-5-13"></a>
 <a id="__codelineno-5-14" name="__codelineno-5-14" href="#__codelineno-5-14"></a><span class="k">def</span><span class="w"> </span><span class="nf">get_part_by_id</span><span class="p">(</span>
-<a id="__codelineno-5-15" name="__codelineno-5-15" href="#__codelineno-5-15"></a>    <span class="n">part_id</span><span class="p">:</span> <span class="n">UUID</span><span class="p">,</span>
+<a id="__codelineno-5-15" name="__codelineno-5-15" href="#__codelineno-5-15"></a>    <span class="n">resource_id</span><span class="p">:</span> <span class="n">UUID</span><span class="p">,</span>
 <a id="__codelineno-5-16" name="__codelineno-5-16" href="#__codelineno-5-16"></a>    <span class="n">db</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Session</span><span class="p">,</span> <span class="n">Depends</span><span class="p">(</span><span class="n">get_db</span><span class="p">)],</span>
-<a id="__codelineno-5-17" name="__codelineno-5-17" href="#__codelineno-5-17"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">service</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">Part</span><span class="p">:</span>
-<a id="__codelineno-5-18" name="__codelineno-5-18" href="#__codelineno-5-18"></a>    <span class="n">part</span> <span class="o">=</span> <span class="n">service</span><span class="o">.</span><span class="n">_get_part_or_raise</span><span class="p">(</span><span class="n">db</span><span class="p">,</span> <span class="n">part_id</span><span class="p">)</span>
+<a id="__codelineno-5-17" name="__codelineno-5-17" href="#__codelineno-5-17"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">service</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">Resource</span><span class="p">:</span>
+<a id="__codelineno-5-18" name="__codelineno-5-18" href="#__codelineno-5-18"></a>    <span class="n">part</span> <span class="o">=</span> <span class="n">service</span><span class="o">.</span><span class="n">_get_part_or_raise</span><span class="p">(</span><span class="n">db</span><span class="p">,</span> <span class="n">resource_id</span><span class="p">)</span>
 <a id="__codelineno-5-19" name="__codelineno-5-19" href="#__codelineno-5-19"></a>    <span class="k">return</span> <span class="n">part</span>
 <a id="__codelineno-5-20" name="__codelineno-5-20" href="#__codelineno-5-20"></a>
 <a id="__codelineno-5-21" name="__codelineno-5-21" href="#__codelineno-5-21"></a>
-<a id="__codelineno-5-22" name="__codelineno-5-22" href="#__codelineno-5-22"></a><span class="n">TargetPart</span> <span class="o">=</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">service</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">Part</span><span class="p">,</span> <span class="n">Depends</span><span class="p">(</span><span class="n">get_part_by_id</span><span class="p">)]</span>
+<a id="__codelineno-5-22" name="__codelineno-5-22" href="#__codelineno-5-22"></a><span class="n">TargetPart</span> <span class="o">=</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">service</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">Resource</span><span class="p">,</span> <span class="n">Depends</span><span class="p">(</span><span class="n">get_part_by_id</span><span class="p">)]</span>
 </code></pre></div>
 <h3 id="constantspy">constants.py</h3>
 <p>Enums + error codes. Keep the enum classes simple — string-backed.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="c1"># app/parts/constants.py</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="c1"># app/resources/constants.py</span>
 <a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">enum</span><span class="w"> </span><span class="kn">import</span> <span class="n">StrEnum</span>
 <a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>
 <a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>
-<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="k">class</span><span class="w"> </span><span class="nc">PartStatus</span><span class="p">(</span><span class="n">StrEnum</span><span class="p">):</span>
+<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="k">class</span><span class="w"> </span><span class="nc">ResourceStatus</span><span class="p">(</span><span class="n">StrEnum</span><span class="p">):</span>
 <a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>    <span class="n">ACTIVE</span> <span class="o">=</span> <span class="s2">&quot;active&quot;</span>
 <a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a>    <span class="n">DISCONTINUED</span> <span class="o">=</span> <span class="s2">&quot;discontinued&quot;</span>
 <a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a>
@@ -1568,7 +1581,7 @@ when used elsewhere.</p>
 <h3 id="exceptionspy">exceptions.py</h3>
 <p>Domain exceptions inheriting <code>AppExceptionError</code>. The global handler
 converts them to the JSON envelope.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="c1"># app/parts/exceptions.py</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="c1"># app/resources/exceptions.py</span>
 <a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">uuid</span><span class="w"> </span><span class="kn">import</span> <span class="n">UUID</span>
 <a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>
 <a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="kn">from</span><span class="w"> </span><span class="nn">app.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">AppExceptionError</span>
@@ -1576,30 +1589,30 @@ converts them to the JSON envelope.</p>
 <a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="kn">from</span><span class="w"> </span><span class="nn">.constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">ErrorCode</span>
 <a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a>
 <a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a>
-<a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a><span class="k">class</span><span class="w"> </span><span class="nc">PartNotFoundExceptionError</span><span class="p">(</span><span class="n">AppExceptionError</span><span class="p">):</span>
-<a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">part_id</span><span class="p">:</span> <span class="n">UUID</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a><span class="k">class</span><span class="w"> </span><span class="nc">ResourceNotFoundExceptionError</span><span class="p">(</span><span class="n">AppExceptionError</span><span class="p">):</span>
+<a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resource_id</span><span class="p">:</span> <span class="n">UUID</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <a id="__codelineno-7-11" name="__codelineno-7-11" href="#__codelineno-7-11"></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
 <a id="__codelineno-7-12" name="__codelineno-7-12" href="#__codelineno-7-12"></a>            <span class="n">error_code</span><span class="o">=</span><span class="n">ErrorCode</span><span class="o">.</span><span class="n">PART_NOT_FOUND</span><span class="p">,</span>
-<a id="__codelineno-7-13" name="__codelineno-7-13" href="#__codelineno-7-13"></a>            <span class="n">message</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Part </span><span class="si">{</span><span class="n">part_id</span><span class="si">}</span><span class="s2"> not found.&quot;</span><span class="p">,</span>
+<a id="__codelineno-7-13" name="__codelineno-7-13" href="#__codelineno-7-13"></a>            <span class="n">message</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Resource </span><span class="si">{</span><span class="n">resource_id</span><span class="si">}</span><span class="s2"> not found.&quot;</span><span class="p">,</span>
 <a id="__codelineno-7-14" name="__codelineno-7-14" href="#__codelineno-7-14"></a>            <span class="n">status_code</span><span class="o">=</span><span class="mi">404</span><span class="p">,</span>
 <a id="__codelineno-7-15" name="__codelineno-7-15" href="#__codelineno-7-15"></a>        <span class="p">)</span>
 <a id="__codelineno-7-16" name="__codelineno-7-16" href="#__codelineno-7-16"></a>
 <a id="__codelineno-7-17" name="__codelineno-7-17" href="#__codelineno-7-17"></a>
-<a id="__codelineno-7-18" name="__codelineno-7-18" href="#__codelineno-7-18"></a><span class="k">class</span><span class="w"> </span><span class="nc">PartOwnerRequiredExceptionError</span><span class="p">(</span><span class="n">AppExceptionError</span><span class="p">):</span>
-<a id="__codelineno-7-19" name="__codelineno-7-19" href="#__codelineno-7-19"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">part_id</span><span class="p">:</span> <span class="n">UUID</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<a id="__codelineno-7-18" name="__codelineno-7-18" href="#__codelineno-7-18"></a><span class="k">class</span><span class="w"> </span><span class="nc">ResourceOwnerRequiredExceptionError</span><span class="p">(</span><span class="n">AppExceptionError</span><span class="p">):</span>
+<a id="__codelineno-7-19" name="__codelineno-7-19" href="#__codelineno-7-19"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resource_id</span><span class="p">:</span> <span class="n">UUID</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <a id="__codelineno-7-20" name="__codelineno-7-20" href="#__codelineno-7-20"></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
 <a id="__codelineno-7-21" name="__codelineno-7-21" href="#__codelineno-7-21"></a>            <span class="n">error_code</span><span class="o">=</span><span class="n">ErrorCode</span><span class="o">.</span><span class="n">PART_OWNER_REQUIRED</span><span class="p">,</span>
-<a id="__codelineno-7-22" name="__codelineno-7-22" href="#__codelineno-7-22"></a>            <span class="n">message</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Action on Part </span><span class="si">{</span><span class="n">part_id</span><span class="si">}</span><span class="s2"> requires the effective owner.&quot;</span><span class="p">,</span>
+<a id="__codelineno-7-22" name="__codelineno-7-22" href="#__codelineno-7-22"></a>            <span class="n">message</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Action on Resource </span><span class="si">{</span><span class="n">resource_id</span><span class="si">}</span><span class="s2"> requires the effective owner.&quot;</span><span class="p">,</span>
 <a id="__codelineno-7-23" name="__codelineno-7-23" href="#__codelineno-7-23"></a>            <span class="n">status_code</span><span class="o">=</span><span class="mi">403</span><span class="p">,</span>
 <a id="__codelineno-7-24" name="__codelineno-7-24" href="#__codelineno-7-24"></a>        <span class="p">)</span>
 <a id="__codelineno-7-25" name="__codelineno-7-25" href="#__codelineno-7-25"></a>
 <a id="__codelineno-7-26" name="__codelineno-7-26" href="#__codelineno-7-26"></a>
-<a id="__codelineno-7-27" name="__codelineno-7-27" href="#__codelineno-7-27"></a><span class="k">class</span><span class="w"> </span><span class="nc">PartArchiveBlockedExceptionError</span><span class="p">(</span><span class="n">AppExceptionError</span><span class="p">):</span>
-<a id="__codelineno-7-28" name="__codelineno-7-28" href="#__codelineno-7-28"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">part_id</span><span class="p">:</span> <span class="n">UUID</span><span class="p">,</span> <span class="n">open_requests</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<a id="__codelineno-7-27" name="__codelineno-7-27" href="#__codelineno-7-27"></a><span class="k">class</span><span class="w"> </span><span class="nc">ResourceArchiveBlockedExceptionError</span><span class="p">(</span><span class="n">AppExceptionError</span><span class="p">):</span>
+<a id="__codelineno-7-28" name="__codelineno-7-28" href="#__codelineno-7-28"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resource_id</span><span class="p">:</span> <span class="n">UUID</span><span class="p">,</span> <span class="n">open_requests</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <a id="__codelineno-7-29" name="__codelineno-7-29" href="#__codelineno-7-29"></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
 <a id="__codelineno-7-30" name="__codelineno-7-30" href="#__codelineno-7-30"></a>            <span class="n">error_code</span><span class="o">=</span><span class="n">ErrorCode</span><span class="o">.</span><span class="n">PART_ARCHIVE_BLOCKED</span><span class="p">,</span>
 <a id="__codelineno-7-31" name="__codelineno-7-31" href="#__codelineno-7-31"></a>            <span class="n">message</span><span class="o">=</span><span class="p">(</span>
-<a id="__codelineno-7-32" name="__codelineno-7-32" href="#__codelineno-7-32"></a>                <span class="sa">f</span><span class="s2">&quot;Part </span><span class="si">{</span><span class="n">part_id</span><span class="si">}</span><span class="s2"> cannot be archived while </span><span class="si">{</span><span class="n">open_requests</span><span class="si">}</span><span class="s2"> &quot;</span>
+<a id="__codelineno-7-32" name="__codelineno-7-32" href="#__codelineno-7-32"></a>                <span class="sa">f</span><span class="s2">&quot;Resource </span><span class="si">{</span><span class="n">resource_id</span><span class="si">}</span><span class="s2"> cannot be archived while </span><span class="si">{</span><span class="n">open_requests</span><span class="si">}</span><span class="s2"> &quot;</span>
 <a id="__codelineno-7-33" name="__codelineno-7-33" href="#__codelineno-7-33"></a>                <span class="s2">&quot;open Request(s) reference it. Mark it `discontinued` or &quot;</span>
 <a id="__codelineno-7-34" name="__codelineno-7-34" href="#__codelineno-7-34"></a>                <span class="s2">&quot;ask a maintainer to force-archive.&quot;</span>
 <a id="__codelineno-7-35" name="__codelineno-7-35" href="#__codelineno-7-35"></a>            <span class="p">),</span>
@@ -1632,7 +1645,7 @@ background scheduler (lazy — disabled under pytest).</p>
 <a id="__codelineno-8-20" name="__codelineno-8-20" href="#__codelineno-8-20"></a><span class="p">)</span>
 <a id="__codelineno-8-21" name="__codelineno-8-21" href="#__codelineno-8-21"></a><span class="kn">from</span><span class="w"> </span><span class="nn">app.organizations.router</span><span class="w"> </span><span class="kn">import</span> <span class="n">router</span> <span class="k">as</span> <span class="n">orgs_router</span>
 <a id="__codelineno-8-22" name="__codelineno-8-22" href="#__codelineno-8-22"></a><span class="kn">from</span><span class="w"> </span><span class="nn">app.ownership_transfers.router</span><span class="w"> </span><span class="kn">import</span> <span class="n">router</span> <span class="k">as</span> <span class="n">transfers_router</span>
-<a id="__codelineno-8-23" name="__codelineno-8-23" href="#__codelineno-8-23"></a><span class="kn">from</span><span class="w"> </span><span class="nn">app.parts.router</span><span class="w"> </span><span class="kn">import</span> <span class="n">router</span> <span class="k">as</span> <span class="n">parts_router</span>
+<a id="__codelineno-8-23" name="__codelineno-8-23" href="#__codelineno-8-23"></a><span class="kn">from</span><span class="w"> </span><span class="nn">app.resources.router</span><span class="w"> </span><span class="kn">import</span> <span class="n">router</span> <span class="k">as</span> <span class="n">resources_router</span>
 <a id="__codelineno-8-24" name="__codelineno-8-24" href="#__codelineno-8-24"></a><span class="kn">from</span><span class="w"> </span><span class="nn">app.requests.router</span><span class="w"> </span><span class="kn">import</span> <span class="n">router</span> <span class="k">as</span> <span class="n">requests_router</span>
 <a id="__codelineno-8-25" name="__codelineno-8-25" href="#__codelineno-8-25"></a><span class="kn">from</span><span class="w"> </span><span class="nn">app.scheduled.scheduler</span><span class="w"> </span><span class="kn">import</span> <span class="n">start_scheduler</span><span class="p">,</span> <span class="n">stop_scheduler</span>
 <a id="__codelineno-8-26" name="__codelineno-8-26" href="#__codelineno-8-26"></a><span class="kn">from</span><span class="w"> </span><span class="nn">app.users.router</span><span class="w"> </span><span class="kn">import</span> <span class="n">router</span> <span class="k">as</span> <span class="n">users_router</span>
@@ -1669,7 +1682,7 @@ background scheduler (lazy — disabled under pytest).</p>
 <a id="__codelineno-8-57" name="__codelineno-8-57" href="#__codelineno-8-57"></a>    <span class="p">)</span>
 <a id="__codelineno-8-58" name="__codelineno-8-58" href="#__codelineno-8-58"></a>
 <a id="__codelineno-8-59" name="__codelineno-8-59" href="#__codelineno-8-59"></a>    <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="p">(</span>
-<a id="__codelineno-8-60" name="__codelineno-8-60" href="#__codelineno-8-60"></a>        <span class="n">auth_router</span><span class="p">,</span> <span class="n">users_router</span><span class="p">,</span> <span class="n">organizations</span> <span class="o">:=</span> <span class="n">orgs_router</span><span class="p">,</span> <span class="n">parts_router</span><span class="p">,</span>
+<a id="__codelineno-8-60" name="__codelineno-8-60" href="#__codelineno-8-60"></a>        <span class="n">auth_router</span><span class="p">,</span> <span class="n">users_router</span><span class="p">,</span> <span class="n">organizations</span> <span class="o">:=</span> <span class="n">orgs_router</span><span class="p">,</span> <span class="n">resources_router</span><span class="p">,</span>
 <a id="__codelineno-8-61" name="__codelineno-8-61" href="#__codelineno-8-61"></a>        <span class="n">cc_router</span><span class="p">,</span> <span class="n">requests_router</span><span class="p">,</span> <span class="n">contrib_router</span><span class="p">,</span> <span class="n">transfers_router</span><span class="p">,</span>
 <a id="__codelineno-8-62" name="__codelineno-8-62" href="#__codelineno-8-62"></a>        <span class="n">audit_router</span><span class="p">,</span> <span class="n">discovery_router</span><span class="p">,</span>
 <a id="__codelineno-8-63" name="__codelineno-8-63" href="#__codelineno-8-63"></a>    <span class="p">):</span>
@@ -1782,16 +1795,16 @@ requirements doc are implemented in exactly one place.</p>
 <a id="__codelineno-12-9" name="__codelineno-12-9" href="#__codelineno-12-9"></a>    <span class="n">CollectionCenterMembership</span><span class="p">,</span>
 <a id="__codelineno-12-10" name="__codelineno-12-10" href="#__codelineno-12-10"></a><span class="p">)</span>
 <a id="__codelineno-12-11" name="__codelineno-12-11" href="#__codelineno-12-11"></a><span class="kn">from</span><span class="w"> </span><span class="nn">app.organizations.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">Organization</span><span class="p">,</span> <span class="n">OrganizationMembership</span>
-<a id="__codelineno-12-12" name="__codelineno-12-12" href="#__codelineno-12-12"></a><span class="kn">from</span><span class="w"> </span><span class="nn">app.parts.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">Part</span>
+<a id="__codelineno-12-12" name="__codelineno-12-12" href="#__codelineno-12-12"></a><span class="kn">from</span><span class="w"> </span><span class="nn">app.resources.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">Resource</span>
 <a id="__codelineno-12-13" name="__codelineno-12-13" href="#__codelineno-12-13"></a><span class="kn">from</span><span class="w"> </span><span class="nn">app.requests.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">Request</span>
 <a id="__codelineno-12-14" name="__codelineno-12-14" href="#__codelineno-12-14"></a><span class="kn">from</span><span class="w"> </span><span class="nn">app.users.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">User</span>
 <a id="__codelineno-12-15" name="__codelineno-12-15" href="#__codelineno-12-15"></a>
 <a id="__codelineno-12-16" name="__codelineno-12-16" href="#__codelineno-12-16"></a>
 <a id="__codelineno-12-17" name="__codelineno-12-17" href="#__codelineno-12-17"></a><span class="c1"># ----------------------------------------------------------------------</span>
-<a id="__codelineno-12-18" name="__codelineno-12-18" href="#__codelineno-12-18"></a><span class="c1"># Effective owner of a Part / CollectionCenter / Request (FR-109)</span>
+<a id="__codelineno-12-18" name="__codelineno-12-18" href="#__codelineno-12-18"></a><span class="c1"># Effective owner of a Resource / CollectionCenter / Request (FR-109)</span>
 <a id="__codelineno-12-19" name="__codelineno-12-19" href="#__codelineno-12-19"></a><span class="c1"># ----------------------------------------------------------------------</span>
 <a id="__codelineno-12-20" name="__codelineno-12-20" href="#__codelineno-12-20"></a><span class="k">def</span><span class="w"> </span><span class="nf">effective_owner_user_ids</span><span class="p">(</span>
-<a id="__codelineno-12-21" name="__codelineno-12-21" href="#__codelineno-12-21"></a>    <span class="n">db</span><span class="p">:</span> <span class="n">Session</span><span class="p">,</span> <span class="n">asset</span><span class="p">:</span> <span class="n">Part</span> <span class="o">|</span> <span class="n">CollectionCenter</span> <span class="o">|</span> <span class="n">Request</span>
+<a id="__codelineno-12-21" name="__codelineno-12-21" href="#__codelineno-12-21"></a>    <span class="n">db</span><span class="p">:</span> <span class="n">Session</span><span class="p">,</span> <span class="n">asset</span><span class="p">:</span> <span class="n">Resource</span> <span class="o">|</span> <span class="n">CollectionCenter</span> <span class="o">|</span> <span class="n">Request</span>
 <a id="__codelineno-12-22" name="__codelineno-12-22" href="#__codelineno-12-22"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">set</span><span class="p">[</span><span class="n">UUID</span><span class="p">]:</span>
 <a id="__codelineno-12-23" name="__codelineno-12-23" href="#__codelineno-12-23"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Return the set of users that have owner-equivalent powers.&quot;&quot;&quot;</span>
 <a id="__codelineno-12-24" name="__codelineno-12-24" href="#__codelineno-12-24"></a>    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">asset</span><span class="p">,</span> <span class="n">Request</span><span class="p">):</span>
@@ -1859,8 +1872,8 @@ requirements doc are implemented in exactly one place.</p>
 <a id="__codelineno-12-86" name="__codelineno-12-86" href="#__codelineno-12-86"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <a id="__codelineno-12-87" name="__codelineno-12-87" href="#__codelineno-12-87"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Used at registration time (FR-108). The caller must be an active</span>
 <a id="__codelineno-12-88" name="__codelineno-12-88" href="#__codelineno-12-88"></a><span class="sd">    member (any role) of the org they&#39;re registering an asset under.&quot;&quot;&quot;</span>
-<a id="__codelineno-12-89" name="__codelineno-12-89" href="#__codelineno-12-89"></a>    <span class="kn">from</span><span class="w"> </span><span class="nn">app.parts.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
-<a id="__codelineno-12-90" name="__codelineno-12-90" href="#__codelineno-12-90"></a>        <span class="n">PartNotAnOrgMemberExceptionError</span><span class="p">,</span>  <span class="c1"># local import avoids cycle</span>
+<a id="__codelineno-12-89" name="__codelineno-12-89" href="#__codelineno-12-89"></a>    <span class="kn">from</span><span class="w"> </span><span class="nn">app.resources.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+<a id="__codelineno-12-90" name="__codelineno-12-90" href="#__codelineno-12-90"></a>        <span class="n">ResourceNotAnOrgMemberExceptionError</span><span class="p">,</span>  <span class="c1"># local import avoids cycle</span>
 <a id="__codelineno-12-91" name="__codelineno-12-91" href="#__codelineno-12-91"></a>    <span class="p">)</span>
 <a id="__codelineno-12-92" name="__codelineno-12-92" href="#__codelineno-12-92"></a>
 <a id="__codelineno-12-93" name="__codelineno-12-93" href="#__codelineno-12-93"></a>    <span class="n">is_member</span> <span class="o">=</span> <span class="p">(</span>
@@ -1874,7 +1887,7 @@ requirements doc are implemented in exactly one place.</p>
 <a id="__codelineno-12-101" name="__codelineno-12-101" href="#__codelineno-12-101"></a>        <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
 <a id="__codelineno-12-102" name="__codelineno-12-102" href="#__codelineno-12-102"></a>    <span class="p">)</span>
 <a id="__codelineno-12-103" name="__codelineno-12-103" href="#__codelineno-12-103"></a>    <span class="k">if</span> <span class="ow">not</span> <span class="n">is_member</span><span class="p">:</span>
-<a id="__codelineno-12-104" name="__codelineno-12-104" href="#__codelineno-12-104"></a>        <span class="k">raise</span> <span class="n">PartNotAnOrgMemberExceptionError</span><span class="p">(</span><span class="n">caller</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">organization_id</span><span class="p">)</span>
+<a id="__codelineno-12-104" name="__codelineno-12-104" href="#__codelineno-12-104"></a>        <span class="k">raise</span> <span class="n">ResourceNotAnOrgMemberExceptionError</span><span class="p">(</span><span class="n">caller</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">organization_id</span><span class="p">)</span>
 </code></pre></div>
 <h2 id="cross-domain-communication">Cross-Domain Communication</h2>
 <p>Domains do <strong>not</strong> import each other's <code>service.py</code> (matches the
@@ -1892,18 +1905,18 @@ function inside the calling service (the Colony "shared local helper"
 pattern). This keeps the dependency graph between domain <code>service.py</code>
 files acyclic.</p>
 <h2 id="polymorphic-ownership-how-it-plays-out-at-the-service-layer">Polymorphic Ownership: How It Plays Out at the Service Layer</h2>
-<p><code>Parts</code>, <code>CollectionCenter</code>s, and <code>Request</code>s each carry two nullable
+<p><code>Resources</code>, <code>CollectionCenter</code>s, and <code>Request</code>s each carry two nullable
 owner FKs with a <code>CHECK</code> enforcing "exactly one non-null." Service
 code never branches on <code>if asset.owner_user_id is not None: ... else:
 ...</code>; that branching is delegated to <code>app.permissions</code>.</p>
 <p>A typical mutating service method follows this pattern:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">edit_part</span><span class="p">(</span><span class="n">db</span><span class="p">:</span> <span class="n">Session</span><span class="p">,</span> <span class="n">part_id</span><span class="p">:</span> <span class="n">UUID</span><span class="p">,</span> <span class="n">payload</span><span class="p">,</span> <span class="n">caller</span><span class="p">:</span> <span class="n">User</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Part</span><span class="p">:</span>
-<a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>    <span class="n">part</span> <span class="o">=</span> <span class="n">_get_part_or_raise</span><span class="p">(</span><span class="n">db</span><span class="p">,</span> <span class="n">part_id</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">edit_part</span><span class="p">(</span><span class="n">db</span><span class="p">:</span> <span class="n">Session</span><span class="p">,</span> <span class="n">resource_id</span><span class="p">:</span> <span class="n">UUID</span><span class="p">,</span> <span class="n">payload</span><span class="p">,</span> <span class="n">caller</span><span class="p">:</span> <span class="n">User</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Resource</span><span class="p">:</span>
+<a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>    <span class="n">part</span> <span class="o">=</span> <span class="n">_get_part_or_raise</span><span class="p">(</span><span class="n">db</span><span class="p">,</span> <span class="n">resource_id</span><span class="p">)</span>
 <a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a>
 <a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a>    <span class="c1"># Authorization: caller is effective owner OR global override</span>
 <a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a>    <span class="k">if</span> <span class="n">caller</span><span class="o">.</span><span class="n">id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">effective_owner_user_ids</span><span class="p">(</span><span class="n">db</span><span class="p">,</span> <span class="n">part</span><span class="p">)</span> \
 <a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a>            <span class="ow">and</span> <span class="ow">not</span> <span class="n">has_global_override</span><span class="p">(</span><span class="n">caller</span><span class="p">):</span>
-<a id="__codelineno-13-7" name="__codelineno-13-7" href="#__codelineno-13-7"></a>        <span class="k">raise</span> <span class="n">PartOwnerRequiredExceptionError</span><span class="p">(</span><span class="n">part_id</span><span class="p">)</span>
+<a id="__codelineno-13-7" name="__codelineno-13-7" href="#__codelineno-13-7"></a>        <span class="k">raise</span> <span class="n">ResourceOwnerRequiredExceptionError</span><span class="p">(</span><span class="n">resource_id</span><span class="p">)</span>
 <a id="__codelineno-13-8" name="__codelineno-13-8" href="#__codelineno-13-8"></a>
 <a id="__codelineno-13-9" name="__codelineno-13-9" href="#__codelineno-13-9"></a>    <span class="c1"># Apply patch</span>
 <a id="__codelineno-13-10" name="__codelineno-13-10" href="#__codelineno-13-10"></a>    <span class="k">for</span> <span class="n">field</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">payload</span><span class="o">.</span><span class="n">model_dump</span><span class="p">(</span><span class="n">exclude_unset</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
@@ -2058,7 +2071,7 @@ in development; in production the Helm chart runs a dedicated
 <li><code>has_global_override(user)</code> is the canonical "is maintainer or
   admin" check.</li>
 <li>For polymorphic-ownership checks, services call
-  <code>effective_owner_user_ids</code> (Parts/CCs/Requests) or
+  <code>effective_owner_user_ids</code> (Resources/CCs/Requests) or
   <code>effective_cc_member_user_ids</code> (CC member powers).</li>
 <li>Frontend hides controls the caller cannot invoke, but every check
   is re-enforced server-side (NFR-006).</li>
@@ -2119,7 +2132,7 @@ an <code>alembic/checks.md</code> checklist of which invariants need manual
 verification per migration.</p>
 <h3 id="no-on-delete-cascade-from-users">No <code>ON DELETE CASCADE</code> from <code>users</code></h3>
 <p>Per FR-013, deactivating a user must preserve their historical
-attribution on Parts, Requests, Contributions, and audit log rows.
+attribution on Resources, Requests, Contributions, and audit log rows.
 Foreign keys from those tables to <code>users.id</code> therefore default to
 <code>ON DELETE RESTRICT</code>; the only cascades in the schema are
 within-domain (<code>organizations → organization_memberships</code> and
@@ -2136,11 +2149,11 @@ within-domain (<code>organizations → organization_memberships</code> and
   sets both).</li>
 </ul>
 <h3 id="boundary-check-example">Boundary Check Example</h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a><span class="c1"># app/parts/schemas.py — additional validator</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a><span class="c1"># app/resources/schemas.py — additional validator</span>
 <a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">pydantic</span><span class="w"> </span><span class="kn">import</span> <span class="n">model_validator</span>
 <a id="__codelineno-21-3" name="__codelineno-21-3" href="#__codelineno-21-3"></a>
 <a id="__codelineno-21-4" name="__codelineno-21-4" href="#__codelineno-21-4"></a>
-<a id="__codelineno-21-5" name="__codelineno-21-5" href="#__codelineno-21-5"></a><span class="k">class</span><span class="w"> </span><span class="nc">PartCreate</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<a id="__codelineno-21-5" name="__codelineno-21-5" href="#__codelineno-21-5"></a><span class="k">class</span><span class="w"> </span><span class="nc">ResourceCreate</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
 <a id="__codelineno-21-6" name="__codelineno-21-6" href="#__codelineno-21-6"></a>    <span class="c1"># ... fields as above</span>
 <a id="__codelineno-21-7" name="__codelineno-21-7" href="#__codelineno-21-7"></a>
 <a id="__codelineno-21-8" name="__codelineno-21-8" href="#__codelineno-21-8"></a>    <span class="nd">@model_validator</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s2">&quot;after&quot;</span><span class="p">)</span>
@@ -2193,7 +2206,7 @@ within-domain (<code>organizations → organization_memberships</code> and
 <a id="__codelineno-22-34" name="__codelineno-22-34" href="#__codelineno-22-34"></a>    <span class="n">app</span><span class="o">.</span><span class="n">dependency_overrides</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
 </code></pre></div>
 <p>Each domain has its own <code>tests/&lt;domain&gt;/conftest.py</code> with domain
-fixtures (e.g., <code>tests/parts/conftest.py</code> defines <code>user_owned_part</code>,
+fixtures (e.g., <code>tests/resources/conftest.py</code> defines <code>user_owned_part</code>,
 <code>org_owned_part</code>, <code>discontinued_part</code> fixtures).</p>
 <h3 id="conventions">Conventions</h3>
 <p>Mirroring Colony:</p>

@@ -676,13 +676,30 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#parts" class="md-nav__link">
+  <a href="#resources" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Parts
+        Resources
       
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="Resources">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#generic-resource-catalog-forward-compat" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Generic Resource Catalog (forward-compat)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
         
@@ -875,10 +892,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#request-request-items-part-1n-n1" class="md-nav__link">
+  <a href="#request-request-items-resource-1n-n1" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Request → Request Items → Part (1:N → N:1)
+        Request → Request Items → Resource (1:N → N:1)
       
     </span>
   </a>
@@ -1141,10 +1158,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#top-5-most-needed-parts-by-aggregated-remaining-fr-067" class="md-nav__link">
+  <a href="#top-5-most-needed-resources-by-aggregated-remaining-fr-067" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Top 5 Most-Needed Parts by Aggregated Remaining (FR-067)
+        Top 5 Most-Needed Resources by Aggregated Remaining (FR-067)
       
     </span>
   </a>
@@ -1258,7 +1275,7 @@
 transactions and complex relationship queries. The schema encodes the
 functional requirements specified in
 <a href="../../requirements/"><code>requirements.md</code></a>, including polymorphic
-ownership of Parts and Collection Centers (FR-107), the membership
+ownership of Resources and Collection Centers (FR-107), the membership
 model that decentralizes Collection Center management (§3.4 / §3.9 of
 the requirements), and the ownership transfer state machine (§3.10).</p>
 <h2 id="database-choice-postgresql">Database Choice: PostgreSQL</h2>
@@ -1277,7 +1294,7 @@ the requirements), and the ownership transfer state machine (§3.10).</p>
 <pre class="mermaid"><code>erDiagram
     users ||--o{ organization_memberships : "is in"
     users ||--o{ collection_center_memberships : "contributes to"
-    users ||--o{ parts : "creates"
+    users ||--o{ resources : "creates"
     users ||--o{ collection_centers : "registers"
     users ||--o{ requests : "requests"
     users ||--o{ contributions : "makes"
@@ -1285,12 +1302,12 @@ the requirements), and the ownership transfer state machine (§3.10).</p>
     users ||--o{ audit_log : "actor"
 
     organizations ||--o{ organization_memberships : "has"
-    organizations |o--o{ parts : "owns (polymorphic)"
+    organizations |o--o{ resources : "owns (polymorphic)"
     organizations |o--o{ collection_centers : "owns (polymorphic)"
     organizations |o--o{ requests : "requests (polymorphic)"
 
-    parts ||--o{ request_items : "referenced by"
-    parts ||--o{ ownership_transfers : "asset (when asset_type=part)"
+    resources ||--o{ request_items : "referenced by"
+    resources ||--o{ ownership_transfers : "asset (when asset_type=resource)"
 
     collection_centers ||--o{ collection_center_memberships : "has"
     collection_centers ||--o{ contributions : "routed to"
@@ -1338,11 +1355,13 @@ the requirements), and the ownership transfer state machine (§3.10).</p>
         timestamp updated_at
     }
 
-    parts {
+    resources {
         uuid id PK
         string name
         text description
+        string category
         string source_url
+        string unit
         string suggested_settings
         text_array tags
         string status
@@ -1364,7 +1383,7 @@ the requirements), and the ownership transfer state machine (§3.10).</p>
         string contact
         text location_url
         string opening_hours
-        text notes
+        text description
         boolean verified
         uuid registered_by_id FK
         uuid verified_by_id FK
@@ -1408,7 +1427,7 @@ the requirements), and the ownership transfer state machine (§3.10).</p>
     request_items {
         uuid id PK
         uuid request_id FK
-        uuid part_id FK
+        uuid resource_id FK
         integer quantity
         text description
         date deadline
@@ -1430,7 +1449,7 @@ the requirements), and the ownership transfer state machine (§3.10).</p>
         text notes
         string status
         timestamp claimed_at
-        timestamp printed_at
+        timestamp prepared_at
         timestamp delivered_at
         timestamp received_at
         uuid received_by_id FK
@@ -1485,37 +1504,44 @@ added.</p>
 <a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="c1">-- UI locales the user can prefer (FR-006, NFR-015)</span>
 <a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="k">CREATE</span><span class="w"> </span><span class="k">TYPE</span><span class="w"> </span><span class="n">locale_code</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">ENUM</span><span class="w"> </span><span class="p">(</span><span class="s1">&#39;es&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;en&#39;</span><span class="p">);</span>
 <a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>
-<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="c1">-- Part lifecycle (FR-020)</span>
-<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="k">CREATE</span><span class="w"> </span><span class="k">TYPE</span><span class="w"> </span><span class="n">part_status</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">ENUM</span><span class="w"> </span><span class="p">(</span><span class="s1">&#39;active&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;discontinued&#39;</span><span class="p">);</span>
+<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="c1">-- Resource lifecycle (FR-020)</span>
+<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="k">CREATE</span><span class="w"> </span><span class="k">TYPE</span><span class="w"> </span><span class="n">resource_status</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">ENUM</span><span class="w"> </span><span class="p">(</span><span class="s1">&#39;active&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;discontinued&#39;</span><span class="p">);</span>
 <a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>
-<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="c1">-- Collection Center operational status (FR-033)</span>
-<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="k">CREATE</span><span class="w"> </span><span class="k">TYPE</span><span class="w"> </span><span class="n">collection_center_status</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">ENUM</span><span class="w"> </span><span class="p">(</span><span class="s1">&#39;active&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;inactive&#39;</span><span class="p">);</span>
-<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>
-<a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a><span class="c1">-- Organization operational status (FR-103)</span>
-<a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a><span class="k">CREATE</span><span class="w"> </span><span class="k">TYPE</span><span class="w"> </span><span class="n">organization_status</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">ENUM</span><span class="w"> </span><span class="p">(</span><span class="s1">&#39;active&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;inactive&#39;</span><span class="p">);</span>
-<a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>
-<a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a><span class="c1">-- Membership roles</span>
-<a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a><span class="k">CREATE</span><span class="w"> </span><span class="k">TYPE</span><span class="w"> </span><span class="n">organization_role</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">ENUM</span><span class="w"> </span><span class="p">(</span><span class="s1">&#39;owner&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;member&#39;</span><span class="p">);</span><span class="w">     </span><span class="c1">-- §6.9</span>
-<a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a><span class="k">CREATE</span><span class="w"> </span><span class="k">TYPE</span><span class="w"> </span><span class="n">collection_center_role</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">ENUM</span><span class="w"> </span><span class="p">(</span><span class="s1">&#39;contributor&#39;</span><span class="p">);</span><span class="w">    </span><span class="c1">-- §6.7</span>
+<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="c1">-- Resource category — kind of aid (only &#39;print_3d&#39; used in v1; see</span>
+<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="c1">-- &quot;Generic Resource Catalog&quot;). Extendable via ALTER TYPE ... ADD VALUE.</span>
+<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a><span class="k">CREATE</span><span class="w"> </span><span class="k">TYPE</span><span class="w"> </span><span class="n">resource_category</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">ENUM</span><span class="w"> </span><span class="p">(</span>
+<a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a><span class="w">  </span><span class="s1">&#39;print_3d&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;food&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;water&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;medicine&#39;</span><span class="p">,</span>
+<a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a><span class="w">  </span><span class="s1">&#39;hygiene&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;clothing&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;tools&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;other&#39;</span>
+<a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a><span class="p">);</span>
+<a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a>
+<a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a><span class="c1">-- Collection Center operational status (FR-033)</span>
+<a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a><span class="k">CREATE</span><span class="w"> </span><span class="k">TYPE</span><span class="w"> </span><span class="n">collection_center_status</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">ENUM</span><span class="w"> </span><span class="p">(</span><span class="s1">&#39;active&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;inactive&#39;</span><span class="p">);</span>
 <a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a>
-<a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a><span class="c1">-- Request lifecycle (FR-040)</span>
-<a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a><span class="k">CREATE</span><span class="w"> </span><span class="k">TYPE</span><span class="w"> </span><span class="n">request_status</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">ENUM</span><span class="w"> </span><span class="p">(</span><span class="s1">&#39;open&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;fulfilled&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;closed&#39;</span><span class="p">);</span>
+<a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a><span class="c1">-- Organization operational status (FR-103)</span>
+<a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a><span class="k">CREATE</span><span class="w"> </span><span class="k">TYPE</span><span class="w"> </span><span class="n">organization_status</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">ENUM</span><span class="w"> </span><span class="p">(</span><span class="s1">&#39;active&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;inactive&#39;</span><span class="p">);</span>
 <a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a>
-<a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a><span class="c1">-- Contribution lifecycle (FR-052)</span>
-<a id="__codelineno-0-28" name="__codelineno-0-28" href="#__codelineno-0-28"></a><span class="k">CREATE</span><span class="w"> </span><span class="k">TYPE</span><span class="w"> </span><span class="n">contribution_status</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">ENUM</span><span class="w"> </span><span class="p">(</span>
-<a id="__codelineno-0-29" name="__codelineno-0-29" href="#__codelineno-0-29"></a><span class="w">  </span><span class="s1">&#39;claimed&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;printed&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;delivered&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;received&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;released&#39;</span>
-<a id="__codelineno-0-30" name="__codelineno-0-30" href="#__codelineno-0-30"></a><span class="p">);</span>
-<a id="__codelineno-0-31" name="__codelineno-0-31" href="#__codelineno-0-31"></a>
-<a id="__codelineno-0-32" name="__codelineno-0-32" href="#__codelineno-0-32"></a><span class="c1">-- Ownership transfer asset discriminator (§6.10 / FR-118)</span>
-<a id="__codelineno-0-33" name="__codelineno-0-33" href="#__codelineno-0-33"></a><span class="k">CREATE</span><span class="w"> </span><span class="k">TYPE</span><span class="w"> </span><span class="n">ownership_transfer_asset_type</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">ENUM</span><span class="w"> </span><span class="p">(</span>
-<a id="__codelineno-0-34" name="__codelineno-0-34" href="#__codelineno-0-34"></a><span class="w">  </span><span class="s1">&#39;part&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;collection_center&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;request&#39;</span>
-<a id="__codelineno-0-35" name="__codelineno-0-35" href="#__codelineno-0-35"></a><span class="p">);</span>
-<a id="__codelineno-0-36" name="__codelineno-0-36" href="#__codelineno-0-36"></a>
-<a id="__codelineno-0-37" name="__codelineno-0-37" href="#__codelineno-0-37"></a><span class="c1">-- Ownership transfer lifecycle (FR-111 – FR-116)</span>
-<a id="__codelineno-0-38" name="__codelineno-0-38" href="#__codelineno-0-38"></a><span class="k">CREATE</span><span class="w"> </span><span class="k">TYPE</span><span class="w"> </span><span class="n">ownership_transfer_status</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">ENUM</span><span class="w"> </span><span class="p">(</span>
-<a id="__codelineno-0-39" name="__codelineno-0-39" href="#__codelineno-0-39"></a><span class="w">  </span><span class="s1">&#39;pending&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;accepted&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;declined&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;cancelled&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;expired&#39;</span><span class="p">,</span>
-<a id="__codelineno-0-40" name="__codelineno-0-40" href="#__codelineno-0-40"></a><span class="w">  </span><span class="s1">&#39;force_transferred&#39;</span>
-<a id="__codelineno-0-41" name="__codelineno-0-41" href="#__codelineno-0-41"></a><span class="p">);</span>
+<a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a><span class="c1">-- Membership roles</span>
+<a id="__codelineno-0-28" name="__codelineno-0-28" href="#__codelineno-0-28"></a><span class="k">CREATE</span><span class="w"> </span><span class="k">TYPE</span><span class="w"> </span><span class="n">organization_role</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">ENUM</span><span class="w"> </span><span class="p">(</span><span class="s1">&#39;owner&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;member&#39;</span><span class="p">);</span><span class="w">     </span><span class="c1">-- §6.9</span>
+<a id="__codelineno-0-29" name="__codelineno-0-29" href="#__codelineno-0-29"></a><span class="k">CREATE</span><span class="w"> </span><span class="k">TYPE</span><span class="w"> </span><span class="n">collection_center_role</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">ENUM</span><span class="w"> </span><span class="p">(</span><span class="s1">&#39;contributor&#39;</span><span class="p">);</span><span class="w">    </span><span class="c1">-- §6.7</span>
+<a id="__codelineno-0-30" name="__codelineno-0-30" href="#__codelineno-0-30"></a>
+<a id="__codelineno-0-31" name="__codelineno-0-31" href="#__codelineno-0-31"></a><span class="c1">-- Request lifecycle (FR-040)</span>
+<a id="__codelineno-0-32" name="__codelineno-0-32" href="#__codelineno-0-32"></a><span class="k">CREATE</span><span class="w"> </span><span class="k">TYPE</span><span class="w"> </span><span class="n">request_status</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">ENUM</span><span class="w"> </span><span class="p">(</span><span class="s1">&#39;open&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;fulfilled&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;closed&#39;</span><span class="p">);</span>
+<a id="__codelineno-0-33" name="__codelineno-0-33" href="#__codelineno-0-33"></a>
+<a id="__codelineno-0-34" name="__codelineno-0-34" href="#__codelineno-0-34"></a><span class="c1">-- Contribution lifecycle (FR-052)</span>
+<a id="__codelineno-0-35" name="__codelineno-0-35" href="#__codelineno-0-35"></a><span class="k">CREATE</span><span class="w"> </span><span class="k">TYPE</span><span class="w"> </span><span class="n">contribution_status</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">ENUM</span><span class="w"> </span><span class="p">(</span>
+<a id="__codelineno-0-36" name="__codelineno-0-36" href="#__codelineno-0-36"></a><span class="w">  </span><span class="s1">&#39;claimed&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;prepared&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;delivered&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;received&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;released&#39;</span>
+<a id="__codelineno-0-37" name="__codelineno-0-37" href="#__codelineno-0-37"></a><span class="p">);</span>
+<a id="__codelineno-0-38" name="__codelineno-0-38" href="#__codelineno-0-38"></a>
+<a id="__codelineno-0-39" name="__codelineno-0-39" href="#__codelineno-0-39"></a><span class="c1">-- Ownership transfer asset discriminator (§6.10 / FR-118)</span>
+<a id="__codelineno-0-40" name="__codelineno-0-40" href="#__codelineno-0-40"></a><span class="k">CREATE</span><span class="w"> </span><span class="k">TYPE</span><span class="w"> </span><span class="n">ownership_transfer_asset_type</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">ENUM</span><span class="w"> </span><span class="p">(</span>
+<a id="__codelineno-0-41" name="__codelineno-0-41" href="#__codelineno-0-41"></a><span class="w">  </span><span class="s1">&#39;part&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;collection_center&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;request&#39;</span>
+<a id="__codelineno-0-42" name="__codelineno-0-42" href="#__codelineno-0-42"></a><span class="p">);</span>
+<a id="__codelineno-0-43" name="__codelineno-0-43" href="#__codelineno-0-43"></a>
+<a id="__codelineno-0-44" name="__codelineno-0-44" href="#__codelineno-0-44"></a><span class="c1">-- Ownership transfer lifecycle (FR-111 – FR-116)</span>
+<a id="__codelineno-0-45" name="__codelineno-0-45" href="#__codelineno-0-45"></a><span class="k">CREATE</span><span class="w"> </span><span class="k">TYPE</span><span class="w"> </span><span class="n">ownership_transfer_status</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">ENUM</span><span class="w"> </span><span class="p">(</span>
+<a id="__codelineno-0-46" name="__codelineno-0-46" href="#__codelineno-0-46"></a><span class="w">  </span><span class="s1">&#39;pending&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;accepted&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;declined&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;cancelled&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;expired&#39;</span><span class="p">,</span>
+<a id="__codelineno-0-47" name="__codelineno-0-47" href="#__codelineno-0-47"></a><span class="w">  </span><span class="s1">&#39;force_transferred&#39;</span>
+<a id="__codelineno-0-48" name="__codelineno-0-48" href="#__codelineno-0-48"></a><span class="p">);</span>
 </code></pre></div>
 <h3 id="enum-reference">ENUM Reference</h3>
 <table>
@@ -1538,7 +1564,7 @@ added.</p>
 <td>FR-006 / NFR-015</td>
 </tr>
 <tr>
-<td><code>part_status</code></td>
+<td><code>resource_status</code></td>
 <td><code>active</code>, <code>discontinued</code></td>
 <td>FR-020</td>
 </tr>
@@ -1574,7 +1600,7 @@ added.</p>
 </tr>
 <tr>
 <td><code>contribution_status</code></td>
-<td><code>claimed</code>, <code>printed</code>, <code>delivered</code>, <code>received</code>, <code>released</code></td>
+<td><code>claimed</code>, <code>prepared</code>, <code>delivered</code>, <code>received</code>, <code>released</code></td>
 <td>FR-052</td>
 </tr>
 <tr>
@@ -1616,7 +1642,7 @@ from env vars on first deploy (FR-007).</p>
 <a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a><span class="k">CREATE</span><span class="w"> </span><span class="k">INDEX</span><span class="w"> </span><span class="n">idx_users_role</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">users</span><span class="p">(</span><span class="k">role</span><span class="p">);</span>
 </code></pre></div>
 <h3 id="organizations">Organizations</h3>
-<p>Named groups that can own Parts and Collection Centers on behalf of
+<p>Named groups that can own Resources and Collection Centers on behalf of
 their members (§3.9).</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">organizations</span><span class="w"> </span><span class="p">(</span>
 <a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">    </span><span class="n">id</span><span class="w"> </span><span class="n">UUID</span><span class="w"> </span><span class="k">PRIMARY</span><span class="w"> </span><span class="k">KEY</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="n">gen_random_uuid</span><span class="p">(),</span>
@@ -1673,47 +1699,86 @@ via a partial unique index (FR-100).</p>
 <a id="__codelineno-3-24" name="__codelineno-3-24" href="#__codelineno-3-24"></a><span class="k">CREATE</span><span class="w"> </span><span class="k">INDEX</span><span class="w"> </span><span class="n">idx_org_membership_user</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">organization_memberships</span><span class="p">(</span><span class="n">user_id</span><span class="p">);</span>
 <a id="__codelineno-3-25" name="__codelineno-3-25" href="#__codelineno-3-25"></a><span class="k">CREATE</span><span class="w"> </span><span class="k">INDEX</span><span class="w"> </span><span class="n">idx_org_membership_org</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">organization_memberships</span><span class="p">(</span><span class="n">organization_id</span><span class="p">);</span>
 </code></pre></div>
-<h3 id="parts">Parts</h3>
-<p>The community catalog of printable designs. Polymorphic ownership
-(FR-107): exactly one of <code>owner_user_id</code> / <code>owner_organization_id</code> is
-non-null at any time. <code>creator_id</code> is immutable historical attribution
-(FR-016).</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">parts</span><span class="w"> </span><span class="p">(</span>
+<h3 id="resources">Resources</h3>
+<p>The community catalog of aid items. Most are 3D-printable designs
+(<code>category = 'print_3d'</code>, the only kind surfaced in v1), but the table is
+deliberately generic so the same catalog can later hold non-printed
+supplies (food, water, medicine, etc.) without a schema migration — see
+<strong>Generic Resource Catalog</strong> below. Polymorphic ownership (FR-107):
+exactly one of <code>owner_user_id</code> / <code>owner_organization_id</code> is non-null at
+any time. <code>creator_id</code> is immutable historical attribution (FR-016).</p>
+<blockquote>
+<p><strong>History:</strong> this table was named <code>parts</code> through Phase 4. It was
+renamed to <code>resources</code> (and <code>request_items.part_id</code> to <code>resource_id</code>)
+in migration <code>0010_resources_generic</code>, which also added <code>category</code> /
+<code>unit</code> and relaxed <code>source_url</code> to nullable.</p>
+</blockquote>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">resources</span><span class="w"> </span><span class="p">(</span>
 <a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="w">    </span><span class="n">id</span><span class="w"> </span><span class="n">UUID</span><span class="w"> </span><span class="k">PRIMARY</span><span class="w"> </span><span class="k">KEY</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="n">gen_random_uuid</span><span class="p">(),</span>
 <a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="w">    </span><span class="n">name</span><span class="w"> </span><span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">200</span><span class="p">)</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span>
 <a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="w">    </span><span class="n">description</span><span class="w"> </span><span class="nb">TEXT</span><span class="p">,</span>
-<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="w">    </span><span class="n">source_url</span><span class="w"> </span><span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">500</span><span class="p">)</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span>
-<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="w">    </span><span class="n">suggested_settings</span><span class="w"> </span><span class="nb">TEXT</span><span class="p">,</span>
-<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="w">    </span><span class="n">tags</span><span class="w"> </span><span class="nb">TEXT</span><span class="p">[]</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="s1">&#39;{}&#39;</span><span class="p">,</span>
-<a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="w">    </span><span class="n">status</span><span class="w"> </span><span class="n">part_status</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="s1">&#39;active&#39;</span><span class="p">,</span>
-<a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a><span class="w">    </span><span class="n">featured</span><span class="w"> </span><span class="nb">BOOLEAN</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="k">FALSE</span><span class="p">,</span>
-<a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a><span class="w">    </span><span class="n">creator_id</span><span class="w"> </span><span class="n">UUID</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="w"> </span><span class="k">REFERENCES</span><span class="w"> </span><span class="n">users</span><span class="p">(</span><span class="n">id</span><span class="p">),</span>
-<a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a><span class="w">    </span><span class="n">owner_user_id</span><span class="w"> </span><span class="n">UUID</span><span class="w"> </span><span class="k">REFERENCES</span><span class="w"> </span><span class="n">users</span><span class="p">(</span><span class="n">id</span><span class="p">),</span>
-<a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a><span class="w">    </span><span class="n">owner_organization_id</span><span class="w"> </span><span class="n">UUID</span><span class="w"> </span><span class="k">REFERENCES</span><span class="w"> </span><span class="n">organizations</span><span class="p">(</span><span class="n">id</span><span class="p">),</span>
-<a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a><span class="w">    </span><span class="n">active</span><span class="w"> </span><span class="nb">BOOLEAN</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="k">TRUE</span><span class="p">,</span>
-<a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a><span class="w">    </span><span class="n">created_at</span><span class="w"> </span><span class="k">TIMESTAMP</span><span class="w"> </span><span class="k">WITH</span><span class="w"> </span><span class="k">TIME</span><span class="w"> </span><span class="k">ZONE</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="n">NOW</span><span class="p">(),</span>
-<a id="__codelineno-4-15" name="__codelineno-4-15" href="#__codelineno-4-15"></a><span class="w">    </span><span class="n">updated_at</span><span class="w"> </span><span class="k">TIMESTAMP</span><span class="w"> </span><span class="k">WITH</span><span class="w"> </span><span class="k">TIME</span><span class="w"> </span><span class="k">ZONE</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="n">NOW</span><span class="p">(),</span>
-<a id="__codelineno-4-16" name="__codelineno-4-16" href="#__codelineno-4-16"></a>
-<a id="__codelineno-4-17" name="__codelineno-4-17" href="#__codelineno-4-17"></a><span class="w">    </span><span class="c1">-- Polymorphic ownership invariant (FR-107)</span>
-<a id="__codelineno-4-18" name="__codelineno-4-18" href="#__codelineno-4-18"></a><span class="w">    </span><span class="k">CONSTRAINT</span><span class="w"> </span><span class="n">parts_one_owner</span><span class="w"> </span><span class="k">CHECK</span><span class="w"> </span><span class="p">(</span>
-<a id="__codelineno-4-19" name="__codelineno-4-19" href="#__codelineno-4-19"></a><span class="w">      </span><span class="p">(</span><span class="n">owner_user_id</span><span class="w"> </span><span class="k">IS</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="w"> </span><span class="k">AND</span><span class="w"> </span><span class="n">owner_organization_id</span><span class="w"> </span><span class="k">IS</span><span class="w"> </span><span class="k">NULL</span><span class="p">)</span><span class="w"> </span><span class="k">OR</span>
-<a id="__codelineno-4-20" name="__codelineno-4-20" href="#__codelineno-4-20"></a><span class="w">      </span><span class="p">(</span><span class="n">owner_user_id</span><span class="w"> </span><span class="k">IS</span><span class="w"> </span><span class="k">NULL</span><span class="w"> </span><span class="k">AND</span><span class="w"> </span><span class="n">owner_organization_id</span><span class="w"> </span><span class="k">IS</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">)</span>
-<a id="__codelineno-4-21" name="__codelineno-4-21" href="#__codelineno-4-21"></a><span class="w">    </span><span class="p">)</span>
-<a id="__codelineno-4-22" name="__codelineno-4-22" href="#__codelineno-4-22"></a><span class="p">);</span>
-<a id="__codelineno-4-23" name="__codelineno-4-23" href="#__codelineno-4-23"></a>
-<a id="__codelineno-4-24" name="__codelineno-4-24" href="#__codelineno-4-24"></a><span class="k">CREATE</span><span class="w"> </span><span class="k">INDEX</span><span class="w"> </span><span class="n">idx_parts_status</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">parts</span><span class="p">(</span><span class="n">status</span><span class="p">);</span>
-<a id="__codelineno-4-25" name="__codelineno-4-25" href="#__codelineno-4-25"></a><span class="k">CREATE</span><span class="w"> </span><span class="k">INDEX</span><span class="w"> </span><span class="n">idx_parts_featured</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">parts</span><span class="p">(</span><span class="n">featured</span><span class="p">);</span>
-<a id="__codelineno-4-26" name="__codelineno-4-26" href="#__codelineno-4-26"></a><span class="k">CREATE</span><span class="w"> </span><span class="k">INDEX</span><span class="w"> </span><span class="n">idx_parts_active</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">parts</span><span class="p">(</span><span class="n">active</span><span class="p">);</span>
-<a id="__codelineno-4-27" name="__codelineno-4-27" href="#__codelineno-4-27"></a><span class="k">CREATE</span><span class="w"> </span><span class="k">INDEX</span><span class="w"> </span><span class="n">idx_parts_creator</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">parts</span><span class="p">(</span><span class="n">creator_id</span><span class="p">);</span>
-<a id="__codelineno-4-28" name="__codelineno-4-28" href="#__codelineno-4-28"></a><span class="k">CREATE</span><span class="w"> </span><span class="k">INDEX</span><span class="w"> </span><span class="n">idx_parts_owner_user</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">parts</span><span class="p">(</span><span class="n">owner_user_id</span><span class="p">);</span>
-<a id="__codelineno-4-29" name="__codelineno-4-29" href="#__codelineno-4-29"></a><span class="k">CREATE</span><span class="w"> </span><span class="k">INDEX</span><span class="w"> </span><span class="n">idx_parts_owner_org</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">parts</span><span class="p">(</span><span class="n">owner_organization_id</span><span class="p">);</span>
-<a id="__codelineno-4-30" name="__codelineno-4-30" href="#__codelineno-4-30"></a><span class="k">CREATE</span><span class="w"> </span><span class="k">INDEX</span><span class="w"> </span><span class="n">idx_parts_tags</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">parts</span><span class="w"> </span><span class="k">USING</span><span class="w"> </span><span class="n">GIN</span><span class="w"> </span><span class="p">(</span><span class="n">tags</span><span class="p">);</span>
-<a id="__codelineno-4-31" name="__codelineno-4-31" href="#__codelineno-4-31"></a><span class="k">CREATE</span><span class="w"> </span><span class="k">INDEX</span><span class="w"> </span><span class="n">idx_parts_name_trgm</span>
-<a id="__codelineno-4-32" name="__codelineno-4-32" href="#__codelineno-4-32"></a><span class="w">  </span><span class="k">ON</span><span class="w"> </span><span class="n">parts</span><span class="w"> </span><span class="k">USING</span><span class="w"> </span><span class="n">GIN</span><span class="w"> </span><span class="p">(</span><span class="n">name</span><span class="w"> </span><span class="n">gin_trgm_ops</span><span class="p">);</span><span class="w">   </span><span class="c1">-- for free-text search (FR-021)</span>
+<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="w">    </span><span class="n">category</span><span class="w"> </span><span class="n">resource_category</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="s1">&#39;print_3d&#39;</span><span class="p">,</span>
+<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="w">    </span><span class="n">source_url</span><span class="w"> </span><span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">500</span><span class="p">),</span><span class="w">         </span><span class="c1">-- required for print_3d (service rule); else optional</span>
+<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="w">    </span><span class="n">image_url</span><span class="w"> </span><span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">500</span><span class="p">),</span><span class="w">          </span><span class="c1">-- Phase 4 addition: preview image</span>
+<a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="w">    </span><span class="n">unit</span><span class="w"> </span><span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">32</span><span class="p">),</span><span class="w">                </span><span class="c1">-- unit of measure; NULL = countable pieces</span>
+<a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a><span class="w">    </span><span class="n">suggested_settings</span><span class="w"> </span><span class="nb">TEXT</span><span class="p">,</span><span class="w">         </span><span class="c1">-- deferred; not yet implemented</span>
+<a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a><span class="w">    </span><span class="n">tags</span><span class="w"> </span><span class="nb">TEXT</span><span class="p">[]</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="s1">&#39;{}&#39;</span><span class="p">,</span>
+<a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a><span class="w">    </span><span class="n">status</span><span class="w"> </span><span class="n">resource_status</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="s1">&#39;active&#39;</span><span class="p">,</span>
+<a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a><span class="w">    </span><span class="n">featured</span><span class="w"> </span><span class="nb">BOOLEAN</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="k">FALSE</span><span class="p">,</span>
+<a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a><span class="w">    </span><span class="n">creator_id</span><span class="w"> </span><span class="n">UUID</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="w"> </span><span class="k">REFERENCES</span><span class="w"> </span><span class="n">users</span><span class="p">(</span><span class="n">id</span><span class="p">),</span>
+<a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a><span class="w">    </span><span class="n">owner_user_id</span><span class="w"> </span><span class="n">UUID</span><span class="w"> </span><span class="k">REFERENCES</span><span class="w"> </span><span class="n">users</span><span class="p">(</span><span class="n">id</span><span class="p">),</span>
+<a id="__codelineno-4-15" name="__codelineno-4-15" href="#__codelineno-4-15"></a><span class="w">    </span><span class="n">owner_organization_id</span><span class="w"> </span><span class="n">UUID</span><span class="w"> </span><span class="k">REFERENCES</span><span class="w"> </span><span class="n">organizations</span><span class="p">(</span><span class="n">id</span><span class="p">),</span>
+<a id="__codelineno-4-16" name="__codelineno-4-16" href="#__codelineno-4-16"></a><span class="w">    </span><span class="n">active</span><span class="w"> </span><span class="nb">BOOLEAN</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="k">TRUE</span><span class="p">,</span>
+<a id="__codelineno-4-17" name="__codelineno-4-17" href="#__codelineno-4-17"></a><span class="w">    </span><span class="n">created_at</span><span class="w"> </span><span class="k">TIMESTAMP</span><span class="w"> </span><span class="k">WITH</span><span class="w"> </span><span class="k">TIME</span><span class="w"> </span><span class="k">ZONE</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="n">NOW</span><span class="p">(),</span>
+<a id="__codelineno-4-18" name="__codelineno-4-18" href="#__codelineno-4-18"></a><span class="w">    </span><span class="n">updated_at</span><span class="w"> </span><span class="k">TIMESTAMP</span><span class="w"> </span><span class="k">WITH</span><span class="w"> </span><span class="k">TIME</span><span class="w"> </span><span class="k">ZONE</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="n">NOW</span><span class="p">(),</span>
+<a id="__codelineno-4-19" name="__codelineno-4-19" href="#__codelineno-4-19"></a>
+<a id="__codelineno-4-20" name="__codelineno-4-20" href="#__codelineno-4-20"></a><span class="w">    </span><span class="c1">-- Polymorphic ownership invariant (FR-107)</span>
+<a id="__codelineno-4-21" name="__codelineno-4-21" href="#__codelineno-4-21"></a><span class="w">    </span><span class="k">CONSTRAINT</span><span class="w"> </span><span class="n">resources_one_owner</span><span class="w"> </span><span class="k">CHECK</span><span class="w"> </span><span class="p">(</span>
+<a id="__codelineno-4-22" name="__codelineno-4-22" href="#__codelineno-4-22"></a><span class="w">      </span><span class="p">(</span><span class="n">owner_user_id</span><span class="w"> </span><span class="k">IS</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="w"> </span><span class="k">AND</span><span class="w"> </span><span class="n">owner_organization_id</span><span class="w"> </span><span class="k">IS</span><span class="w"> </span><span class="k">NULL</span><span class="p">)</span><span class="w"> </span><span class="k">OR</span>
+<a id="__codelineno-4-23" name="__codelineno-4-23" href="#__codelineno-4-23"></a><span class="w">      </span><span class="p">(</span><span class="n">owner_user_id</span><span class="w"> </span><span class="k">IS</span><span class="w"> </span><span class="k">NULL</span><span class="w"> </span><span class="k">AND</span><span class="w"> </span><span class="n">owner_organization_id</span><span class="w"> </span><span class="k">IS</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">)</span>
+<a id="__codelineno-4-24" name="__codelineno-4-24" href="#__codelineno-4-24"></a><span class="w">    </span><span class="p">)</span>
+<a id="__codelineno-4-25" name="__codelineno-4-25" href="#__codelineno-4-25"></a><span class="p">);</span>
+<a id="__codelineno-4-26" name="__codelineno-4-26" href="#__codelineno-4-26"></a>
+<a id="__codelineno-4-27" name="__codelineno-4-27" href="#__codelineno-4-27"></a><span class="k">CREATE</span><span class="w"> </span><span class="k">INDEX</span><span class="w"> </span><span class="n">idx_resources_status</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">resources</span><span class="p">(</span><span class="n">status</span><span class="p">);</span>
+<a id="__codelineno-4-28" name="__codelineno-4-28" href="#__codelineno-4-28"></a><span class="k">CREATE</span><span class="w"> </span><span class="k">INDEX</span><span class="w"> </span><span class="n">idx_resources_category</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">resources</span><span class="p">(</span><span class="n">category</span><span class="p">);</span>
+<a id="__codelineno-4-29" name="__codelineno-4-29" href="#__codelineno-4-29"></a><span class="k">CREATE</span><span class="w"> </span><span class="k">INDEX</span><span class="w"> </span><span class="n">idx_resources_featured</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">resources</span><span class="p">(</span><span class="n">featured</span><span class="p">);</span>
+<a id="__codelineno-4-30" name="__codelineno-4-30" href="#__codelineno-4-30"></a><span class="k">CREATE</span><span class="w"> </span><span class="k">INDEX</span><span class="w"> </span><span class="n">idx_resources_active</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">resources</span><span class="p">(</span><span class="n">active</span><span class="p">);</span>
+<a id="__codelineno-4-31" name="__codelineno-4-31" href="#__codelineno-4-31"></a><span class="k">CREATE</span><span class="w"> </span><span class="k">INDEX</span><span class="w"> </span><span class="n">idx_resources_creator</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">resources</span><span class="p">(</span><span class="n">creator_id</span><span class="p">);</span>
+<a id="__codelineno-4-32" name="__codelineno-4-32" href="#__codelineno-4-32"></a><span class="k">CREATE</span><span class="w"> </span><span class="k">INDEX</span><span class="w"> </span><span class="n">idx_resources_owner_user</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">resources</span><span class="p">(</span><span class="n">owner_user_id</span><span class="p">);</span>
+<a id="__codelineno-4-33" name="__codelineno-4-33" href="#__codelineno-4-33"></a><span class="k">CREATE</span><span class="w"> </span><span class="k">INDEX</span><span class="w"> </span><span class="n">idx_resources_owner_org</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">resources</span><span class="p">(</span><span class="n">owner_organization_id</span><span class="p">);</span>
+<a id="__codelineno-4-34" name="__codelineno-4-34" href="#__codelineno-4-34"></a><span class="k">CREATE</span><span class="w"> </span><span class="k">INDEX</span><span class="w"> </span><span class="n">idx_resources_tags</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">resources</span><span class="w"> </span><span class="k">USING</span><span class="w"> </span><span class="n">GIN</span><span class="w"> </span><span class="p">(</span><span class="n">tags</span><span class="p">);</span>
+<a id="__codelineno-4-35" name="__codelineno-4-35" href="#__codelineno-4-35"></a><span class="k">CREATE</span><span class="w"> </span><span class="k">INDEX</span><span class="w"> </span><span class="n">idx_resources_name_trgm</span>
+<a id="__codelineno-4-36" name="__codelineno-4-36" href="#__codelineno-4-36"></a><span class="w">  </span><span class="k">ON</span><span class="w"> </span><span class="n">resources</span><span class="w"> </span><span class="k">USING</span><span class="w"> </span><span class="n">GIN</span><span class="w"> </span><span class="p">(</span><span class="n">name</span><span class="w"> </span><span class="n">gin_trgm_ops</span><span class="p">);</span><span class="w">   </span><span class="c1">-- for free-text search (FR-021)</span>
 </code></pre></div>
+<h4 id="generic-resource-catalog-forward-compat">Generic Resource Catalog (forward-compat)</h4>
+<p>The platform's primary purpose is 3D printing, but a Resource can also
+represent a non-printed supply (food, water, medicine, tools, ...) so the
+same Request → RequestItem → Contribution machinery can coordinate
+general humanitarian aid in special cases, similar to a community
+"necesidades" board. This was designed into the schema up front so
+enabling it later needs <strong>no migration</strong> — only app + UI work.</p>
+<ul>
+<li><strong><code>category</code></strong> (<code>resource_category</code> enum): the kind of aid. Values:
+  <code>print_3d</code> (default, the only one used and surfaced in v1), <code>food</code>,
+  <code>water</code>, <code>medicine</code>, <code>hygiene</code>, <code>clothing</code>, <code>tools</code>, <code>other</code>. New
+  values can be added later with <code>ALTER TYPE ... ADD VALUE</code> (safe, no
+  table rewrite).</li>
+<li><strong><code>source_url</code></strong> is nullable at the DB level. The service layer
+  enforces it as <strong>required for <code>print_3d</code></strong> (the STL/model link) and
+  leaves it optional for every other category. A generic supply may have
+  no canonical source URL.</li>
+<li><strong><code>unit</code></strong> records the unit of measure for the quantity (e.g.
+  <code>"litros"</code>, <code>"kg"</code>). <code>NULL</code> means countable pieces, which is what every
+  <code>print_3d</code> resource uses.</li>
+</ul>
+<p><strong>v1 scope:</strong> the API accepts a <code>category</code> filter and these fields, but
+the frontend only ever creates <code>print_3d</code> resources and does not surface
+other categories. Service-style needs that do not fit the
+quantity-of-goods model (e.g. volunteers, lodging) are intentionally out
+of scope and would need their own follow-up beyond a new enum value.</p>
 <h3 id="collection-centers">Collection Centers</h3>
 <p>Physical drop-off locations for printed parts. Polymorphic ownership
-mirrors Parts. Public visibility is gated on <code>verified = TRUE</code>
+mirrors Resources. Public visibility is gated on <code>verified = TRUE</code>
 (FR-027).</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">collection_centers</span><span class="w"> </span><span class="p">(</span>
 <a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="w">    </span><span class="n">id</span><span class="w"> </span><span class="n">UUID</span><span class="w"> </span><span class="k">PRIMARY</span><span class="w"> </span><span class="k">KEY</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="n">gen_random_uuid</span><span class="p">(),</span>
@@ -1724,7 +1789,7 @@ mirrors Parts. Public visibility is gated on <code>verified = TRUE</code>
 <a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="w">    </span><span class="n">contact</span><span class="w"> </span><span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">255</span><span class="p">)</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span>
 <a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a><span class="w">    </span><span class="n">location_url</span><span class="w"> </span><span class="nb">TEXT</span><span class="p">,</span>
 <a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a><span class="w">    </span><span class="n">opening_hours</span><span class="w"> </span><span class="nb">TEXT</span><span class="p">,</span>
-<a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a><span class="w">    </span><span class="n">notes</span><span class="w"> </span><span class="nb">TEXT</span><span class="p">,</span>
+<a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a><span class="w">    </span><span class="n">description</span><span class="w"> </span><span class="nb">TEXT</span><span class="p">,</span><span class="w">                 </span><span class="c1">-- Markdown, rendered in the UI</span>
 <a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a><span class="w">    </span><span class="n">verified</span><span class="w"> </span><span class="nb">BOOLEAN</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="k">FALSE</span><span class="p">,</span>
 <a id="__codelineno-5-12" name="__codelineno-5-12" href="#__codelineno-5-12"></a><span class="w">    </span><span class="n">registered_by_id</span><span class="w"> </span><span class="n">UUID</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="w"> </span><span class="k">REFERENCES</span><span class="w"> </span><span class="n">users</span><span class="p">(</span><span class="n">id</span><span class="p">),</span>
 <a id="__codelineno-5-13" name="__codelineno-5-13" href="#__codelineno-5-13"></a><span class="w">    </span><span class="n">verified_by_id</span><span class="w"> </span><span class="n">UUID</span><span class="w"> </span><span class="k">REFERENCES</span><span class="w"> </span><span class="n">users</span><span class="p">(</span><span class="n">id</span><span class="p">),</span>
@@ -1841,7 +1906,7 @@ the community.</p>
 </code></pre></div>
 <h3 id="requests">Requests</h3>
 <p>A campaign-level container (FR-038). Each Request bundles one or more
-<code>request_items</code> rows; the per-Part target quantities live on the
+<code>request_items</code> rows; the per-Resource target quantities live on the
 items (§3.5). Ownership is polymorphic — either <code>requester_user_id</code>
 or <code>requester_organization_id</code> is non-null (FR-039 / FR-107), and the
 asset is transferrable through the OwnershipTransfer flow (FR-118).
@@ -1894,14 +1959,14 @@ richer (per-Center notes, weighting, etc.) we will refactor to a join
 table <code>request_preferred_centers(request_id, collection_center_id, …)</code>.</p>
 </blockquote>
 <h3 id="request-items">Request Items</h3>
-<p>A single line within a Request (FR-119 – FR-124): one Part with its
+<p>A single line within a Request (FR-119 – FR-124): one Resource with its
 own target quantity and lifecycle. Contributions reference items, not
 the parent Request.</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">request_items</span><span class="w"> </span><span class="p">(</span>
 <a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="w">    </span><span class="n">id</span><span class="w"> </span><span class="n">UUID</span><span class="w"> </span><span class="k">PRIMARY</span><span class="w"> </span><span class="k">KEY</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="n">gen_random_uuid</span><span class="p">(),</span>
 <a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="w">    </span><span class="n">request_id</span><span class="w"> </span><span class="n">UUID</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span>
 <a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a><span class="w">      </span><span class="k">REFERENCES</span><span class="w"> </span><span class="n">requests</span><span class="p">(</span><span class="n">id</span><span class="p">)</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="k">DELETE</span><span class="w"> </span><span class="k">CASCADE</span><span class="p">,</span>
-<a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a><span class="w">    </span><span class="n">part_id</span><span class="w"> </span><span class="n">UUID</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="w"> </span><span class="k">REFERENCES</span><span class="w"> </span><span class="n">parts</span><span class="p">(</span><span class="n">id</span><span class="p">),</span>
+<a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a><span class="w">    </span><span class="n">resource_id</span><span class="w"> </span><span class="n">UUID</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="w"> </span><span class="k">REFERENCES</span><span class="w"> </span><span class="n">resources</span><span class="p">(</span><span class="n">id</span><span class="p">),</span>
 <a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a><span class="w">    </span><span class="n">quantity</span><span class="w"> </span><span class="nb">INTEGER</span><span class="w"> </span><span class="k">CHECK</span><span class="w"> </span><span class="p">(</span><span class="n">quantity</span><span class="w"> </span><span class="k">IS</span><span class="w"> </span><span class="k">NULL</span><span class="w"> </span><span class="k">OR</span><span class="w"> </span><span class="n">quantity</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="p">),</span>
 <a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a><span class="w">    </span><span class="n">description</span><span class="w"> </span><span class="nb">TEXT</span><span class="p">,</span>
 <a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a><span class="w">    </span><span class="n">deadline</span><span class="w"> </span><span class="nb">DATE</span><span class="p">,</span>
@@ -1920,14 +1985,14 @@ the parent Request.</p>
 <a id="__codelineno-11-21" name="__codelineno-11-21" href="#__codelineno-11-21"></a><span class="p">);</span>
 <a id="__codelineno-11-22" name="__codelineno-11-22" href="#__codelineno-11-22"></a>
 <a id="__codelineno-11-23" name="__codelineno-11-23" href="#__codelineno-11-23"></a><span class="k">CREATE</span><span class="w"> </span><span class="k">INDEX</span><span class="w"> </span><span class="n">idx_request_items_request</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">request_items</span><span class="p">(</span><span class="n">request_id</span><span class="p">);</span>
-<a id="__codelineno-11-24" name="__codelineno-11-24" href="#__codelineno-11-24"></a><span class="k">CREATE</span><span class="w"> </span><span class="k">INDEX</span><span class="w"> </span><span class="n">idx_request_items_part</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">request_items</span><span class="p">(</span><span class="n">part_id</span><span class="p">);</span>
+<a id="__codelineno-11-24" name="__codelineno-11-24" href="#__codelineno-11-24"></a><span class="k">CREATE</span><span class="w"> </span><span class="k">INDEX</span><span class="w"> </span><span class="n">idx_request_items_part</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">request_items</span><span class="p">(</span><span class="n">resource_id</span><span class="p">);</span>
 <a id="__codelineno-11-25" name="__codelineno-11-25" href="#__codelineno-11-25"></a><span class="k">CREATE</span><span class="w"> </span><span class="k">INDEX</span><span class="w"> </span><span class="n">idx_request_items_status</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">request_items</span><span class="p">(</span><span class="n">status</span><span class="p">);</span>
 <a id="__codelineno-11-26" name="__codelineno-11-26" href="#__codelineno-11-26"></a><span class="k">CREATE</span><span class="w"> </span><span class="k">INDEX</span><span class="w"> </span><span class="n">idx_request_items_deadline</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">request_items</span><span class="p">(</span><span class="n">deadline</span><span class="p">);</span>
 <a id="__codelineno-11-27" name="__codelineno-11-27" href="#__codelineno-11-27"></a><span class="k">CREATE</span><span class="w"> </span><span class="k">INDEX</span><span class="w"> </span><span class="n">idx_request_items_active</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">request_items</span><span class="p">(</span><span class="n">active</span><span class="p">);</span>
 <a id="__codelineno-11-28" name="__codelineno-11-28" href="#__codelineno-11-28"></a>
-<a id="__codelineno-11-29" name="__codelineno-11-29" href="#__codelineno-11-29"></a><span class="c1">-- Fast lookup: &quot;open items by Part&quot; (catalog-side counter in FR-022)</span>
+<a id="__codelineno-11-29" name="__codelineno-11-29" href="#__codelineno-11-29"></a><span class="c1">-- Fast lookup: &quot;open items by Resource&quot; (catalog-side counter in FR-022)</span>
 <a id="__codelineno-11-30" name="__codelineno-11-30" href="#__codelineno-11-30"></a><span class="k">CREATE</span><span class="w"> </span><span class="k">INDEX</span><span class="w"> </span><span class="n">idx_request_items_open_by_part</span>
-<a id="__codelineno-11-31" name="__codelineno-11-31" href="#__codelineno-11-31"></a><span class="w">  </span><span class="k">ON</span><span class="w"> </span><span class="n">request_items</span><span class="p">(</span><span class="n">part_id</span><span class="p">)</span>
+<a id="__codelineno-11-31" name="__codelineno-11-31" href="#__codelineno-11-31"></a><span class="w">  </span><span class="k">ON</span><span class="w"> </span><span class="n">request_items</span><span class="p">(</span><span class="n">resource_id</span><span class="p">)</span>
 <a id="__codelineno-11-32" name="__codelineno-11-32" href="#__codelineno-11-32"></a><span class="w">  </span><span class="k">WHERE</span><span class="w"> </span><span class="n">status</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;open&#39;</span><span class="w"> </span><span class="k">AND</span><span class="w"> </span><span class="n">active</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">TRUE</span><span class="p">;</span>
 </code></pre></div>
 <blockquote>
@@ -1943,6 +2008,13 @@ in the service layer; per-state timestamps record when each transition
 happened (FR-058). When the maker is also an effective member of the
 target Centro, <code>delivered → received</code> happens automatically in the
 same transaction (FR-126), and <code>auto_received</code> is set to <code>TRUE</code>.</p>
+<p><strong>Phase 4 progress buckets (v1):</strong> the per-item progress summary
+surfaces two center-level buckets — <code>claimed</code> (<code>claimed</code> + <code>prepared</code>)
+and <code>at center</code> (<code>delivered</code> + <code>received</code>) — plus <code>committed</code> (FR-062,
+excludes <code>released</code>) and <code>remaining</code>. The contribution↔shipment
+"shipped out" bucket (distinguishing parts still at the center from
+those already dispatched in a <code>Shipment</code>) is a <strong>documented follow-up</strong>:
+it needs a link from <code>contributions</code> to <code>shipments</code>, deferred past v1.</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">contributions</span><span class="w"> </span><span class="p">(</span>
 <a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="w">    </span><span class="n">id</span><span class="w"> </span><span class="n">UUID</span><span class="w"> </span><span class="k">PRIMARY</span><span class="w"> </span><span class="k">KEY</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="n">gen_random_uuid</span><span class="p">(),</span>
 <a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a><span class="w">    </span><span class="n">request_item_id</span><span class="w"> </span><span class="n">UUID</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="w"> </span><span class="k">REFERENCES</span><span class="w"> </span><span class="n">request_items</span><span class="p">(</span><span class="n">id</span><span class="p">),</span>
@@ -1953,7 +2025,7 @@ same transaction (FR-126), and <code>auto_received</code> is set to <code>TRUE</
 <a id="__codelineno-12-8" name="__codelineno-12-8" href="#__codelineno-12-8"></a><span class="w">    </span><span class="n">notes</span><span class="w"> </span><span class="nb">TEXT</span><span class="p">,</span>
 <a id="__codelineno-12-9" name="__codelineno-12-9" href="#__codelineno-12-9"></a><span class="w">    </span><span class="n">status</span><span class="w"> </span><span class="n">contribution_status</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="s1">&#39;claimed&#39;</span><span class="p">,</span>
 <a id="__codelineno-12-10" name="__codelineno-12-10" href="#__codelineno-12-10"></a><span class="w">    </span><span class="n">claimed_at</span><span class="w"> </span><span class="k">TIMESTAMP</span><span class="w"> </span><span class="k">WITH</span><span class="w"> </span><span class="k">TIME</span><span class="w"> </span><span class="k">ZONE</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="n">NOW</span><span class="p">(),</span>
-<a id="__codelineno-12-11" name="__codelineno-12-11" href="#__codelineno-12-11"></a><span class="w">    </span><span class="n">printed_at</span><span class="w"> </span><span class="k">TIMESTAMP</span><span class="w"> </span><span class="k">WITH</span><span class="w"> </span><span class="k">TIME</span><span class="w"> </span><span class="k">ZONE</span><span class="p">,</span>
+<a id="__codelineno-12-11" name="__codelineno-12-11" href="#__codelineno-12-11"></a><span class="w">    </span><span class="n">prepared_at</span><span class="w"> </span><span class="k">TIMESTAMP</span><span class="w"> </span><span class="k">WITH</span><span class="w"> </span><span class="k">TIME</span><span class="w"> </span><span class="k">ZONE</span><span class="p">,</span>
 <a id="__codelineno-12-12" name="__codelineno-12-12" href="#__codelineno-12-12"></a><span class="w">    </span><span class="n">delivered_at</span><span class="w"> </span><span class="k">TIMESTAMP</span><span class="w"> </span><span class="k">WITH</span><span class="w"> </span><span class="k">TIME</span><span class="w"> </span><span class="k">ZONE</span><span class="p">,</span>
 <a id="__codelineno-12-13" name="__codelineno-12-13" href="#__codelineno-12-13"></a><span class="w">    </span><span class="n">received_at</span><span class="w"> </span><span class="k">TIMESTAMP</span><span class="w"> </span><span class="k">WITH</span><span class="w"> </span><span class="k">TIME</span><span class="w"> </span><span class="k">ZONE</span><span class="p">,</span>
 <a id="__codelineno-12-14" name="__codelineno-12-14" href="#__codelineno-12-14"></a><span class="w">    </span><span class="n">received_by_id</span><span class="w"> </span><span class="n">UUID</span><span class="w"> </span><span class="k">REFERENCES</span><span class="w"> </span><span class="n">users</span><span class="p">(</span><span class="n">id</span><span class="p">),</span>
@@ -1992,7 +2064,7 @@ same transaction (FR-126), and <code>auto_received</code> is set to <code>TRUE</
 <a id="__codelineno-12-47" name="__codelineno-12-47" href="#__codelineno-12-47"></a><span class="w">  </span><span class="k">WHERE</span><span class="w"> </span><span class="n">status</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;claimed&#39;</span><span class="p">;</span>
 </code></pre></div>
 <h3 id="ownership-transfers">Ownership Transfers</h3>
-<p>A pending or resolved transfer of a Part or Collection Center to a
+<p>A pending or resolved transfer of a Resource or Collection Center to a
 new principal (User or Organization). Polymorphic on both source and
 target. <code>asset_id</code> is <strong>not</strong> a real foreign key because it resolves
 to a different table depending on <code>asset_type</code>; integrity is enforced
@@ -2080,7 +2152,7 @@ does not require a schema migration.</p>
 <td><code>change_role</code>, <code>deactivate_user</code>, <code>reactivate_user</code></td>
 </tr>
 <tr>
-<td><strong>Parts</strong></td>
+<td><strong>Resources</strong></td>
 <td><code>force_archive_part</code></td>
 </tr>
 <tr>
@@ -2106,7 +2178,7 @@ does not require a schema migration.</p>
 </tbody>
 </table>
 <h4 id="documented-target_type-values">Documented <code>target_type</code> values</h4>
-<p><code>User</code>, <code>Part</code>, <code>CollectionCenter</code>, <code>CollectionCenterMembership</code>,
+<p><code>User</code>, <code>Resource</code>, <code>CollectionCenter</code>, <code>CollectionCenterMembership</code>,
 <code>Request</code>, <code>RequestItem</code>, <code>Contribution</code>, <code>Organization</code>,
 <code>OrganizationMembership</code>, <code>OwnershipTransfer</code>.</p>
 <h2 id="relationship-details">Relationship Details</h2>
@@ -2119,16 +2191,16 @@ soft-deletable so a former member's historical attribution survives.</p>
 Centers (FR-081). Owners of Centers are stored on the Center entity,
 not in this table.</p>
 <h3 id="polymorphic-owner-user-or-organization">Polymorphic Owner: User OR Organization</h3>
-<p>Parts and Collection Centers each have two nullable owner FKs —
+<p>Resources and Collection Centers each have two nullable owner FKs —
 <code>owner_user_id</code> and <code>owner_organization_id</code> — with a <code>CHECK</code> that
 exactly one is non-null. This pattern is repeated for the source and
 target principals on <code>ownership_transfers</code>. The "Polymorphic
 Ownership Pattern" section below covers the rationale and access
 patterns.</p>
-<h3 id="request-request-items-part-1n-n1">Request → Request Items → Part (1:N → N:1)</h3>
+<h3 id="request-request-items-resource-1n-n1">Request → Request Items → Resource (1:N → N:1)</h3>
 <p>A Request bundles many RequestItems (FR-119); each item references
-exactly one Part. A single Part can therefore be referenced by many
-RequestItems across many Requests. When a Part is force-archived
+exactly one Resource. A single Resource can therefore be referenced by many
+RequestItems across many Requests. When a Resource is force-archived
 (FR-077), every RequestItem referencing it gets transitioned to
 <code>closed</code> with reason <code>part_archived</code> in the same transaction; if all
 items on a Request close, the Request auto-fulfills/auto-closes per
@@ -2147,7 +2219,7 @@ auto-released with reason <code>collection_center_archived</code>. When the
 maker happens to be an effective member of the target Centro,
 <code>delivered → received</code> happens automatically (FR-126).</p>
 <h3 id="ownership-transfer-asset-polymorphic">Ownership Transfer → Asset (polymorphic)</h3>
-<p><code>asset_id</code> references a Part, a Collection Center, or a Request,
+<p><code>asset_id</code> references a Resource, a Collection Center, or a Request,
 decided by <code>asset_type</code> (FR-118). There is no DB-level foreign key
 (PostgreSQL does not support a single column referencing multiple
 tables). Service code must validate the reference on insert and on
@@ -2157,7 +2229,7 @@ tables). Service code must validate the reference on insert and on
 Schema" — the one domain-specific construct that needs deep
 explanation because it shapes the entire access control model.</p>
 <h3 id="the-two-fk-check-pattern">The Two-FK + CHECK Pattern</h3>
-<p>Both <code>parts</code> and <code>collection_centers</code> have:</p>
+<p>Both <code>resources</code> and <code>collection_centers</code> have:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="n">owner_user_id</span><span class="w">         </span><span class="n">UUID</span><span class="w"> </span><span class="k">REFERENCES</span><span class="w"> </span><span class="n">users</span><span class="p">(</span><span class="n">id</span><span class="p">),</span>
 <a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a><span class="n">owner_organization_id</span><span class="w"> </span><span class="n">UUID</span><span class="w"> </span><span class="k">REFERENCES</span><span class="w"> </span><span class="n">organizations</span><span class="p">(</span><span class="n">id</span><span class="p">),</span>
 <a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a><span class="k">CONSTRAINT</span><span class="w"> </span><span class="n">one_owner</span><span class="w"> </span><span class="k">CHECK</span><span class="w"> </span><span class="p">(</span>
@@ -2180,7 +2252,7 @@ explanation because it shapes the entire access control model.</p>
 </tr>
 <tr>
 <td>One join table per (asset, principal-type)</td>
-<td>Doubles the number of tables and makes "who owns this Part?" a UNION query</td>
+<td>Doubles the number of tables and makes "who owns this Resource?" a UNION query</td>
 </tr>
 <tr>
 <td>Single <code>owners</code> table referenced by both Users and Organizations</td>
@@ -2194,7 +2266,7 @@ table scan, and the <code>CHECK</code> enforces the "exactly one" invariant.</p>
 <h3 id="effective-owner">Effective Owner</h3>
 <p>For any owner-power FR (e.g., FR-079: only the owner can archive a
 Centro), the "effective owner" is a set of users defined by:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="c1"># backend/app/{parts,collection_centers}/service.py — sketch</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="c1"># backend/app/{resources,collection_centers}/service.py — sketch</span>
 <a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a><span class="k">def</span><span class="w"> </span><span class="nf">effective_owner_user_ids</span><span class="p">(</span><span class="n">db</span><span class="p">:</span> <span class="n">Session</span><span class="p">,</span> <span class="n">asset</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">set</span><span class="p">[</span><span class="n">UUID</span><span class="p">]:</span>
 <a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Return the set of users with owner-equivalent powers on this asset.&quot;&quot;&quot;</span>
 <a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a>    <span class="k">if</span> <span class="n">asset</span><span class="o">.</span><span class="n">owner_user_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -2241,17 +2313,17 @@ all members of the owning organization if org-owned.</p>
 </code></pre></div>
 <h3 id="resolving-ownership-in-sql">Resolving Ownership in SQL</h3>
 <p>The "effective owner users" of an asset, joined to a single query:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="c1">-- Effective owner users for a single Part (or CC).</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="c1">-- Effective owner users for a single Resource (or CC).</span>
 <a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a><span class="k">SELECT</span><span class="w"> </span><span class="n">user_id</span>
 <a id="__codelineno-18-3" name="__codelineno-18-3" href="#__codelineno-18-3"></a><span class="k">FROM</span><span class="w"> </span><span class="p">(</span>
 <a id="__codelineno-18-4" name="__codelineno-18-4" href="#__codelineno-18-4"></a><span class="w">  </span><span class="c1">-- Direct user-owner</span>
 <a id="__codelineno-18-5" name="__codelineno-18-5" href="#__codelineno-18-5"></a><span class="w">  </span><span class="k">SELECT</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">owner_user_id</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">user_id</span>
-<a id="__codelineno-18-6" name="__codelineno-18-6" href="#__codelineno-18-6"></a><span class="w">  </span><span class="k">FROM</span><span class="w"> </span><span class="n">parts</span><span class="w"> </span><span class="n">p</span>
+<a id="__codelineno-18-6" name="__codelineno-18-6" href="#__codelineno-18-6"></a><span class="w">  </span><span class="k">FROM</span><span class="w"> </span><span class="n">resources</span><span class="w"> </span><span class="n">p</span>
 <a id="__codelineno-18-7" name="__codelineno-18-7" href="#__codelineno-18-7"></a><span class="w">  </span><span class="k">WHERE</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="err">$</span><span class="mi">1</span><span class="w"> </span><span class="k">AND</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">owner_user_id</span><span class="w"> </span><span class="k">IS</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span>
 <a id="__codelineno-18-8" name="__codelineno-18-8" href="#__codelineno-18-8"></a><span class="w">  </span><span class="k">UNION</span><span class="w"> </span><span class="k">ALL</span>
 <a id="__codelineno-18-9" name="__codelineno-18-9" href="#__codelineno-18-9"></a><span class="w">  </span><span class="c1">-- Indirect: org owners of the owning org</span>
 <a id="__codelineno-18-10" name="__codelineno-18-10" href="#__codelineno-18-10"></a><span class="w">  </span><span class="k">SELECT</span><span class="w"> </span><span class="n">om</span><span class="p">.</span><span class="n">user_id</span>
-<a id="__codelineno-18-11" name="__codelineno-18-11" href="#__codelineno-18-11"></a><span class="w">  </span><span class="k">FROM</span><span class="w"> </span><span class="n">parts</span><span class="w"> </span><span class="n">p</span>
+<a id="__codelineno-18-11" name="__codelineno-18-11" href="#__codelineno-18-11"></a><span class="w">  </span><span class="k">FROM</span><span class="w"> </span><span class="n">resources</span><span class="w"> </span><span class="n">p</span>
 <a id="__codelineno-18-12" name="__codelineno-18-12" href="#__codelineno-18-12"></a><span class="w">  </span><span class="k">JOIN</span><span class="w"> </span><span class="n">organization_memberships</span><span class="w"> </span><span class="n">om</span>
 <a id="__codelineno-18-13" name="__codelineno-18-13" href="#__codelineno-18-13"></a><span class="w">    </span><span class="k">ON</span><span class="w"> </span><span class="n">om</span><span class="p">.</span><span class="n">organization_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">owner_organization_id</span>
 <a id="__codelineno-18-14" name="__codelineno-18-14" href="#__codelineno-18-14"></a><span class="w">   </span><span class="k">AND</span><span class="w"> </span><span class="n">om</span><span class="p">.</span><span class="k">role</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;owner&#39;</span>
@@ -2356,7 +2428,7 @@ list. If we later need richer per-Center metadata on the relationship
 their historical attribution (FR-013).</p>
 <h3 id="7-per-status-timestamps-on-contributions">7. Per-Status Timestamps on Contributions</h3>
 <p>Rather than a single <code>status_changed_at</code>, contributions store one
-timestamp per lifecycle state (<code>claimed_at</code>, <code>printed_at</code>,
+timestamp per lifecycle state (<code>claimed_at</code>, <code>prepared_at</code>,
 <code>delivered_at</code>, <code>received_at</code>, <code>released_at</code>). This gives free audit
 visibility into the lifecycle without a separate state-change table.</p>
 <h2 id="sample-queries">Sample Queries</h2>
@@ -2365,7 +2437,7 @@ visibility into the lifecycle without a separate state-change table.</p>
 <a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a><span class="w">    </span><span class="n">i</span><span class="p">.</span><span class="n">id</span><span class="p">,</span>
 <a id="__codelineno-20-3" name="__codelineno-20-3" href="#__codelineno-20-3"></a><span class="w">    </span><span class="n">i</span><span class="p">.</span><span class="n">quantity</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">requested</span><span class="p">,</span>
 <a id="__codelineno-20-4" name="__codelineno-20-4" href="#__codelineno-20-4"></a><span class="w">    </span><span class="k">COALESCE</span><span class="p">(</span><span class="k">SUM</span><span class="p">(</span><span class="k">c</span><span class="p">.</span><span class="n">quantity</span><span class="p">)</span><span class="w"> </span><span class="n">FILTER</span><span class="w"> </span><span class="p">(</span>
-<a id="__codelineno-20-5" name="__codelineno-20-5" href="#__codelineno-20-5"></a><span class="w">      </span><span class="k">WHERE</span><span class="w"> </span><span class="k">c</span><span class="p">.</span><span class="n">status</span><span class="w"> </span><span class="k">IN</span><span class="w"> </span><span class="p">(</span><span class="s1">&#39;claimed&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;printed&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;delivered&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;received&#39;</span><span class="p">)</span>
+<a id="__codelineno-20-5" name="__codelineno-20-5" href="#__codelineno-20-5"></a><span class="w">      </span><span class="k">WHERE</span><span class="w"> </span><span class="k">c</span><span class="p">.</span><span class="n">status</span><span class="w"> </span><span class="k">IN</span><span class="w"> </span><span class="p">(</span><span class="s1">&#39;claimed&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;prepared&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;delivered&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;received&#39;</span><span class="p">)</span>
 <a id="__codelineno-20-6" name="__codelineno-20-6" href="#__codelineno-20-6"></a><span class="w">    </span><span class="p">),</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="k">committed</span><span class="p">,</span>
 <a id="__codelineno-20-7" name="__codelineno-20-7" href="#__codelineno-20-7"></a><span class="w">    </span><span class="k">COALESCE</span><span class="p">(</span><span class="k">SUM</span><span class="p">(</span><span class="k">c</span><span class="p">.</span><span class="n">quantity</span><span class="p">)</span><span class="w"> </span><span class="n">FILTER</span><span class="w"> </span><span class="p">(</span>
 <a id="__codelineno-20-8" name="__codelineno-20-8" href="#__codelineno-20-8"></a><span class="w">      </span><span class="k">WHERE</span><span class="w"> </span><span class="k">c</span><span class="p">.</span><span class="n">status</span><span class="w"> </span><span class="k">IN</span><span class="w"> </span><span class="p">(</span><span class="s1">&#39;delivered&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;received&#39;</span><span class="p">)</span>
@@ -2373,7 +2445,7 @@ visibility into the lifecycle without a separate state-change table.</p>
 <a id="__codelineno-20-10" name="__codelineno-20-10" href="#__codelineno-20-10"></a><span class="w">    </span><span class="k">CASE</span>
 <a id="__codelineno-20-11" name="__codelineno-20-11" href="#__codelineno-20-11"></a><span class="w">      </span><span class="k">WHEN</span><span class="w"> </span><span class="n">i</span><span class="p">.</span><span class="n">quantity</span><span class="w"> </span><span class="k">IS</span><span class="w"> </span><span class="k">NULL</span><span class="w"> </span><span class="k">THEN</span><span class="w"> </span><span class="k">NULL</span>
 <a id="__codelineno-20-12" name="__codelineno-20-12" href="#__codelineno-20-12"></a><span class="w">      </span><span class="k">ELSE</span><span class="w"> </span><span class="n">GREATEST</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">i</span><span class="p">.</span><span class="n">quantity</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="k">COALESCE</span><span class="p">(</span><span class="k">SUM</span><span class="p">(</span><span class="k">c</span><span class="p">.</span><span class="n">quantity</span><span class="p">)</span><span class="w"> </span><span class="n">FILTER</span><span class="w"> </span><span class="p">(</span>
-<a id="__codelineno-20-13" name="__codelineno-20-13" href="#__codelineno-20-13"></a><span class="w">        </span><span class="k">WHERE</span><span class="w"> </span><span class="k">c</span><span class="p">.</span><span class="n">status</span><span class="w"> </span><span class="k">IN</span><span class="w"> </span><span class="p">(</span><span class="s1">&#39;claimed&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;printed&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;delivered&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;received&#39;</span><span class="p">)</span>
+<a id="__codelineno-20-13" name="__codelineno-20-13" href="#__codelineno-20-13"></a><span class="w">        </span><span class="k">WHERE</span><span class="w"> </span><span class="k">c</span><span class="p">.</span><span class="n">status</span><span class="w"> </span><span class="k">IN</span><span class="w"> </span><span class="p">(</span><span class="s1">&#39;claimed&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;prepared&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;delivered&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;received&#39;</span><span class="p">)</span>
 <a id="__codelineno-20-14" name="__codelineno-20-14" href="#__codelineno-20-14"></a><span class="w">      </span><span class="p">),</span><span class="w"> </span><span class="mi">0</span><span class="p">))</span>
 <a id="__codelineno-20-15" name="__codelineno-20-15" href="#__codelineno-20-15"></a><span class="w">    </span><span class="k">END</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">remaining</span>
 <a id="__codelineno-20-16" name="__codelineno-20-16" href="#__codelineno-20-16"></a><span class="k">FROM</span><span class="w"> </span><span class="n">request_items</span><span class="w"> </span><span class="n">i</span>
@@ -2386,11 +2458,11 @@ visibility into the lifecycle without a separate state-change table.</p>
 delivered totals via the same JOIN but <code>GROUP BY r.id</code>.</p>
 <h3 id="what-to-print-next-prioritization-view-fr-065">"What to Print Next" Prioritization View (FR-065)</h3>
 <p>Ranks open <strong>RequestItems</strong>, not parent Requests — each row shows
-the item's Part plus the parent Request's title for context.</p>
+the item's Resource plus the parent Request's title for context.</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a><span class="k">WITH</span><span class="w"> </span><span class="k">committed</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="p">(</span>
 <a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a><span class="w">  </span><span class="k">SELECT</span><span class="w"> </span><span class="k">c</span><span class="p">.</span><span class="n">request_item_id</span><span class="p">,</span>
 <a id="__codelineno-21-3" name="__codelineno-21-3" href="#__codelineno-21-3"></a><span class="w">         </span><span class="k">SUM</span><span class="p">(</span><span class="k">c</span><span class="p">.</span><span class="n">quantity</span><span class="p">)</span><span class="w"> </span><span class="n">FILTER</span><span class="w"> </span><span class="p">(</span>
-<a id="__codelineno-21-4" name="__codelineno-21-4" href="#__codelineno-21-4"></a><span class="w">           </span><span class="k">WHERE</span><span class="w"> </span><span class="k">c</span><span class="p">.</span><span class="n">status</span><span class="w"> </span><span class="k">IN</span><span class="w"> </span><span class="p">(</span><span class="s1">&#39;claimed&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;printed&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;delivered&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;received&#39;</span><span class="p">)</span>
+<a id="__codelineno-21-4" name="__codelineno-21-4" href="#__codelineno-21-4"></a><span class="w">           </span><span class="k">WHERE</span><span class="w"> </span><span class="k">c</span><span class="p">.</span><span class="n">status</span><span class="w"> </span><span class="k">IN</span><span class="w"> </span><span class="p">(</span><span class="s1">&#39;claimed&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;prepared&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;delivered&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;received&#39;</span><span class="p">)</span>
 <a id="__codelineno-21-5" name="__codelineno-21-5" href="#__codelineno-21-5"></a><span class="w">         </span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">committed_qty</span>
 <a id="__codelineno-21-6" name="__codelineno-21-6" href="#__codelineno-21-6"></a><span class="w">  </span><span class="k">FROM</span><span class="w"> </span><span class="n">contributions</span><span class="w"> </span><span class="k">c</span>
 <a id="__codelineno-21-7" name="__codelineno-21-7" href="#__codelineno-21-7"></a><span class="w">  </span><span class="k">WHERE</span><span class="w"> </span><span class="k">c</span><span class="p">.</span><span class="n">active</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">TRUE</span>
@@ -2411,7 +2483,7 @@ the item's Part plus the parent Request's title for context.</p>
 <a id="__codelineno-21-22" name="__codelineno-21-22" href="#__codelineno-21-22"></a><span class="w">    </span><span class="k">COALESCE</span><span class="p">(</span><span class="n">i</span><span class="p">.</span><span class="n">deadline</span><span class="p">,</span><span class="w"> </span><span class="n">r</span><span class="p">.</span><span class="n">deadline</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">effective_deadline</span>
 <a id="__codelineno-21-23" name="__codelineno-21-23" href="#__codelineno-21-23"></a><span class="k">FROM</span><span class="w"> </span><span class="n">request_items</span><span class="w"> </span><span class="n">i</span>
 <a id="__codelineno-21-24" name="__codelineno-21-24" href="#__codelineno-21-24"></a><span class="k">JOIN</span><span class="w"> </span><span class="n">requests</span><span class="w"> </span><span class="n">r</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">r</span><span class="p">.</span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">i</span><span class="p">.</span><span class="n">request_id</span>
-<a id="__codelineno-21-25" name="__codelineno-21-25" href="#__codelineno-21-25"></a><span class="k">JOIN</span><span class="w"> </span><span class="n">parts</span><span class="w"> </span><span class="n">p</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">i</span><span class="p">.</span><span class="n">part_id</span>
+<a id="__codelineno-21-25" name="__codelineno-21-25" href="#__codelineno-21-25"></a><span class="k">JOIN</span><span class="w"> </span><span class="n">resources</span><span class="w"> </span><span class="n">p</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">i</span><span class="p">.</span><span class="n">resource_id</span>
 <a id="__codelineno-21-26" name="__codelineno-21-26" href="#__codelineno-21-26"></a><span class="k">LEFT</span><span class="w"> </span><span class="k">JOIN</span><span class="w"> </span><span class="k">committed</span><span class="w"> </span><span class="n">co</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">co</span><span class="p">.</span><span class="n">request_item_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">i</span><span class="p">.</span><span class="n">id</span>
 <a id="__codelineno-21-27" name="__codelineno-21-27" href="#__codelineno-21-27"></a><span class="k">WHERE</span><span class="w"> </span><span class="n">i</span><span class="p">.</span><span class="n">status</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;open&#39;</span>
 <a id="__codelineno-21-28" name="__codelineno-21-28" href="#__codelineno-21-28"></a><span class="w">  </span><span class="k">AND</span><span class="w"> </span><span class="n">i</span><span class="p">.</span><span class="n">active</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">TRUE</span>
@@ -2422,13 +2494,13 @@ the item's Part plus the parent Request's title for context.</p>
 <a id="__codelineno-21-33" name="__codelineno-21-33" href="#__codelineno-21-33"></a><span class="w">    </span><span class="n">p</span><span class="p">.</span><span class="n">featured</span><span class="w"> </span><span class="k">DESC</span><span class="p">,</span>
 <a id="__codelineno-21-34" name="__codelineno-21-34" href="#__codelineno-21-34"></a><span class="w">    </span><span class="n">remaining</span><span class="w"> </span><span class="k">DESC</span><span class="w"> </span><span class="n">NULLS</span><span class="w"> </span><span class="k">LAST</span><span class="p">;</span>
 </code></pre></div>
-<h3 id="top-5-most-needed-parts-by-aggregated-remaining-fr-067">Top 5 Most-Needed Parts by Aggregated Remaining (FR-067)</h3>
+<h3 id="top-5-most-needed-resources-by-aggregated-remaining-fr-067">Top 5 Most-Needed Resources by Aggregated Remaining (FR-067)</h3>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a><span class="k">WITH</span><span class="w"> </span><span class="n">per_item</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="p">(</span>
-<a id="__codelineno-22-2" name="__codelineno-22-2" href="#__codelineno-22-2"></a><span class="w">  </span><span class="k">SELECT</span><span class="w"> </span><span class="n">i</span><span class="p">.</span><span class="n">part_id</span><span class="p">,</span>
+<a id="__codelineno-22-2" name="__codelineno-22-2" href="#__codelineno-22-2"></a><span class="w">  </span><span class="k">SELECT</span><span class="w"> </span><span class="n">i</span><span class="p">.</span><span class="n">resource_id</span><span class="p">,</span>
 <a id="__codelineno-22-3" name="__codelineno-22-3" href="#__codelineno-22-3"></a><span class="w">         </span><span class="k">CASE</span>
 <a id="__codelineno-22-4" name="__codelineno-22-4" href="#__codelineno-22-4"></a><span class="w">           </span><span class="k">WHEN</span><span class="w"> </span><span class="n">i</span><span class="p">.</span><span class="n">quantity</span><span class="w"> </span><span class="k">IS</span><span class="w"> </span><span class="k">NULL</span><span class="w"> </span><span class="k">THEN</span><span class="w"> </span><span class="mi">0</span>
 <a id="__codelineno-22-5" name="__codelineno-22-5" href="#__codelineno-22-5"></a><span class="w">           </span><span class="k">ELSE</span><span class="w"> </span><span class="n">GREATEST</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">i</span><span class="p">.</span><span class="n">quantity</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="k">COALESCE</span><span class="p">(</span><span class="k">SUM</span><span class="p">(</span><span class="k">c</span><span class="p">.</span><span class="n">quantity</span><span class="p">)</span><span class="w"> </span><span class="n">FILTER</span><span class="w"> </span><span class="p">(</span>
-<a id="__codelineno-22-6" name="__codelineno-22-6" href="#__codelineno-22-6"></a><span class="w">             </span><span class="k">WHERE</span><span class="w"> </span><span class="k">c</span><span class="p">.</span><span class="n">status</span><span class="w"> </span><span class="k">IN</span><span class="w"> </span><span class="p">(</span><span class="s1">&#39;claimed&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;printed&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;delivered&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;received&#39;</span><span class="p">)</span>
+<a id="__codelineno-22-6" name="__codelineno-22-6" href="#__codelineno-22-6"></a><span class="w">             </span><span class="k">WHERE</span><span class="w"> </span><span class="k">c</span><span class="p">.</span><span class="n">status</span><span class="w"> </span><span class="k">IN</span><span class="w"> </span><span class="p">(</span><span class="s1">&#39;claimed&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;prepared&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;delivered&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;received&#39;</span><span class="p">)</span>
 <a id="__codelineno-22-7" name="__codelineno-22-7" href="#__codelineno-22-7"></a><span class="w">           </span><span class="p">),</span><span class="w"> </span><span class="mi">0</span><span class="p">))</span>
 <a id="__codelineno-22-8" name="__codelineno-22-8" href="#__codelineno-22-8"></a><span class="w">         </span><span class="k">END</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">remaining</span>
 <a id="__codelineno-22-9" name="__codelineno-22-9" href="#__codelineno-22-9"></a><span class="w">  </span><span class="k">FROM</span><span class="w"> </span><span class="n">request_items</span><span class="w"> </span><span class="n">i</span>
@@ -2437,11 +2509,11 @@ the item's Part plus the parent Request's title for context.</p>
 <a id="__codelineno-22-12" name="__codelineno-22-12" href="#__codelineno-22-12"></a><span class="w">    </span><span class="k">ON</span><span class="w"> </span><span class="k">c</span><span class="p">.</span><span class="n">request_item_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">i</span><span class="p">.</span><span class="n">id</span><span class="w"> </span><span class="k">AND</span><span class="w"> </span><span class="k">c</span><span class="p">.</span><span class="n">active</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">TRUE</span>
 <a id="__codelineno-22-13" name="__codelineno-22-13" href="#__codelineno-22-13"></a><span class="w">  </span><span class="k">WHERE</span><span class="w"> </span><span class="n">i</span><span class="p">.</span><span class="n">status</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;open&#39;</span><span class="w"> </span><span class="k">AND</span><span class="w"> </span><span class="n">i</span><span class="p">.</span><span class="n">active</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">TRUE</span>
 <a id="__codelineno-22-14" name="__codelineno-22-14" href="#__codelineno-22-14"></a><span class="w">    </span><span class="k">AND</span><span class="w"> </span><span class="n">r</span><span class="p">.</span><span class="n">status</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;open&#39;</span><span class="w"> </span><span class="k">AND</span><span class="w"> </span><span class="n">r</span><span class="p">.</span><span class="n">active</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">TRUE</span>
-<a id="__codelineno-22-15" name="__codelineno-22-15" href="#__codelineno-22-15"></a><span class="w">  </span><span class="k">GROUP</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">i</span><span class="p">.</span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="n">i</span><span class="p">.</span><span class="n">part_id</span><span class="p">,</span><span class="w"> </span><span class="n">i</span><span class="p">.</span><span class="n">quantity</span>
+<a id="__codelineno-22-15" name="__codelineno-22-15" href="#__codelineno-22-15"></a><span class="w">  </span><span class="k">GROUP</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">i</span><span class="p">.</span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="n">i</span><span class="p">.</span><span class="n">resource_id</span><span class="p">,</span><span class="w"> </span><span class="n">i</span><span class="p">.</span><span class="n">quantity</span>
 <a id="__codelineno-22-16" name="__codelineno-22-16" href="#__codelineno-22-16"></a><span class="p">)</span>
 <a id="__codelineno-22-17" name="__codelineno-22-17" href="#__codelineno-22-17"></a><span class="k">SELECT</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="k">SUM</span><span class="p">(</span><span class="n">pi</span><span class="p">.</span><span class="n">remaining</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">total_remaining</span>
 <a id="__codelineno-22-18" name="__codelineno-22-18" href="#__codelineno-22-18"></a><span class="k">FROM</span><span class="w"> </span><span class="n">per_item</span><span class="w"> </span><span class="n">pi</span>
-<a id="__codelineno-22-19" name="__codelineno-22-19" href="#__codelineno-22-19"></a><span class="k">JOIN</span><span class="w"> </span><span class="n">parts</span><span class="w"> </span><span class="n">p</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pi</span><span class="p">.</span><span class="n">part_id</span>
+<a id="__codelineno-22-19" name="__codelineno-22-19" href="#__codelineno-22-19"></a><span class="k">JOIN</span><span class="w"> </span><span class="n">resources</span><span class="w"> </span><span class="n">p</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pi</span><span class="p">.</span><span class="n">resource_id</span>
 <a id="__codelineno-22-20" name="__codelineno-22-20" href="#__codelineno-22-20"></a><span class="k">GROUP</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">name</span>
 <a id="__codelineno-22-21" name="__codelineno-22-21" href="#__codelineno-22-21"></a><span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">total_remaining</span><span class="w"> </span><span class="k">DESC</span>
 <a id="__codelineno-22-22" name="__codelineno-22-22" href="#__codelineno-22-22"></a><span class="k">LIMIT</span><span class="w"> </span><span class="mi">5</span><span class="p">;</span>
@@ -2483,7 +2555,7 @@ the item's Part plus the parent Request's title for context.</p>
 <a id="__codelineno-24-8" name="__codelineno-24-8" href="#__codelineno-24-8"></a><span class="k">FROM</span><span class="w"> </span><span class="n">contributions</span><span class="w"> </span><span class="k">c</span>
 <a id="__codelineno-24-9" name="__codelineno-24-9" href="#__codelineno-24-9"></a><span class="k">JOIN</span><span class="w"> </span><span class="n">request_items</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">i</span><span class="p">.</span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">c</span><span class="p">.</span><span class="n">request_item_id</span>
 <a id="__codelineno-24-10" name="__codelineno-24-10" href="#__codelineno-24-10"></a><span class="k">JOIN</span><span class="w"> </span><span class="n">requests</span><span class="w"> </span><span class="n">r</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">r</span><span class="p">.</span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">i</span><span class="p">.</span><span class="n">request_id</span>
-<a id="__codelineno-24-11" name="__codelineno-24-11" href="#__codelineno-24-11"></a><span class="k">JOIN</span><span class="w"> </span><span class="n">parts</span><span class="w"> </span><span class="n">p</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">i</span><span class="p">.</span><span class="n">part_id</span>
+<a id="__codelineno-24-11" name="__codelineno-24-11" href="#__codelineno-24-11"></a><span class="k">JOIN</span><span class="w"> </span><span class="n">resources</span><span class="w"> </span><span class="n">p</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">i</span><span class="p">.</span><span class="n">resource_id</span>
 <a id="__codelineno-24-12" name="__codelineno-24-12" href="#__codelineno-24-12"></a><span class="k">JOIN</span><span class="w"> </span><span class="n">users</span><span class="w"> </span><span class="n">u</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">u</span><span class="p">.</span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">c</span><span class="p">.</span><span class="n">maker_id</span>
 <a id="__codelineno-24-13" name="__codelineno-24-13" href="#__codelineno-24-13"></a><span class="k">WHERE</span><span class="w"> </span><span class="k">c</span><span class="p">.</span><span class="n">collection_center_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="err">$</span><span class="mi">1</span>
 <a id="__codelineno-24-14" name="__codelineno-24-14" href="#__codelineno-24-14"></a><span class="w">  </span><span class="k">AND</span><span class="w"> </span><span class="k">c</span><span class="p">.</span><span class="n">status</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;delivered&#39;</span>

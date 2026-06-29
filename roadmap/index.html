@@ -609,15 +609,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#phase-4-parts-requests-contributions" class="md-nav__link">
+  <a href="#phase-4-resources-requests-contributions" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Phase 4: Parts, Requests, Contributions 🔮
+        Phase 4: Resources, Requests, Contributions 🚧
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Phase 4: Parts, Requests, Contributions 🔮">
+    <nav class="md-nav" aria-label="Phase 4: Resources, Requests, Contributions 🚧">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -1016,31 +1016,44 @@ deadlines now. See requirements §3.11 – §3.12 (FR-127 – FR-133).</p>
 <li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled checked/><span class="task-list-indicator"></span></label> Markdown comment composer + activity timeline on the center
       detail page (<code>react-markdown</code> + <code>remark-gfm</code>), ES/EN</li>
 </ul>
-<h2 id="phase-4-parts-requests-contributions">Phase 4: Parts, Requests, Contributions 🔮</h2>
+<h2 id="phase-4-resources-requests-contributions">Phase 4: Resources, Requests, Contributions 🚧</h2>
 <p>Goal: the full maker-coordination loop. Builds on the Phase 2/3
 foundation.</p>
 <h3 id="backend_2">Backend</h3>
 <ul class="task-list">
-<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Migration for <code>parts</code>, <code>requests</code>, <code>request_items</code>,
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled checked/><span class="task-list-indicator"></span></label> Migration for <code>resources</code>, <code>requests</code>, <code>request_items</code>,
       <code>contributions</code></li>
-<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Parts catalog CRUD + <code>featured</code> + discontinue/archive
-      (owner) + force-archive (maintainer, FR-077)</li>
-<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Requests with items (FR-119 – FR-124): create, add/remove items,
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled checked/><span class="task-list-indicator"></span></label> Resources catalog CRUD + <code>featured</code> + discontinue/archive
+      (owner) + force-archive (maintainer, FR-077). Added an optional
+      <code>image_url</code>; <code>suggested_settings</code> deferred. The <code>parts</code> table was
+      generalized to <code>resources</code> (migration <code>0010_resources_generic</code>)
+      with a <code>category</code> enum + <code>unit</code> + nullable <code>source_url</code> so generic
+      aid (food, water, ...) needs no future migration.</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled checked/><span class="task-list-indicator"></span></label> Requests with items (FR-119 – FR-124): create, add/remove items,
       close</li>
-<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Contributions lifecycle endpoints
-      (<code>mark-printed</code>, <code>mark-delivered</code>, <code>confirm-received</code>, <code>release</code>)</li>
-<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> FR-126 auto-receive when the maker is an effective CC member</li>
-<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> FR-055 auto-expire stale <code>claimed</code> Contributions via
-      APScheduler</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled checked/><span class="task-list-indicator"></span></label> Contributions lifecycle endpoints
+      (<code>mark-prepared</code>, <code>mark-delivered</code>, <code>confirm-received</code>, <code>release</code>)
+      with per-item progress aggregation (FR-062/063)</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled checked/><span class="task-list-indicator"></span></label> FR-126 auto-receive when the maker is an effective CC member</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled checked/><span class="task-list-indicator"></span></label> FR-055 auto-expire stale <code>claimed</code> Contributions
+      (<code>app/scheduled/expire_claims.py</code>; wire to a periodic trigger at
+      deploy)</li>
 <li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Discovery: <code>GET /discovery/next</code>, <code>/dashboard</code>,
-      <code>/parts/{id}/chart</code></li>
+      <code>/resources/{id}/chart</code></li>
 </ul>
+<p><strong>v1 scope note:</strong> per-item progress uses <strong>center-level buckets</strong>
+(<code>claimed</code> = claimed+prepared, <code>at center</code> = delivered+received). The
+contribution↔shipment "shipped out" bucket is a documented follow-up.
+The generic Resource catalog ships schema-ready but <strong><code>print_3d</code>-only</strong>
+in v1: the API accepts a <code>category</code>, but the frontend never sends one
+and surfaces no other categories. Turning on generic supplies (a
+"necesidades"-style board) is later app/UI work, no migration.</p>
 <h3 id="frontend_2">Frontend</h3>
 <ul class="task-list">
-<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Parts tab (public read; create for logged-in users)</li>
-<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Requests tab — public read; create for logged-in users</li>
-<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Request detail page with item-level progress breakdown</li>
-<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> My Prints tab (authenticated only)</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled checked/><span class="task-list-indicator"></span></label> Resources tab (public read; create for logged-in users)</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled checked/><span class="task-list-indicator"></span></label> Requests tab — public read; create for logged-in users</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled checked/><span class="task-list-indicator"></span></label> Request detail page with item-level progress breakdown + claim</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled checked/><span class="task-list-indicator"></span></label> My Contributions tab (authenticated only)</li>
 <li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> "What to print next" dashboard (FR-065)</li>
 </ul>
 <h2 id="phase-5-ownership-transfers">Phase 5: Ownership Transfers 🔮</h2>
@@ -1048,7 +1061,7 @@ foundation.</p>
 ownership model was designed for.</p>
 <ul class="task-list">
 <li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Migration for <code>ownership_transfers</code></li>
-<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> <code>POST /{parts|collection-centers|requests}/{id}/transfers</code></li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> <code>POST /{resources|collection-centers|requests}/{id}/transfers</code></li>
 <li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> <code>POST /transfers/{id}/accept | decline | cancel</code></li>
 <li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> FR-114 auto-expire pending transfers via APScheduler</li>
 <li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Maintainer/admin force-transfer endpoints (FR-116)</li>
@@ -1062,7 +1075,7 @@ ownership model was designed for.</p>
       Phase 3 — header ES/EN toggle + <code>frontend/i18n</code> dictionaries)</strong></li>
 <li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Google OAuth (IR-001) — eventual primary signup path</li>
 <li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Email notifications (IR-002, IR-003)</li>
-<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Per-center "accepted Parts" filter (FR-093)</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Per-center "accepted Resources" filter (FR-093)</li>
 <li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Audit log viewer UI (maintainer/admin only)</li>
 <li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Personal Access Tokens UI</li>
 <li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Helm chart + production deployment + scheduled-job worker pod</li>

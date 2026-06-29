@@ -47,3 +47,4 @@ my-values-dev.yaml
 
 # Locally stored uploaded media (image uploads)
 backend/media/
+center-description.md

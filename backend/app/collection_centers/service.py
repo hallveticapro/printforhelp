@@ -127,9 +127,11 @@ def list_collection_centers(
     db: Session,
     viewer: User | None,
     country: str | None = None,
+    state: str | None = None,
     city: str | None = None,
     verified: bool | None = None,
     active: bool | None = None,
+    tag: str | None = None,
 ) -> list[models.CollectionCenter]:
     """List collection centers (public read, FR-072).
 
@@ -153,8 +155,12 @@ def list_collection_centers(
     )
     if country is not None:
         query = query.filter(models.CollectionCenter.country == country)
+    if state is not None:
+        query = query.filter(models.CollectionCenter.state == state)
     if city is not None:
         query = query.filter(models.CollectionCenter.city == city)
+    if tag is not None:
+        query = query.filter(models.CollectionCenter.tags.contains([tag]))
 
     # Non-privileged callers only ever see operational centers; maintainers
     # and admins additionally see operationally-inactive ones.
@@ -191,11 +197,13 @@ def create_collection_center(
         name=payload.name,
         address=payload.address,
         country=payload.country,
+        state=payload.state,
         city=payload.city,
         contact=payload.contact,
         location_url=payload.location_url,
         opening_hours=payload.opening_hours,
         description=payload.description,
+        tags=payload.tags,
         registered_by_id=actor.id,
         owner_user_id=owner_user_id,
         owner_organization_id=owner_organization_id,

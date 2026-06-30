@@ -10,6 +10,18 @@ from app.users.constants import UserRole
 from .constants import CollectionCenterRole, CollectionCenterStatus
 
 
+def _normalize_optional_text(value: str | None) -> str | None:
+    """Trim an optional free-text field; collapse empty strings to ``None``.
+
+    Used for ``state`` so a blank submission is stored as NULL rather than
+    an empty string (keeping the "no state yet" centers consistent).
+    """
+    if value is None:
+        return None
+    trimmed = value.strip()
+    return trimmed or None
+
+
 def _validate_location_url(value: str | None) -> str | None:
     """Normalize and validate an optional map link (e.g. Google Maps).
 
@@ -36,11 +48,13 @@ class CollectionCenterResponse(BaseModel):
     name: str
     address: str
     country: str
+    state: str | None
     city: str
     contact: str
     location_url: str | None
     opening_hours: str | None
     description: str | None
+    tags: list[str]
     verified: bool
     registered_by_id: UUID
     verified_by_id: UUID | None
@@ -58,14 +72,17 @@ class CollectionCenterCreate(BaseModel):
     name: str = Field(min_length=1, max_length=200)
     address: str = Field(min_length=1)
     country: str = Field(min_length=1, max_length=80)
+    state: str | None = Field(default=None, max_length=120)
     city: str = Field(min_length=1, max_length=120)
     contact: str = Field(min_length=1, max_length=255)
     location_url: str | None = None
     opening_hours: str | None = None
     description: str | None = None
+    tags: list[str] = Field(default_factory=list)
     owner_organization_id: UUID | None = None
 
     _normalize_location_url = field_validator("location_url")(_validate_location_url)
+    _normalize_state = field_validator("state")(_normalize_optional_text)
 
 
 class CollectionCenterUpdate(BaseModel):
@@ -74,13 +91,16 @@ class CollectionCenterUpdate(BaseModel):
     name: str | None = Field(default=None, min_length=1, max_length=200)
     address: str | None = Field(default=None, min_length=1)
     country: str | None = Field(default=None, min_length=1, max_length=80)
+    state: str | None = Field(default=None, max_length=120)
     city: str | None = Field(default=None, min_length=1, max_length=120)
     contact: str | None = Field(default=None, min_length=1, max_length=255)
     location_url: str | None = None
     opening_hours: str | None = None
     description: str | None = None
+    tags: list[str] | None = None
 
     _normalize_location_url = field_validator("location_url")(_validate_location_url)
+    _normalize_state = field_validator("state")(_normalize_optional_text)
 
 
 class ToggleStatus(BaseModel):

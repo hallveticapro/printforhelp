@@ -50,7 +50,7 @@ export function EditCenterForm({ center }: { center: CollectionCenter }) {
             <Input placeholder={t.namePlaceholder} />
           </TextField>
 
-          <div className="grid gap-4 sm:grid-cols-2">
+          <div className="grid gap-4 sm:grid-cols-3">
             <TextField
               name="country"
               type="text"
@@ -59,6 +59,15 @@ export function EditCenterForm({ center }: { center: CollectionCenter }) {
             >
               <Label>{t.country}</Label>
               <Input placeholder={t.countryPlaceholder} />
+            </TextField>
+            <TextField
+              name="state"
+              type="text"
+              isRequired
+              defaultValue={center.state ?? ""}
+            >
+              <Label>{t.state}</Label>
+              <Input placeholder={t.statePlaceholder} />
             </TextField>
             <TextField
               name="city"
@@ -114,6 +123,15 @@ export function EditCenterForm({ center }: { center: CollectionCenter }) {
               defaultValue={center.description ?? ""}
             />
           </div>
+
+          <TextField
+            name="tags"
+            type="text"
+            defaultValue={center.tags.join(", ")}
+          >
+            <Label>{t.tags}</Label>
+            <Input placeholder={t.tagsPlaceholder} />
+          </TextField>
 
           {state.error && (
             <Alert status="danger">

@@ -19,6 +19,18 @@ import { getServerI18n } from "@/i18n/server";
 
 const CENTERS_PATH = "/centers";
 
+/** Parse a comma-separated tags field into a trimmed, non-empty list. */
+function parseTags(raw: FormDataEntryValue | null): string[] {
+  const value = String(raw ?? "").trim();
+  if (!value) {
+    return [];
+  }
+  return value
+    .split(",")
+    .map((tag) => tag.trim())
+    .filter(Boolean);
+}
+
 export type CreateCenterState = { error: string | null };
 
 /** Resolve a maintainer/admin token, redirecting everyone else away. */
@@ -73,13 +85,17 @@ export async function createCenterAction(
   const name = String(formData.get("name") ?? "").trim();
   const address = String(formData.get("address") ?? "").trim();
   const country = String(formData.get("country") ?? "").trim();
+  const state = String(formData.get("state") ?? "").trim();
   const city = String(formData.get("city") ?? "").trim();
   const contact = String(formData.get("contact") ?? "").trim();
   const locationUrl = String(formData.get("location_url") ?? "").trim();
   const openingHours = String(formData.get("opening_hours") ?? "").trim();
   const description = String(formData.get("description") ?? "").trim();
+  const tags = parseTags(formData.get("tags"));
 
-  if (!name || !address || !country || !city || !contact) {
+  // State is required for new centers (FR follow-up); the backend keeps
+  // it optional so legacy centers without a state stay valid.
+  if (!name || !address || !country || !state || !city || !contact) {
     return { error: t.errorRequired };
   }
 
@@ -89,11 +105,13 @@ export async function createCenterAction(
         name,
         address,
         country,
+        state,
         city,
         contact,
         location_url: locationUrl || undefined,
         opening_hours: openingHours || undefined,
         description: description || undefined,
+        tags,
       },
       token,
     );
@@ -130,13 +148,15 @@ export async function updateCenterAction(
   const name = String(formData.get("name") ?? "").trim();
   const address = String(formData.get("address") ?? "").trim();
   const country = String(formData.get("country") ?? "").trim();
+  const state = String(formData.get("state") ?? "").trim();
   const city = String(formData.get("city") ?? "").trim();
   const contact = String(formData.get("contact") ?? "").trim();
   const locationUrl = String(formData.get("location_url") ?? "").trim();
   const openingHours = String(formData.get("opening_hours") ?? "").trim();
   const description = String(formData.get("description") ?? "").trim();
+  const tags = parseTags(formData.get("tags"));
 
-  if (!name || !address || !country || !city || !contact) {
+  if (!name || !address || !country || !state || !city || !contact) {
     return { error: t.errorRequired };
   }
 
@@ -147,11 +167,13 @@ export async function updateCenterAction(
         name,
         address,
         country,
+        state,
         city,
         contact,
         location_url: locationUrl || null,
         opening_hours: openingHours || null,
         description: description || null,
+        tags,
       },
       token,
     );

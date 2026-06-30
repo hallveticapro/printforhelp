@@ -22,6 +22,8 @@ def _create_center(
     country: str = "VE",
     city: str = "Caracas",
     owner_organization_id: str | None = None,
+    state: str | None = None,
+    tags: list[str] | None = None,
 ) -> dict[str, object]:
     payload: dict[str, object] = {
         "name": name,
@@ -32,6 +34,10 @@ def _create_center(
     }
     if owner_organization_id is not None:
         payload["owner_organization_id"] = owner_organization_id
+    if state is not None:
+        payload["state"] = state
+    if tags is not None:
+        payload["tags"] = tags
     resp = client.post(CENTERS, headers=headers, json=payload)
     assert resp.status_code == 201, resp.text
     return resp.json()
@@ -40,6 +46,44 @@ def _create_center(
 def _verify(client: TestClient, center_id: object, headers: dict[str, str]) -> None:
     resp = client.post(f"{CENTERS}/{center_id}/verify", headers=headers)
     assert resp.status_code == 200, resp.text
+
+
+class TestTags:
+    def test_create_with_tags(
+        self, client: TestClient, normal_user: User, auth_headers: AuthHeaders
+    ):
+        cc = _create_center(
+            client, auth_headers(normal_user), tags=["ferulas", "drop-off"]
+        )
+        assert cc["tags"] == ["ferulas", "drop-off"]
+
+    def test_tags_default_to_empty(
+        self, client: TestClient, normal_user: User, auth_headers: AuthHeaders
+    ):
+        cc = _create_center(client, auth_headers(normal_user))
+        assert cc["tags"] == []
+
+    def test_filter_by_tag(
+        self, client: TestClient, normal_user: User, auth_headers: AuthHeaders
+    ):
+        headers = auth_headers(normal_user)
+        tagged = _create_center(client, headers, name="Tagged", tags=["ferulas"])
+        _create_center(client, headers, name="Untagged")
+        listing = client.get(CENTERS, params={"tag": "ferulas"}).json()
+        ids = {c["id"] for c in listing}
+        assert tagged["id"] in ids
+        assert all("ferulas" in c["tags"] for c in listing)
+
+    def test_update_tags(
+        self, client: TestClient, normal_user: User, auth_headers: AuthHeaders
+    ):
+        headers = auth_headers(normal_user)
+        cc = _create_center(client, headers, tags=["old"])
+        resp = client.put(
+            f"{CENTERS}/{cc['id']}", headers=headers, json={"tags": ["new", "fresh"]}
+        )
+        assert resp.status_code == 200, resp.text
+        assert resp.json()["tags"] == ["new", "fresh"]
 
 
 class TestCreateCenter:
@@ -224,6 +268,30 @@ class TestPublicRead:
             _verify(client, cc["id"], auth_headers(maintainer))
         names = {c["name"] for c in client.get(f"{CENTERS}?city=Maracaibo").json()}
         assert names == {"B"}
+
+    def test_state_filter(
+        self,
+        client: TestClient,
+        normal_user: User,
+        make_user: MakeUser,
+        auth_headers: AuthHeaders,
+    ):
+        maintainer = make_user("maint", UserRole.MAINTAINER)
+        # ``state`` is optional: one center has it, one does not.
+        with_state = _create_center(
+            client, auth_headers(normal_user), "A", "US", "Los Angeles", state="CA"
+        )
+        without_state = _create_center(
+            client, auth_headers(normal_user), "B", "US", "Austin"
+        )
+        assert with_state["state"] == "CA"
+        assert without_state["state"] is None
+        for cc in (with_state, without_state):
+            _verify(client, cc["id"], auth_headers(maintainer))
+        # Filtering by state returns only the matching center (the
+        # state-less one is excluded).
+        names = {c["name"] for c in client.get(f"{CENTERS}?state=CA").json()}
+        assert names == {"A"}
 
     def test_verified_filter_applies_to_guests(
         self,

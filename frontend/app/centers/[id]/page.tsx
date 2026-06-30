@@ -192,13 +192,28 @@ export default async function CenterDetailPage({
             </span>
           </DetailRow>
           <DetailRow label={t.city}>
-            {center.city}, {center.country}
+            {[center.city, center.state, center.country]
+              .filter(Boolean)
+              .join(", ")}
           </DetailRow>
           <DetailRow label={t.contact}>{center.contact}</DetailRow>
           {center.opening_hours && (
             <DetailRow label={t.hours}>{center.opening_hours}</DetailRow>
           )}
           <OwnerSection center={center} organization={organization} t={t} />
+          {center.tags.length > 0 && (
+            <div className="sm:col-span-2">
+              <DetailRow label={t.tags}>
+                <span className="flex flex-wrap gap-1">
+                  {center.tags.map((tag) => (
+                    <Chip key={tag} variant="soft" size="sm">
+                      {tag}
+                    </Chip>
+                  ))}
+                </span>
+              </DetailRow>
+            </div>
+          )}
           {center.description && (
             <div className="sm:col-span-2">
               <DetailRow label={t.description}>

@@ -1,23 +1,19 @@
 import { readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
+import assert from "node:assert/strict";
+import { test } from "node:test";
 import { fileURLToPath } from "node:url";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const frontendDir = join(__dirname, "..");
-const globalsCss = readFileSync(join(frontendDir, "app/globals.css"), "utf8");
-const landingPage = readFileSync(join(frontendDir, "app/page.tsx"), "utf8");
 
 const MIN_NORMAL_TEXT_CONTRAST = 4.5;
 
-function extractBlock(selector) {
+function extractBlock(source, selector) {
   const escapedSelector = selector.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-  const match = globalsCss.match(
-    new RegExp(`${escapedSelector}\\s*\\{([^}]+)\\}`),
-  );
+  const match = source.match(new RegExp(`${escapedSelector}\\s*\\{([^}]+)\\}`));
 
-  if (!match) {
-    throw new Error(`Missing CSS block for ${selector}`);
-  }
+  assert.ok(match, `Missing CSS block for ${selector}`);
 
   return match[1];
 }
@@ -64,35 +60,39 @@ function assertThemeContrast(name, variables) {
   const bg = variables["--button-primary-bg"];
   const fg = variables["--button-primary-fg"];
 
-  if (!bg || !fg) {
-    throw new Error(`${name} is missing primary button bg/fg tokens`);
-  }
+  assert.ok(bg && fg, `${name} is missing primary button bg/fg tokens`);
 
   const ratio = contrastRatio(fg, bg);
 
-  if (ratio < MIN_NORMAL_TEXT_CONTRAST) {
-    throw new Error(
-      `${name} primary button contrast is ${ratio.toFixed(2)}:1; expected at least ${MIN_NORMAL_TEXT_CONTRAST}:1`,
-    );
-  }
+  assert.ok(
+    ratio >= MIN_NORMAL_TEXT_CONTRAST,
+    `${name} primary button contrast is ${ratio.toFixed(2)}:1; expected at least ${MIN_NORMAL_TEXT_CONTRAST}:1`,
+  );
 }
 
-const lightTheme = extractVariables(extractBlock(":root"));
-const darkTheme = extractVariables(extractBlock('[data-theme="dark"]'));
+test("primary button tokens meet WCAG AA contrast", () => {
+  const globalsCss = readFileSync(join(frontendDir, "app/globals.css"), "utf8");
+  const landingPage = readFileSync(join(frontendDir, "app/page.tsx"), "utf8");
+  const lightTheme = extractVariables(extractBlock(globalsCss, ":root"));
+  const darkTheme = extractVariables(
+    extractBlock(globalsCss, '[data-theme="dark"]'),
+  );
 
-assertThemeContrast("Light theme", lightTheme);
-assertThemeContrast("Dark theme", darkTheme);
-
-if (!landingPage.includes("var(--button-primary-bg)")) {
-  throw new Error("Landing page primary CTAs must use --button-primary-bg");
-}
-
-if (!landingPage.includes("var(--button-primary-fg)")) {
-  throw new Error("Landing page primary CTAs must use --button-primary-fg");
-}
-
-if (landingPage.includes('background: "var(--accent-strong)"')) {
-  throw new Error("Landing page primary CTAs still reuse --accent-strong");
-}
-
-console.log("Primary button contrast tokens pass WCAG AA checks.");
+  assertThemeContrast("Light theme", lightTheme);
+  assertThemeContrast("Dark theme", darkTheme);
+  assert.match(
+    landingPage,
+    /var\(--button-primary-bg\)/,
+    "Landing page primary CTAs must use --button-primary-bg",
+  );
+  assert.match(
+    landingPage,
+    /var\(--button-primary-fg\)/,
+    "Landing page primary CTAs must use --button-primary-fg",
+  );
+  assert.doesNotMatch(
+    landingPage,
+    /background: "var\(--accent-strong\)"/,
+    "Landing page primary CTAs still reuse --accent-strong",
+  );
+});

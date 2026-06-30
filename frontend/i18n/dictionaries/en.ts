@@ -56,7 +56,10 @@ export const en: Dictionary = {
         "please follow these material and print guidelines.",
       materialsHeading: "Materials to use",
       materialsUse: [
-        { label: "PLA", value: "Normal, Tough, + or variations, Matte" },
+        {
+          label: "PLA",
+          value: "Normal, Tough, + or variations, Matte, Translucent",
+        },
         { label: "PETG", value: "Normal, HF, Translucent" },
       ],
       avoidHeading: "Avoid cosmetic filaments or those with additives",
@@ -64,10 +67,10 @@ export const en: Dictionary = {
         {
           label: "PLA",
           value:
-            "CF, HT, Wood, Fluorescent, Phosphorescent, Silk, " +
-            "Translucent, Metal, Granite",
+            "CF, GF, HT, Wood, Fluorescent, Phosphorescent, Silk, " +
+            "Metal, Granite",
         },
-        { label: "PETG", value: "CF" },
+        { label: "PETG", value: "CF, GF" },
       ],
       settingsHeading: "Print settings",
       settings: [
@@ -227,9 +230,13 @@ export const en: Dictionary = {
       "the people who need them.",
     register: "Register a center",
     filterByCountry: "Filter by country",
+    filterByState: "Filter by state / province / region",
     filterByCity: "Filter by city",
+    filterByTag: "Filter by tag",
     allCountries: "All countries",
+    allStates: "All regions",
     allCities: "All cities",
+    allTags: "All tags",
     countOne: "collection center",
     countOther: "collection centers",
     empty: "No collection centers match the filter.",
@@ -264,6 +271,7 @@ export const en: Dictionary = {
     management: "Management",
     managedIndividually: "Managed by an individual contributor",
     description: "Description",
+    tags: "Tags",
     edit: "Edit center",
     clone: "Clone center",
     feedTitle: "Comments & activity",
@@ -298,6 +306,8 @@ export const en: Dictionary = {
     namePlaceholder: "UCAB Lab - Caracas",
     country: "Country",
     countryPlaceholder: "VE",
+    state: "State / Province / Region",
+    statePlaceholder: "e.g. Miranda, California, Lima",
     city: "City",
     cityPlaceholder: "Caracas",
     address: "Address",
@@ -311,6 +321,8 @@ export const en: Dictionary = {
     descriptionLabel: "Description (optional, Markdown supported)",
     descriptionPlaceholder:
       "Drop-off instructions, landmarks, etc. Markdown supported.",
+    tags: "Tags (optional, comma-separated)",
+    tagsPlaceholder: "splint, drop-off",
     submit: "Register center",
     editTitle: "Edit collection center",
     editDescription: "Update this center's contact and drop-off information.",
@@ -453,6 +465,8 @@ export const en: Dictionary = {
     empty: "There are no parts in the catalog yet.",
     search: "Search",
     searchPlaceholder: "Search by name…",
+    filterByTag: "Filter by tag",
+    allTags: "All tags",
     download: "Download file",
     discontinued: "Discontinued",
     viewDetails: "View details of",
@@ -484,6 +498,9 @@ export const en: Dictionary = {
       onedrive: "Open in OneDrive",
       default: "Open download link",
     },
+    feedTitle: "Comments & activity",
+    feedSubtitle:
+      "Leave a note for the community or follow this part's activity.",
   },
   partEdit: {
     back: "← Back to the part",
@@ -607,6 +624,9 @@ export const en: Dictionary = {
     openEnded: "No fixed target",
     itemClosed: "Closed",
     itemFulfilled: "Fulfilled",
+    feedTitle: "Comments & activity",
+    feedSubtitle:
+      "Leave a note for the community or follow this request's activity.",
   },
   claim: {
     title: "I want to print this part",

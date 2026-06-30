@@ -53,7 +53,10 @@ export const es = {
         "verdad, sigue estas pautas de material y de impresión.",
       materialsHeading: "Materiales a usar",
       materialsUse: [
-        { label: "PLA", value: "Normal, Tough, + o variaciones, Matte" },
+        {
+          label: "PLA",
+          value: "Normal, Tough, + o variaciones, Matte, Translúcido",
+        },
         { label: "PETG", value: "Normal, HF, Translúcido" },
       ],
       avoidHeading: "Evita filamentos cosméticos o con aditivos",
@@ -61,10 +64,10 @@ export const es = {
         {
           label: "PLA",
           value:
-            "CF, HT, Madera, Fluorescente, Fosforescente, Silk, " +
-            "Translúcido, Metal, Granito",
+            "CF, GF, HT, Madera, Fluorescente, Fosforescente, Silk, " +
+            "Metal, Granito",
         },
-        { label: "PETG", value: "CF" },
+        { label: "PETG", value: "CF, GF" },
       ],
       settingsHeading: "Ajustes de impresión",
       settings: [
@@ -228,9 +231,13 @@ export const es = {
       "quien las necesita.",
     register: "Registrar centro",
     filterByCountry: "Filtrar por país",
+    filterByState: "Filtrar por estado / provincia / región",
     filterByCity: "Filtrar por ciudad",
+    filterByTag: "Filtrar por etiqueta",
     allCountries: "Todos los países",
+    allStates: "Todas las regiones",
     allCities: "Todas las ciudades",
+    allTags: "Todas las etiquetas",
     countOne: "centro de acopio",
     countOther: "centros de acopio",
     empty: "No hay centros de acopio que coincidan con el filtro.",
@@ -266,6 +273,7 @@ export const es = {
     management: "Gestión",
     managedIndividually: "Gestionado por un colaborador individual",
     description: "Descripción",
+    tags: "Etiquetas",
     edit: "Editar centro",
     clone: "Clonar centro",
     feedTitle: "Comentarios y actividad",
@@ -300,6 +308,8 @@ export const es = {
     namePlaceholder: "UCAB Lab - Caracas",
     country: "País",
     countryPlaceholder: "VE",
+    state: "Estado / Provincia / Región",
+    statePlaceholder: "Ej.: Miranda, California, Lima",
     city: "Ciudad",
     cityPlaceholder: "Caracas",
     address: "Dirección",
@@ -313,6 +323,8 @@ export const es = {
     descriptionLabel: "Descripción (opcional, admite Markdown)",
     descriptionPlaceholder:
       "Indicaciones de entrega, referencias, etc. Admite Markdown.",
+    tags: "Etiquetas (opcional, separadas por comas)",
+    tagsPlaceholder: "férula, punto de entrega",
     submit: "Registrar centro",
     editTitle: "Editar centro de acopio",
     editDescription:
@@ -457,6 +469,8 @@ export const es = {
     empty: "Todavía no hay piezas en el catálogo.",
     search: "Buscar",
     searchPlaceholder: "Buscar por nombre…",
+    filterByTag: "Filtrar por etiqueta",
+    allTags: "Todas las etiquetas",
     download: "Descargar archivo",
     discontinued: "Descontinuada",
     viewDetails: "Ver detalles de",
@@ -489,6 +503,9 @@ export const es = {
       onedrive: "Abrir en OneDrive",
       default: "Abrir enlace de descarga",
     },
+    feedTitle: "Comentarios y actividad",
+    feedSubtitle:
+      "Deja una nota para la comunidad o sigue la actividad de esta pieza.",
   },
   partEdit: {
     back: "← Volver a la pieza",
@@ -617,6 +634,9 @@ export const es = {
     openEnded: "Sin objetivo fijo",
     itemClosed: "Cerrada",
     itemFulfilled: "Completada",
+    feedTitle: "Comentarios y actividad",
+    feedSubtitle:
+      "Deja una nota para la comunidad o sigue la actividad de esta petición.",
   },
   claim: {
     title: "Quiero imprimir esta pieza",

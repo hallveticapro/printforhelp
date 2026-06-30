@@ -35,12 +35,14 @@ export default async function NewCenterPage({
       initialValues = {
         name: source.name,
         country: source.country,
+        state: source.state ?? undefined,
         city: source.city,
         address: source.address,
         location_url: source.location_url ?? undefined,
         contact: source.contact,
         opening_hours: source.opening_hours ?? undefined,
         description: source.description ?? undefined,
+        tags: source.tags.length > 0 ? source.tags.join(", ") : undefined,
       };
     }
   }

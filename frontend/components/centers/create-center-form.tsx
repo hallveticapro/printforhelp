@@ -28,12 +28,14 @@ const initialState: CreateCenterState = { error: null };
 export type CenterFormValues = {
   name?: string;
   country?: string;
+  state?: string;
   city?: string;
   address?: string;
   location_url?: string;
   contact?: string;
   opening_hours?: string;
   description?: string;
+  tags?: string;
 };
 
 export function CreateCenterForm({
@@ -62,7 +64,7 @@ export function CreateCenterForm({
             <Input placeholder={t.namePlaceholder} />
           </TextField>
 
-          <div className="grid gap-4 sm:grid-cols-2">
+          <div className="grid gap-4 sm:grid-cols-3">
             <TextField
               name="country"
               type="text"
@@ -71,6 +73,15 @@ export function CreateCenterForm({
             >
               <Label>{t.country}</Label>
               <Input placeholder={t.countryPlaceholder} />
+            </TextField>
+            <TextField
+              name="state"
+              type="text"
+              isRequired
+              defaultValue={v.state}
+            >
+              <Label>{t.state}</Label>
+              <Input placeholder={t.statePlaceholder} />
             </TextField>
             <TextField name="city" type="text" isRequired defaultValue={v.city}>
               <Label>{t.city}</Label>
@@ -121,6 +132,11 @@ export function CreateCenterForm({
               defaultValue={v.description}
             />
           </div>
+
+          <TextField name="tags" type="text" defaultValue={v.tags}>
+            <Label>{t.tags}</Label>
+            <Input placeholder={t.tagsPlaceholder} />
+          </TextField>
 
           {state.error && (
             <Alert status="danger">
